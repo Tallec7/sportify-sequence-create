@@ -16,6 +16,16 @@ export interface Exercise {
   tactical_objectives?: string[]
 }
 
+export interface SequenceObjective {
+  id: string
+  sequence_id: string
+  description: string
+  objective_type: "apprentissage" | "developpement" | "perfectionnement"
+  is_priority: boolean
+  order_index: number
+  created_at?: string
+}
+
 export interface Sequence {
   id?: string
   title: string
@@ -26,4 +36,5 @@ export interface Sequence {
   sequence_order: number
   session_id?: string
   exercises?: Exercise[]
+  objectives?: SequenceObjective[]
 }

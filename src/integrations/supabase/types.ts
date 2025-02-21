@@ -168,6 +168,44 @@ export type Database = {
         }
         Relationships: []
       }
+      sequence_objectives: {
+        Row: {
+          created_at: string | null
+          description: string
+          id: string
+          is_priority: boolean | null
+          objective_type: Database["public"]["Enums"]["objective_type_enum"]
+          order_index: number | null
+          sequence_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          id?: string
+          is_priority?: boolean | null
+          objective_type: Database["public"]["Enums"]["objective_type_enum"]
+          order_index?: number | null
+          sequence_id: string
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          id?: string
+          is_priority?: boolean | null
+          objective_type?: Database["public"]["Enums"]["objective_type_enum"]
+          order_index?: number | null
+          sequence_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sequence_objectives_sequence_id_fkey"
+            columns: ["sequence_id"]
+            isOneToOne: false
+            referencedRelation: "session_sequences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       session_objectives: {
         Row: {
           created_at: string | null

@@ -6,18 +6,22 @@ import { Exercise } from "@/types/sequence"
 import { useExerciseMutation } from "@/hooks/mutations/useExerciseMutation"
 import { useExerciseDeleteMutation } from "@/hooks/mutations/useExerciseDeleteMutation"
 import { useExercisesQuery } from "@/hooks/queries/useExercisesQuery"
+import { useSequenceObjectivesQuery } from "@/hooks/queries/useSequenceObjectivesQuery"
 import { ExerciseListItem } from "./ExerciseListItem"
 import { ExerciseFormFields } from "./ExerciseFormFields"
 import { ExerciseFormProps } from "./types/exercise-form"
+import { Badge } from "@/components/ui/badge"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
   const { data: exercises = [] } = useExercisesQuery(sequenceId)
+  const { data: objectives = [] } = useSequenceObjectivesQuery(sequenceId)
   const exerciseMutation = useExerciseMutation(sequenceId)
   const exerciseDeleteMutation = useExerciseDeleteMutation(sequenceId)
 
   const [editingExercise, setEditingExercise] = useState<Exercise | null>(null)
   const [newExercise, setNewExercise] = useState<Exercise>({
-    id: '', // Add empty id for new exercises
+    id: '',
     title: "",
     description: "",
     duration: 5,
@@ -38,7 +42,7 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
       } else {
         await exerciseMutation.mutateAsync(newExercise)
         setNewExercise({
-          id: '', // Reset with empty id
+          id: '',
           title: "",
           description: "",
           duration: 5,
@@ -61,7 +65,7 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
   const handleEdit = (exercise: Exercise) => {
     setEditingExercise(exercise)
     setNewExercise({
-      id: '', // Reset with empty id
+      id: '',
       title: "",
       description: "",
       duration: 5,
@@ -75,8 +79,44 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
     setEditingExercise(null)
   }
 
+  const getObjectiveTypeLabel = (type: string) => {
+    switch (type) {
+      case "apprentissage":
+        return "Apprentissage"
+      case "developpement":
+        return "Développement"
+      case "perfectionnement":
+        return "Perfectionnement"
+      default:
+        return type
+    }
+  }
+
   return (
     <div className="space-y-6">
+      {objectives.length > 0 && (
+        <div className="rounded-lg border p-4">
+          <h4 className="font-medium mb-2">Objectifs de la séquence</h4>
+          <ScrollArea className="h-[100px]">
+            <div className="space-y-2">
+              {objectives.map((objective) => (
+                <div key={objective.id} className="flex items-center gap-2">
+                  {objective.is_priority && (
+                    <Badge variant="secondary" className="shrink-0">
+                      Prioritaire
+                    </Badge>
+                  )}
+                  <span className="text-sm">{objective.description}</span>
+                  <Badge variant="outline" className="ml-auto shrink-0">
+                    {getObjectiveTypeLabel(objective.objective_type)}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+        </div>
+      )}
+
       <div className="space-y-4">
         {exercises.map((exercise, index) => (
           <ExerciseListItem
