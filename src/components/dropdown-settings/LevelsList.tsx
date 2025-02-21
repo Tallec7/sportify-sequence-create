@@ -1,13 +1,10 @@
 
 import { useState } from "react"
-import { Plus, Pencil, Trash2, Check, X } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { useToast } from "@/components/ui/use-toast"
 import { supabase } from "@/integrations/supabase/client"
+import { LevelItem } from "./levels/LevelItem"
+import { AddLevelDialog } from "./levels/AddLevelDialog"
 
 interface Level {
   id?: string
@@ -26,7 +23,6 @@ export const LevelsList = ({ levels, onLevelsChange }: LevelsListProps) => {
   const [editedLevelLabel, setEditedLevelLabel] = useState("")
   const [newLevelValue, setNewLevelValue] = useState("")
   const [newLevelLabel, setNewLevelLabel] = useState("")
-  const [isAddingLevel, setIsAddingLevel] = useState(false)
   const { toast } = useToast()
 
   const handleAddLevel = async () => {
@@ -56,7 +52,6 @@ export const LevelsList = ({ levels, onLevelsChange }: LevelsListProps) => {
 
       setNewLevelValue("")
       setNewLevelLabel("")
-      setIsAddingLevel(false)
       onLevelsChange()
     } catch (error) {
       console.error('Error adding level:', error)
@@ -132,126 +127,38 @@ export const LevelsList = ({ levels, onLevelsChange }: LevelsListProps) => {
     <div className="space-y-2">
       <div className="flex justify-between items-center mb-4">
         <Label>Niveau de difficulté</Label>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button variant="outline" onClick={() => setIsAddingLevel(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Ajouter un niveau
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Ajouter un nouveau niveau</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <Label>Identifiant unique</Label>
-                <Input
-                  value={newLevelValue}
-                  onChange={(e) => setNewLevelValue(e.target.value)}
-                  placeholder="debutant"
-                />
-              </div>
-              <div>
-                <Label>Nom affiché</Label>
-                <Input
-                  value={newLevelLabel}
-                  onChange={(e) => setNewLevelLabel(e.target.value)}
-                  placeholder="Débutant"
-                />
-              </div>
-              <div className="flex justify-end gap-2">
-                <Button variant="outline" onClick={() => setIsAddingLevel(false)}>
-                  Annuler
-                </Button>
-                <Button onClick={handleAddLevel}>
-                  Ajouter
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <AddLevelDialog
+          newValue={newLevelValue}
+          newLabel={newLevelLabel}
+          onNewValueChange={setNewLevelValue}
+          onNewLabelChange={setNewLevelLabel}
+          onCancel={() => {
+            setNewLevelValue("")
+            setNewLevelLabel("")
+          }}
+          onAdd={handleAddLevel}
+        />
       </div>
 
       <div className="space-y-2">
         {levels.map((level) => (
-          <div key={level.id} className="flex items-center justify-between p-2 rounded border bg-background">
-            {isEditingLevel === level.id ? (
-              <div className="flex-1 flex gap-2">
-                <Input
-                  value={editedLevelValue}
-                  onChange={(e) => setEditedLevelValue(e.target.value)}
-                  placeholder="Identifiant unique"
-                  className="max-w-[200px]"
-                />
-                <Input
-                  value={editedLevelLabel}
-                  onChange={(e) => setEditedLevelLabel(e.target.value)}
-                  placeholder="Nom affiché"
-                />
-              </div>
-            ) : (
-              <span>{level.label} ({level.value})</span>
-            )}
-            <div className="flex gap-2">
-              {isEditingLevel === level.id ? (
-                <>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => handleEditLevel(level.id!)}
-                  >
-                    <Check className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => setIsEditingLevel(null)}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => {
-                      setIsEditingLevel(level.id!)
-                      setEditedLevelValue(level.value)
-                      setEditedLevelLabel(level.label)
-                    }}
-                  >
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button size="sm" variant="ghost">
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Cette action est irréversible. Cela supprimera définitivement ce niveau.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Annuler</AlertDialogCancel>
-                        <AlertDialogAction 
-                          onClick={() => handleDeleteLevel(level.id!)}
-                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                        >
-                          Supprimer
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </>
-              )}
-            </div>
-          </div>
+          <LevelItem
+            key={level.id}
+            level={level}
+            isEditing={isEditingLevel === level.id}
+            editedValue={editedLevelValue}
+            editedLabel={editedLevelLabel}
+            onEditValueChange={setEditedLevelValue}
+            onEditLabelChange={setEditedLevelLabel}
+            onStartEdit={() => {
+              setIsEditingLevel(level.id!)
+              setEditedLevelValue(level.value)
+              setEditedLevelLabel(level.label)
+            }}
+            onCancelEdit={() => setIsEditingLevel(null)}
+            onSaveEdit={() => handleEditLevel(level.id!)}
+            onDelete={() => handleDeleteLevel(level.id!)}
+          />
         ))}
       </div>
     </div>
