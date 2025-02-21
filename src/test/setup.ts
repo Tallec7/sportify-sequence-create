@@ -12,3 +12,5 @@ afterEach(() => {
   cleanup()
 })
 
+// Make vi available globally
+global.vi = vi
