@@ -1,148 +1,29 @@
 
 import { useParams, useNavigate } from "react-router-dom"
 import { useSession } from "@/hooks/useSession"
-import { Button } from "@/components/ui/button"
-import { Pencil, Trash2 } from "lucide-react"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+import { useSessionDelete } from "@/hooks/useSessionDelete"
+import { ViewSessionHeader } from "@/components/sessions/ViewSessionHeader"
+import { ViewSessionSkeleton } from "@/components/sessions/ViewSessionSkeleton"
 import { Badge } from "@/components/ui/badge"
-import { supabase } from "@/integrations/supabase/client"
-import { useToast } from "@/components/ui/use-toast"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Sequence } from "@/types/sequence"
 
 const ViewSession = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { toast } = useToast()
   const { formData, sequences, loading } = useSession(id)
-
-  const handleDelete = async () => {
-    try {
-      const { error } = await supabase
-        .from('sessions')
-        .delete()
-        .eq('id', id)
-
-      if (error) throw error
-
-      toast({
-        title: "Succès",
-        description: "La séance a été supprimée avec succès.",
-      })
-      navigate("/dashboard")
-    } catch (error: any) {
-      console.error("Error deleting session:", error)
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Une erreur est survenue lors de la suppression de la séance.",
-      })
-    }
-  }
-
-  const formatDuration = (minutes: number) => {
-    if (minutes < 60) return `${minutes}min`
-    const hours = Math.floor(minutes / 60)
-    const remainingMinutes = minutes % 60
-    return remainingMinutes > 0 ? `${hours}h${remainingMinutes}` : `${hours}h`
-  }
+  const { handleDelete } = useSessionDelete(id)
 
   if (loading) {
-    return (
-      <div className="container py-8 space-y-8">
-        <div className="flex items-center justify-between">
-          <div className="space-y-4">
-            <Skeleton className="h-8 w-[250px]" />
-            <div className="flex gap-2">
-              <Skeleton className="h-6 w-20" />
-              <Skeleton className="h-6 w-24" />
-              <Skeleton className="h-6 w-16" />
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <Skeleton className="h-10 w-[100px]" />
-            <Skeleton className="h-10 w-[100px]" />
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <Skeleton className="h-8 w-[150px]" />
-          <Skeleton className="h-20 w-full" />
-        </div>
-
-        <div className="space-y-4">
-          <Skeleton className="h-8 w-[150px]" />
-          <div className="grid gap-4 md:grid-cols-2">
-            {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-24 w-full" />
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <Skeleton className="h-8 w-[150px]" />
-          <div className="grid gap-4">
-            {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-32 w-full" />
-            ))}
-          </div>
-        </div>
-      </div>
-    )
+    return <ViewSessionSkeleton />
   }
 
   return (
     <div className="container py-8 space-y-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">{formData.title}</h1>
-          <div className="flex gap-2">
-            <Badge>{formData.sport}</Badge>
-            <Badge variant="outline">{formData.level}</Badge>
-            <Badge variant="secondary">{formatDuration(formData.duration)}</Badge>
-          </div>
-        </div>
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={() => navigate(`/editor/${id}`)}
-          >
-            <Pencil className="w-4 h-4 mr-2" />
-            Modifier
-          </Button>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="destructive">
-                <Trash2 className="w-4 h-4 mr-2" />
-                Supprimer
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Cette action est irréversible. La séance sera définitivement supprimée.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Annuler</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDelete}>
-                  Supprimer
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
-        </div>
-      </div>
+      <ViewSessionHeader
+        formData={formData}
+        onDelete={handleDelete}
+        onEdit={() => navigate(`/editor/${id}`)}
+      />
 
       <div className="space-y-4">
         <h2 className="text-2xl font-semibold">Description</h2>
@@ -181,7 +62,7 @@ const ViewSession = () => {
       <div className="space-y-4">
         <h2 className="text-2xl font-semibold">Séquences</h2>
         <div className="grid gap-4">
-          {sequences.map((sequence) => (
+          {sequences.map((sequence: Sequence) => (
             <div key={sequence.id} className="border rounded-lg p-4">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="font-medium">{sequence.title}</h3>
@@ -209,4 +90,3 @@ const ViewSession = () => {
 }
 
 export default ViewSession
-
