@@ -63,7 +63,26 @@ const Editor = () => {
       if (sequencesError) throw sequencesError
 
       setFormData(sessionData)
-      setSequences(sequencesData)
+      
+      // Validate and transform sequence data to match Sequence type
+      const validatedSequences = sequencesData.map(sequence => {
+        const validSequenceType = sequence.sequence_type.toLowerCase() as "warmup" | "main" | "cooldown"
+        if (!["warmup", "main", "cooldown"].includes(validSequenceType)) {
+          throw new Error(`Invalid sequence type: ${sequence.sequence_type}`)
+        }
+        return {
+          id: sequence.id,
+          title: sequence.title,
+          description: sequence.description,
+          duration: sequence.duration,
+          sequence_type: validSequenceType,
+          intensity_level: sequence.intensity_level,
+          sequence_order: sequence.sequence_order,
+          session_id: sequence.session_id
+        } satisfies Sequence
+      })
+
+      setSequences(validatedSequences)
     } catch (error: any) {
       console.error("Error loading session:", error)
       toast({
@@ -202,4 +221,3 @@ const Editor = () => {
 }
 
 export default Editor
-
