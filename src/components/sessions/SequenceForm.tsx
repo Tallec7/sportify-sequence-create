@@ -10,10 +10,16 @@ import { useParams } from "react-router-dom"
 interface SequenceFormProps {
   sequences: Sequence[]
   onAddSequence: (sequence: Sequence) => void
+  onReorderSequences: (sequences: Sequence[]) => void
 }
 
-export const SequenceForm = ({ sequences, onAddSequence }: SequenceFormProps) => {
+export const SequenceForm = ({
+  sequences,
+  onAddSequence,
+  onReorderSequences
+}: SequenceFormProps) => {
   const { id: sessionId } = useParams()
+  const [selectedSequenceId, setSelectedSequenceId] = useState<string | null>(null)
   const [newSequence, setNewSequence] = useState<Sequence>({
     title: "",
     description: "",
@@ -22,7 +28,6 @@ export const SequenceForm = ({ sequences, onAddSequence }: SequenceFormProps) =>
     intensity_level: "medium",
     sequence_order: sequences.length + 1,
   })
-  const [selectedSequenceId, setSelectedSequenceId] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -60,45 +65,18 @@ export const SequenceForm = ({ sequences, onAddSequence }: SequenceFormProps) =>
       console.log("Tentative d'ajout de séquence avec:", {
         ...newSequence,
         session_id: sessionId,
-        user_id: session.user.id
       })
 
-      const { data: sequence, error } = await supabase
-        .from("session_sequences")
-        .insert([{
-          ...newSequence,
-          session_id: sessionId,
-          sequence_type: newSequence.sequence_type
-        }])
-        .select()
-        .single()
+      onAddSequence(newSequence)
 
-      if (error) {
-        console.error("Error adding sequence:", error)
-        toast({
-          variant: "destructive",
-          title: "Erreur",
-          description: "Une erreur est survenue lors de l'ajout de la séquence. Veuillez réessayer.",
-        })
-        return
-      }
-
-      if (sequence) {
-        onAddSequence(sequence as Sequence)
-        toast({
-          title: "Séquence ajoutée",
-          description: "La séquence a été ajoutée avec succès à votre séance.",
-        })
-
-        setNewSequence({
-          title: "",
-          description: "",
-          duration: 15,
-          sequence_type: "main",
-          intensity_level: "medium",
-          sequence_order: sequences.length + 2,
-        })
-      }
+      setNewSequence({
+        title: "",
+        description: "",
+        duration: 15,
+        sequence_type: "main",
+        intensity_level: "medium",
+        sequence_order: sequences.length + 2,
+      })
     } catch (error: any) {
       console.error("Error in handleSubmit:", error)
       toast({
@@ -107,6 +85,14 @@ export const SequenceForm = ({ sequences, onAddSequence }: SequenceFormProps) =>
         description: "Une erreur est survenue lors de l'ajout de la séquence. Veuillez réessayer.",
       })
     }
+  }
+
+  const handleReorderSequences = (reorderedSequences: Sequence[]) => {
+    const updatedSequences = reorderedSequences.map((sequence, index) => ({
+      ...sequence,
+      sequence_order: index + 1,
+    }))
+    onReorderSequences(updatedSequences)
   }
 
   return (
@@ -123,6 +109,7 @@ export const SequenceForm = ({ sequences, onAddSequence }: SequenceFormProps) =>
           sequences={sequences}
           selectedSequenceId={selectedSequenceId}
           setSelectedSequenceId={setSelectedSequenceId}
+          onReorder={handleReorderSequences}
         />
 
         <AddSequenceForm
@@ -134,3 +121,4 @@ export const SequenceForm = ({ sequences, onAddSequence }: SequenceFormProps) =>
     </div>
   )
 }
+

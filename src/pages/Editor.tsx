@@ -8,9 +8,11 @@ import { useSessionQuery } from "@/hooks/queries/useSessionQuery"
 import { useSequencesQuery } from "@/hooks/queries/useSequencesQuery"
 import { useSessionMutation } from "@/hooks/mutations/useSessionMutation"
 import { useSequenceMutation } from "@/hooks/mutations/useSequenceMutation"
+import { useSequenceOrderMutation } from "@/hooks/mutations/useSequenceOrderMutation"
 import { useState } from "react"
 import { SessionFormData } from "@/components/sessions/SessionForm"
 import { Sequence } from "@/types/sequence"
+import { EditorHeader } from "@/components/sessions/EditorHeader"
 
 const Editor = () => {
   const { id } = useParams()
@@ -18,7 +20,7 @@ const Editor = () => {
   
   // Queries
   const { data: sessionData, isLoading: isLoadingSession } = useSessionQuery(id)
-  const { data: sequences = [] } = useSequencesQuery(id)
+  const { data: sequences = [], isLoading: isLoadingSequences } = useSequencesQuery(id)
   
   // Local state
   const [formData, setFormData] = useState<SessionFormData>({
@@ -37,6 +39,7 @@ const Editor = () => {
   // Mutations
   const sessionMutation = useSessionMutation(id, userId)
   const sequenceMutation = useSequenceMutation(id)
+  const sequenceOrderMutation = useSequenceOrderMutation(id)
 
   // Handlers
   const handleSave = () => {
@@ -47,32 +50,48 @@ const Editor = () => {
     sequenceMutation.mutate(sequence)
   }
 
-  if (isLoadingSession) {
-    return (
-      <div className="container py-8">
-        <p>Chargement...</p>
-      </div>
-    )
+  const handleReorderSequences = (reorderedSequences: Sequence[]) => {
+    sequenceOrderMutation.mutate(reorderedSequences)
   }
 
+  const isLoading = isLoadingSession || isLoadingSequences
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="container py-8 space-y-8"
-    >
-      <SessionForm
+    <>
+      <EditorHeader
+        isLoading={isLoading}
         onSave={handleSave}
-        formData={formData}
-        setFormData={setFormData}
+        sessionId={id}
       />
-      <SequenceForm
-        sequences={sequences}
-        onAddSequence={handleAddSequence}
-      />
-    </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="container py-8 space-y-8"
+      >
+        {isLoading ? (
+          <div className="space-y-8">
+            <div className="h-[400px] animate-pulse rounded-xl border bg-muted" />
+            <div className="h-[600px] animate-pulse rounded-xl border bg-muted" />
+          </div>
+        ) : (
+          <>
+            <SessionForm
+              onSave={handleSave}
+              formData={formData}
+              setFormData={setFormData}
+            />
+            <SequenceForm
+              sequences={sequences}
+              onAddSequence={handleAddSequence}
+              onReorderSequences={handleReorderSequences}
+            />
+          </>
+        )}
+      </motion.div>
+    </>
   )
 }
 
 export default Editor
+
