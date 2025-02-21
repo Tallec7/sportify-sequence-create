@@ -1,13 +1,12 @@
 
-import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { PlusCircle } from "lucide-react"
-import { supabase } from "@/integrations/supabase/client"
 import { SessionCard } from "@/components/sessions/SessionCard"
 import { EmptySessionsState } from "@/components/sessions/EmptySessionsState"
 import { useSessionsQuery } from "@/hooks/queries/useSessionsQuery"
 import { useSessionDelete } from "@/hooks/useSessionDelete"
+import { useAuthCheck } from "@/hooks/useAuthCheck"
 import {
   Pagination,
   PaginationContent,
@@ -20,22 +19,13 @@ import {
 
 const Dashboard = () => {
   const navigate = useNavigate()
-  const { sessions, loading, setSessions, pagination, handlePageChange } = useSessionsQuery(undefined)
+  const { userId } = useAuthCheck()
+  const { sessions, loading, setSessions, pagination, handlePageChange } = useSessionsQuery(userId)
   const { handleDelete } = useSessionDelete({
     onSuccess: (sessionId) => {
       setSessions(sessions.filter(session => session.id !== sessionId))
     }
   })
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) {
-        navigate("/auth")
-      }
-    }
-    checkAuth()
-  }, [navigate])
 
   const renderPagination = () => {
     if (pagination.totalPages <= 1) return null
