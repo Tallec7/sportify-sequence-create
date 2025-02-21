@@ -8,10 +8,19 @@ import { SessionCard } from "@/components/sessions/SessionCard"
 import { EmptySessionsState } from "@/components/sessions/EmptySessionsState"
 import { useSessionsQuery } from "@/hooks/queries/useSessionsQuery"
 import { useSessionDelete } from "@/hooks/useSessionDelete"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 
 const Dashboard = () => {
   const navigate = useNavigate()
-  const { sessions, loading, setSessions } = useSessionsQuery(undefined)
+  const { sessions, loading, setSessions, pagination, handlePageChange } = useSessionsQuery(undefined)
   const { handleDelete } = useSessionDelete({
     onSuccess: (sessionId) => {
       setSessions(sessions.filter(session => session.id !== sessionId))
@@ -27,6 +36,42 @@ const Dashboard = () => {
     }
     checkAuth()
   }, [navigate])
+
+  const renderPagination = () => {
+    if (pagination.totalPages <= 1) return null
+
+    return (
+      <Pagination className="mt-8">
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious 
+              onClick={() => handlePageChange(pagination.currentPage - 1)}
+              className={`cursor-pointer ${pagination.currentPage === 1 ? 'pointer-events-none opacity-50' : ''}`}
+            />
+          </PaginationItem>
+          
+          {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((page) => (
+            <PaginationItem key={page}>
+              <PaginationLink
+                onClick={() => handlePageChange(page)}
+                isActive={pagination.currentPage === page}
+                className="cursor-pointer"
+              >
+                {page}
+              </PaginationLink>
+            </PaginationItem>
+          ))}
+          
+          <PaginationItem>
+            <PaginationNext 
+              onClick={() => handlePageChange(pagination.currentPage + 1)}
+              className={`cursor-pointer ${pagination.currentPage === pagination.totalPages ? 'pointer-events-none opacity-50' : ''}`}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+    )
+  }
 
   return (
     <div className="container py-8 animate-fade-in">
@@ -47,15 +92,18 @@ const Dashboard = () => {
           </div>
         </div>
       ) : sessions.length > 0 ? (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {sessions.map((session) => (
-            <SessionCard 
-              key={session.id} 
-              session={session}
-              onDelete={handleDelete}
-            />
-          ))}
-        </div>
+        <>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {sessions.map((session) => (
+              <SessionCard 
+                key={session.id} 
+                session={session}
+                onDelete={handleDelete}
+              />
+            ))}
+          </div>
+          {renderPagination()}
+        </>
       ) : (
         <EmptySessionsState />
       )}
