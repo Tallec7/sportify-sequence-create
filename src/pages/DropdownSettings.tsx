@@ -36,18 +36,20 @@ const DropdownSettings = () => {
     return null
   }
 
+  const staggerDelay = 0.1
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="container max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8 space-y-8"
+      className="container max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8"
     >
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        className="rounded-xl border bg-card shadow-lg backdrop-blur-sm bg-white/50 dark:bg-gray-900/50 p-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="rounded-xl border bg-card shadow-xl backdrop-blur-lg bg-white/50 dark:bg-gray-900/50 p-8"
       >
         <SettingsHeader />
         
@@ -55,7 +57,7 @@ const DropdownSettings = () => {
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4 }}
+            transition={{ delay: staggerDelay }}
           >
             <SportsList 
               sports={sports}
@@ -63,12 +65,12 @@ const DropdownSettings = () => {
             />
           </motion.div>
 
-          <Separator className="my-8" />
+          <Separator className="my-8 opacity-50" />
 
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: staggerDelay * 2 }}
           >
             <TacticalConceptsList 
               sports={sports}
@@ -79,32 +81,32 @@ const DropdownSettings = () => {
             />
           </motion.div>
 
-          <Separator className="my-8" />
+          <Separator className="my-8 opacity-50" />
 
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.6 }}
+            transition={{ delay: staggerDelay * 3 }}
           >
             <AgeCategoriesList />
           </motion.div>
 
-          <Separator className="my-8" />
+          <Separator className="my-8 opacity-50" />
 
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.7 }}
+            transition={{ delay: staggerDelay * 4 }}
           >
             <ActivityTypesList />
           </motion.div>
 
-          <Separator className="my-8" />
+          <Separator className="my-8 opacity-50" />
 
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.8 }}
+            transition={{ delay: staggerDelay * 5 }}
           >
             <LevelsList
               levels={levels}
@@ -112,12 +114,12 @@ const DropdownSettings = () => {
             />
           </motion.div>
 
-          <Separator className="my-8" />
+          <Separator className="my-8 opacity-50" />
 
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.9 }}
+            transition={{ delay: staggerDelay * 6 }}
           >
             <IntensityLevelsList
               intensityLevels={intensityLevels}
@@ -125,12 +127,12 @@ const DropdownSettings = () => {
             />
           </motion.div>
 
-          <Separator className="my-8" />
+          <Separator className="my-8 opacity-50" />
 
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 1.0 }}
+            transition={{ delay: staggerDelay * 7 }}
           >
             <SequenceTypesList
               sequenceTypes={sequenceTypes}
@@ -138,12 +140,12 @@ const DropdownSettings = () => {
             />
           </motion.div>
 
-          <Separator className="my-8" />
+          <Separator className="my-8 opacity-50" />
 
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 1.1 }}
+            transition={{ delay: staggerDelay * 8 }}
           >
             <ProgressionLevelsList />
           </motion.div>
@@ -154,3 +156,4 @@ const DropdownSettings = () => {
 }
 
 export default DropdownSettings
+
