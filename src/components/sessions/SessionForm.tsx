@@ -20,6 +20,9 @@ export interface SessionFormData {
   duration: number
   participants_min: number
   participants_max: number
+  age_category: string
+  intensity_level: string
+  cycle_id?: string | null
 }
 
 interface SessionFormProps {
@@ -94,6 +97,7 @@ export const SessionForm = ({ onSave, formData, setFormData }: SessionFormProps)
                   <SelectItem value="basketball">Basketball</SelectItem>
                   <SelectItem value="tennis">Tennis</SelectItem>
                   <SelectItem value="athletisme">Athlétisme</SelectItem>
+                  <SelectItem value="handball">Handball</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -108,6 +112,34 @@ export const SessionForm = ({ onSave, formData, setFormData }: SessionFormProps)
                   <SelectItem value="intermediaire">Intermédiaire</SelectItem>
                   <SelectItem value="avance">Avancé</SelectItem>
                   <SelectItem value="expert">Expert</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="age_category" className="text-base">Catégorie d'âge</Label>
+              <Select name="age_category" onValueChange={(value) => handleSelectChange("age_category", value)}>
+                <SelectTrigger className="h-12">
+                  <SelectValue placeholder="Sélectionnez une catégorie" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="U13">U13</SelectItem>
+                  <SelectItem value="U15">U15</SelectItem>
+                  <SelectItem value="U18">U18</SelectItem>
+                  <SelectItem value="senior">Senior</SelectItem>
+                  <SelectItem value="pro">Pro</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="intensity_level" className="text-base">Intensité</Label>
+              <Select name="intensity_level" onValueChange={(value) => handleSelectChange("intensity_level", value)}>
+                <SelectTrigger className="h-12">
+                  <SelectValue placeholder="Sélectionnez l'intensité" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="low">Faible</SelectItem>
+                  <SelectItem value="medium">Moyenne</SelectItem>
+                  <SelectItem value="high">Élevée</SelectItem>
                 </SelectContent>
               </Select>
             </div>

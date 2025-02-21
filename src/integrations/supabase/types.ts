@@ -44,6 +44,62 @@ export type Database = {
           },
         ]
       }
+      exercises: {
+        Row: {
+          coach_instructions: string | null
+          created_at: string | null
+          description: string
+          duration: number
+          exercise_order: number
+          id: string
+          intensity_level: string | null
+          player_instructions: string | null
+          sequence_id: string | null
+          setup_instructions: string | null
+          title: string
+          updated_at: string | null
+          variations: string[] | null
+        }
+        Insert: {
+          coach_instructions?: string | null
+          created_at?: string | null
+          description: string
+          duration: number
+          exercise_order: number
+          id?: string
+          intensity_level?: string | null
+          player_instructions?: string | null
+          sequence_id?: string | null
+          setup_instructions?: string | null
+          title: string
+          updated_at?: string | null
+          variations?: string[] | null
+        }
+        Update: {
+          coach_instructions?: string | null
+          created_at?: string | null
+          description?: string
+          duration?: number
+          exercise_order?: number
+          id?: string
+          intensity_level?: string | null
+          player_instructions?: string | null
+          sequence_id?: string | null
+          setup_instructions?: string | null
+          title?: string
+          updated_at?: string | null
+          variations?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exercises_sequence_id_fkey"
+            columns: ["sequence_id"]
+            isOneToOne: false
+            referencedRelation: "session_sequences"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       favorites: {
         Row: {
           created_at: string | null
@@ -100,6 +156,38 @@ export type Database = {
         }
         Relationships: []
       }
+      session_objectives: {
+        Row: {
+          created_at: string | null
+          description: string
+          id: string
+          objective_type: string | null
+          session_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          id?: string
+          objective_type?: string | null
+          session_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          id?: string
+          objective_type?: string | null
+          session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "session_objectives_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       session_recommendations: {
         Row: {
           created_at: string | null
@@ -135,6 +223,53 @@ export type Database = {
           },
           {
             foreignKeyName: "session_recommendations_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      session_sequences: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          duration: number
+          id: string
+          intensity_level: string | null
+          sequence_order: number
+          sequence_type: string | null
+          session_id: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          duration: number
+          id?: string
+          intensity_level?: string | null
+          sequence_order: number
+          sequence_type?: string | null
+          session_id?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          duration?: number
+          id?: string
+          intensity_level?: string | null
+          sequence_order?: number
+          sequence_type?: string | null
+          session_id?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "session_sequences_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: false
             referencedRelation: "sessions"
@@ -179,11 +314,14 @@ export type Database = {
       }
       sessions: {
         Row: {
+          age_category: string | null
           created_at: string | null
+          cycle_id: string | null
           description: string | null
           duration: number
           expert_validated: boolean | null
           id: string
+          intensity_level: string | null
           level: string
           participants_max: number
           participants_min: number
@@ -192,11 +330,14 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          age_category?: string | null
           created_at?: string | null
+          cycle_id?: string | null
           description?: string | null
           duration: number
           expert_validated?: boolean | null
           id?: string
+          intensity_level?: string | null
           level: string
           participants_max: number
           participants_min: number
@@ -205,16 +346,63 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          age_category?: string | null
           created_at?: string | null
+          cycle_id?: string | null
           description?: string | null
           duration?: number
           expert_validated?: boolean | null
           id?: string
+          intensity_level?: string | null
           level?: string
           participants_max?: number
           participants_min?: number
           sport?: string
           title?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sessions_cycle_id_fkey"
+            columns: ["cycle_id"]
+            isOneToOne: false
+            referencedRelation: "training_cycles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      training_cycles: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          end_date: string | null
+          id: string
+          season_period: string | null
+          start_date: string | null
+          title: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          season_period?: string | null
+          start_date?: string | null
+          title: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          season_period?: string | null
+          start_date?: string | null
+          title?: string
+          updated_at?: string | null
           user_id?: string | null
         }
         Relationships: []

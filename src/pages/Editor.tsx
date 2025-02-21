@@ -17,7 +17,10 @@ const Editor = () => {
     level: "",
     duration: 60,
     participants_min: 1,
-    participants_max: 10
+    participants_max: 10,
+    age_category: "",
+    intensity_level: "medium",
+    cycle_id: null
   })
 
   useEffect(() => {
