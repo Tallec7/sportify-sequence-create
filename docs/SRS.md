@@ -14,132 +14,95 @@ KAP permet aux entraîneurs de créer, structurer, valider et partager des séan
 ### 2.1 Perspective du Produit
 KAP est une application web autonome qui s'intègre dans l'écosystème des outils d'entraînement sportif, offrant une approche structurée de la planification d'entraînement.
 
-### 2.2 Fonctions du Produit
-#### Gestion des Séances
-- Création de séances d'entraînement détaillées
-- Organisation en cycles d'entraînement
-- Définition d'objectifs spécifiques
-- Structuration en séquences d'exercices
-- Gestion des exercices et leurs variations
+### 2.2 Priorités des Fonctionnalités
+1. Critiques (P0)
+   - Authentification et gestion des utilisateurs
+   - Création et édition de séances d'entraînement
+   - Gestion des séquences d'exercices
+   - Validation de base des séances
 
-#### Validation et Partage
-- Validation par des experts
-- Système de recommandations intelligent
-- Partage avec la communauté
-- Statistiques d'utilisation avancées
+2. Importantes (P1)
+   - Validation par des experts
+   - Partage de séances
+   - Dashboard personnalisé
+   - Statistiques d'utilisation
 
-#### Social et Engagement
-- Système de notation et commentaires
-- Favoris et collections personnelles
-- Statistiques de popularité
-- Suivi des vues et téléchargements
+3. Souhaitables (P2)
+   - Système de recommandations
+   - Analytics avancés
+   - Intégrations tierces
+   - Fonctionnalités collaboratives
 
-### 2.3 Caractéristiques des Utilisateurs
-- Entraîneurs sportifs (utilisateurs principaux)
-- Experts validateurs
-- Athlètes et pratiquants
-- Administrateurs système
+### 2.3 Cas d'Utilisation Détaillés
 
-### 2.4 Contraintes
-- Compatibilité navigateur (Chrome, Firefox, Safari)
-- Temps de réponse < 2 secondes
-- Disponibilité 99.9%
-- Conformité RGPD
+#### 2.3.1 Création de Séance
+- Acteur: Entraîneur
+- Préconditions: Authentifié
+- Flux Principal:
+  1. L'entraîneur accède à l'éditeur
+  2. Remplit les informations de base
+  3. Ajoute des séquences
+  4. Configure les exercices
+  5. Sauvegarde la séance
+- Postconditions: Séance créée et stockée
+
+#### 2.3.2 Validation Expert
+- Acteur: Expert Validateur
+- Préconditions: Séance soumise
+- Flux Principal:
+  1. Expert examine la séance
+  2. Vérifie les critères
+  3. Ajoute des commentaires
+  4. Valide ou rejette
+- Postconditions: Séance validée/rejetée
 
 ## 3. Exigences Spécifiques
 
-### 3.1 Structure des Données
-
-#### 3.1.1 Cycles d'Entraînement
-- Titre et description
-- Période de la saison
-- Dates de début et fin
-- Association à un utilisateur
-
-#### 3.1.2 Séances d'Entraînement
-- Informations de base (titre, description, sport)
-- Niveau et catégorie d'âge
-- Durée et nombre de participants
-- Niveau d'intensité
-- Statut de validation expert
-
-#### 3.1.3 Séquences
-- Organisation temporelle
-- Type de séquence
-- Niveau d'intensité
-- Durée spécifique
-- Ordre dans la séance
-
-#### 3.1.4 Exercices
-- Instructions détaillées (coach, joueurs, installation)
-- Variations possibles
-- Durée
-- Ordre dans la séquence
-
-### 3.2 Fonctionnalités Clés
-
-#### 3.2.1 MVP (Actuel)
-- Authentification utilisateur
-- Création de séances structurées
-- Validation experte
-- Système de commentaires et notations
-- Gestion des favoris
-
-#### 3.2.2 Version 2 (6 mois)
-- Planification de cycles complets
-- Analytics avancés
-- Recommendations automatiques
-- Export de séances
-- Bibliothèque d'exercices partagée
-
-#### 3.2.3 Version 3 (1 an)
-- API publique
-- Intégration IoT
-- Planification périodique avancée
-- Intelligence artificielle pour personnalisation
-
-### 3.3 Exigences Non Fonctionnelles
-
-#### 3.3.1 Performance
-- Chargement initial < 3 secondes
-- Temps de réponse API < 500ms
-- Support de 1000 utilisateurs simultanés
-
-#### 3.3.2 Sécurité
-- Authentification JWT
-- Politiques RLS strictes
-- Audit logs complet
-
-#### 3.3.3 Fiabilité
-- Sauvegarde automatique
-- Récupération après incident
-- Maintenance sans interruption
-
-## 4. Évolutions Futures
-
-### 4.1 Extensions Fonctionnelles
-- IA pour génération de séances
-- Réalité augmentée pour démonstrations
-- Intégration wearables
-- Applications mobiles natives
-
-### 4.2 Améliorations Techniques
-- Architecture microservices
-- Edge computing
-- Blockchain pour certification
-- Machine learning pour personnalisation
-
-## 5. Validation
-
-### 5.1 Critères d'Acceptation
-- Tests de charge réussis
-- Audit de sécurité passé
-- Validation UX utilisateurs
-- Conformité accessibilité WCAG
-
-### 5.2 Métriques de Succès
-- Taux d'adoption > 50%
+### 3.1 KPIs de Performance
+- Temps de chargement < 2s (95e percentile)
+- Disponibilité 99.9%
+- Taux de conversion > 30%
 - Satisfaction utilisateur > 4/5
-- Temps moyen session > 10 min
-- Taux de conversion des séances > 30%
 
+### 3.2 Matrice de Traçabilité
+
+| Exigence | Composant | Test | Priorité |
+|----------|-----------|------|----------|
+| Auth | AuthProvider | Auth.test | P0 |
+| Création | Editor | Editor.test | P0 |
+| Validation | Validator | Validation.test | P1 |
+| Partage | Sharing | Sharing.test | P1 |
+
+### 3.3 Critères d'Acceptation
+Chaque fonctionnalité doit remplir ces critères :
+- Tests unitaires couvrant 80%
+- Tests E2E critiques passés
+- Performance dans les limites
+- Validation UX réussie
+
+## 4. Validation et Vérification
+
+### 4.1 Métriques de Qualité
+- Couverture de tests > 80%
+- Temps de réponse < 500ms
+- Taux d'erreur < 0.1%
+- Score Lighthouse > 90
+
+### 4.2 Plan de Test
+1. Tests Unitaires
+2. Tests d'Intégration
+3. Tests E2E
+4. Tests de Performance
+5. Tests de Sécurité
+
+## 5. Cycle de Vie
+
+### 5.1 Phases de Développement
+1. MVP (2 mois)
+2. Beta (3 mois)
+3. Release (1 mois)
+
+### 5.2 Maintenance
+- Mises à jour bi-mensuelles
+- Revues de performance mensuelles
+- Audit sécurité trimestriel

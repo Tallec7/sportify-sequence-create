@@ -12,74 +12,116 @@ Le système permet la création, la gestion et le partage de séances d'entraîn
 ## 2. Architecture Générale
 
 ### 2.1 Vue d'ensemble
-L'application utilise une architecture frontend moderne basée sur React avec TypeScript.
+L'application utilise une architecture frontend moderne basée sur React avec TypeScript. Les principales couches sont :
 
-### 2.2 Composants Principaux
-- **Navbar** : Navigation principale avec gestion de la responsivité
-- **Hero** : Section d'accueil avec animations
-- **Features** : Grille des fonctionnalités principales
-- **Footer** : Pied de page avec liens et informations
+1. UI Layer (React)
+   - Components
+   - Pages
+   - Layout
+
+2. State Management
+   - TanStack Query
+   - React Context
+
+3. Data Layer
+   - Supabase Client
+   - API Integrations
+
+### 2.2 Patterns Architecturaux
+- Custom Hooks pour la logique réutilisable
+- Atomic Design pour les composants
+- Container/Presenter pattern
+- Service Layer pour l'API
+
+### 2.3 Diagramme de Composants
+```
+App
+├── Layout
+│   ├── Navbar
+│   ├── Sidebar
+│   └── Footer
+├── Pages
+│   ├── Auth
+│   ├── Dashboard
+│   ├── Editor
+│   └── Settings
+└── Features
+    ├── Sessions
+    ├── Sequences
+    └── Exercises
+```
 
 ## 3. Design Technique
 
 ### 3.1 Frontend
-- **Framework** : React avec TypeScript
-- **Styling** : Tailwind CSS pour le design responsive
-- **Animations** : Framer Motion
-- **Components UI** : shadcn/ui
+- **Framework**: React avec TypeScript
+- **Styling**: Tailwind CSS
+- **Components**: shadcn/ui
+- **Animations**: Framer Motion
+- **Testing**: Vitest, Testing Library
 
-### 3.2 Structure des Composants
-```
-src/
-├── components/
-│   ├── Navbar.tsx
-│   ├── Hero.tsx
-│   ├── Features.tsx
-│   └── Footer.tsx
-├── pages/
-│   └── Index.tsx
-└── components/ui/
-    └── [composants shadcn/ui]
-```
+### 3.2 Sécurité
+- JWT pour l'authentification
+- RLS pour les permissions
+- HTTPS obligatoire
+- Protection XSS et CSRF
 
-## 4. Considérations de Performance
+### 3.3 Performance
+- Code Splitting
+- Lazy Loading
+- Caching optimisé
+- Image optimisation
+- Bundle size < 100KB
 
-### 4.1 Optimisations Frontend
-- Utilisation de Lazy Loading pour les composants lourds
-- Optimisation des animations avec Framer Motion
-- Utilisation de Tailwind pour un CSS optimisé
+## 4. Intégrations
 
-## 5. Sécurité
+### 4.1 Supabase
+- Authentication
+- Database
+- Storage
+- Real-time subscriptions
 
-### 5.1 Mesures de Sécurité Frontend
-- Protection contre les injections XSS via React
-- Validation des entrées utilisateur
-- Gestion sécurisée des états
+### 4.2 APIs Externes
+- Analytics
+- Monitoring
+- CDN
+- Backups
 
-## 6. Interface Utilisateur
+## 5. Déploiement
 
-### 6.1 Design System
-- Utilisation cohérente des couleurs via Tailwind
-- Components UI réutilisables via shadcn/ui
-- Design responsive pour tous les écrans
+### 5.1 Infrastructure
+- Frontend: Vercel/Netlify
+- Backend: Supabase
+- CI/CD: GitHub Actions
 
-## 7. Tests
+### 5.2 Monitoring
+- Error tracking
+- Performance metrics
+- User analytics
+- Logs centralisés
 
-### 7.1 Stratégie de Test
-- Tests unitaires pour les composants React
-- Tests d'intégration pour les flux utilisateur
-- Tests de performance et de charge
+## 6. Maintenance
 
-## 8. Déploiement
+### 6.1 Mises à jour
+- Dépendances mensuelles
+- Sécurité hebdomadaire
+- Features bi-mensuelles
 
-### 8.1 Procédure de Déploiement
-- Build de production avec optimisations
-- Déploiement continu via la plateforme choisie
-- Surveillance des performances post-déploiement
+### 6.2 Backups
+- Database: quotidien
+- Storage: hebdomadaire
+- Config: par modification
 
-## 9. Maintenance
+## 7. Documentation
 
-### 9.1 Stratégie de Maintenance
-- Mises à jour régulières des dépendances
-- Monitoring des performances
-- Gestion des retours utilisateurs
+### 7.1 Code
+- TSDoc pour TypeScript
+- Storybook pour UI
+- Tests comme documentation
+- README par feature
+
+### 7.2 API
+- OpenAPI Spec
+- Postman Collection
+- Exemples d'usage
+- Guides d'intégration
