@@ -1,19 +1,44 @@
 
 import { useParams, useNavigate } from "react-router-dom"
-import { useSession } from "@/hooks/useSession"
+import { useSessionQuery } from "@/hooks/queries/useSessionQuery"
+import { useSequencesQuery } from "@/hooks/queries/useSequencesQuery"
 import { useSessionDelete } from "@/hooks/useSessionDelete"
 import { ViewSessionHeader } from "@/components/sessions/ViewSessionHeader"
 import { ViewSessionSkeleton } from "@/components/sessions/ViewSessionSkeleton"
 import { ViewSessionDetails } from "@/components/sessions/ViewSessionDetails"
 import { ViewSessionSequences } from "@/components/sessions/ViewSessionSequences"
+import { toast } from "@/components/ui/use-toast"
 
 const ViewSession = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { formData, sequences, loading } = useSession(id)
   const { handleDelete } = useSessionDelete(id)
 
-  if (loading) {
+  const { 
+    data: formData,
+    isLoading: isLoadingSession,
+    error: sessionError
+  } = useSessionQuery(id)
+
+  const {
+    data: sequences = [],
+    isLoading: isLoadingSequences,
+    error: sequencesError
+  } = useSequencesQuery(id)
+
+  if (sessionError || sequencesError) {
+    const error = sessionError || sequencesError
+    console.error("Error loading session:", error)
+    toast({
+      variant: "destructive",
+      title: "Erreur",
+      description: "Impossible de charger la séance.",
+    })
+    navigate("/dashboard")
+    return null
+  }
+
+  if (isLoadingSession || isLoadingSequences || !formData) {
     return <ViewSessionSkeleton />
   }
 
