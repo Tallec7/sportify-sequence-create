@@ -1,7 +1,7 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
-import { Exercise } from "@/components/sessions/ExerciseForm"
+import { Exercise } from "@/types/sequence"
 
 export const useExercisesQuery = (sequenceId: string | undefined) => {
   return useQuery({

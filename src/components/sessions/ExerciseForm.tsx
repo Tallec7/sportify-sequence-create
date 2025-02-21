@@ -17,6 +17,7 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
 
   const [editingExercise, setEditingExercise] = useState<Exercise | null>(null)
   const [newExercise, setNewExercise] = useState<Exercise>({
+    id: '', // Add empty id for new exercises
     title: "",
     description: "",
     duration: 5,
@@ -37,6 +38,7 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
       } else {
         await exerciseMutation.mutateAsync(newExercise)
         setNewExercise({
+          id: '', // Reset with empty id
           title: "",
           description: "",
           duration: 5,
@@ -59,6 +61,7 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
   const handleEdit = (exercise: Exercise) => {
     setEditingExercise(exercise)
     setNewExercise({
+      id: '', // Reset with empty id
       title: "",
       description: "",
       duration: 5,
