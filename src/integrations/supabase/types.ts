@@ -313,6 +313,30 @@ export type Database = {
           },
         ]
       }
+      sequence_types: {
+        Row: {
+          created_at: string
+          id: string
+          label: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
       session_objectives: {
         Row: {
           created_at: string | null

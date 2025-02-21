@@ -9,6 +9,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { type SessionFormData } from "@/hooks/mutations/useSessionMutation"
+import { useLevelsQuery } from "@/hooks/queries/useLevelsQuery"
+import { useIntensityLevelsQuery } from "@/hooks/queries/useIntensityLevelsQuery"
 
 interface SessionDetailsFormProps {
   formData: SessionFormData
@@ -21,19 +23,27 @@ export const SessionDetailsForm = ({
   handleSelectChange,
   handleNumberChange,
 }: SessionDetailsFormProps) => {
+  const levels = useLevelsQuery()
+  const intensityLevels = useIntensityLevelsQuery()
+
   return (
     <div className="grid gap-6 md:grid-cols-2">
       <div className="space-y-2">
         <Label htmlFor="level" className="text-base">Niveau</Label>
-        <Select name="level" value={formData.level} onValueChange={(value) => handleSelectChange("level", value)}>
+        <Select 
+          name="level" 
+          value={formData.level || ""} 
+          onValueChange={(value) => handleSelectChange("level", value)}
+        >
           <SelectTrigger className="h-12">
             <SelectValue placeholder="Sélectionnez un niveau" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="debutant">Débutant</SelectItem>
-            <SelectItem value="intermediaire">Intermédiaire</SelectItem>
-            <SelectItem value="avance">Avancé</SelectItem>
-            <SelectItem value="expert">Expert</SelectItem>
+            {levels.map((level) => (
+              <SelectItem key={level.id} value={level.value}>
+                {level.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
@@ -62,16 +72,18 @@ export const SessionDetailsForm = ({
         <Label htmlFor="intensity_level" className="text-base">Intensité</Label>
         <Select 
           name="intensity_level" 
-          value={formData.intensity_level} 
+          value={formData.intensity_level || ""} 
           onValueChange={(value) => handleSelectChange("intensity_level", value)}
         >
           <SelectTrigger className="h-12">
             <SelectValue placeholder="Sélectionnez l'intensité" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="low">Faible</SelectItem>
-            <SelectItem value="medium">Moyenne</SelectItem>
-            <SelectItem value="high">Élevée</SelectItem>
+            {intensityLevels.map((level) => (
+              <SelectItem key={level.id} value={level.value}>
+                {level.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
@@ -91,3 +103,4 @@ export const SessionDetailsForm = ({
     </div>
   )
 }
+
