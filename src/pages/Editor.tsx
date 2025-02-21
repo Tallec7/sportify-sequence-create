@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/components/ui/use-toast"
 import { SessionForm, SessionFormData } from "@/components/sessions/SessionForm"
-import { SequenceForm, Sequence } from "@/components/sessions/SequenceForm"
+import { SequenceForm } from "@/components/sessions/SequenceForm"
+import { Sequence } from "@/types/sequence"
 import { motion } from "framer-motion"
 
 const Editor = () => {
@@ -106,3 +107,4 @@ const Editor = () => {
 }
 
 export default Editor
+
