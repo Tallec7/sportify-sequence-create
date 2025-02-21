@@ -1,4 +1,5 @@
 
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Edit2, Save, X, Trash2 } from "lucide-react"
@@ -12,7 +13,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { useState } from "react"
+import { useActivityTypeUpdateMutation } from "@/hooks/mutations/useActivityTypeUpdateMutation"
+import { useActivityTypeDeleteMutation } from "@/hooks/mutations/useActivityTypeDeleteMutation"
 
 interface ActivityTypeItemProps {
   type: {
@@ -20,45 +22,57 @@ interface ActivityTypeItemProps {
     value: string
     label: string
   }
-  isEditing: boolean
-  editedValue: string
-  editedLabel: string
-  onEditValueChange: (value: string) => void
-  onEditLabelChange: (value: string) => void
-  onStartEdit: () => void
-  onCancelEdit: () => void
-  onSaveEdit: () => void
-  onDelete: () => void
 }
 
-export const ActivityTypeItem = ({
-  type,
-  isEditing,
-  editedValue,
-  editedLabel,
-  onEditValueChange,
-  onEditLabelChange,
-  onStartEdit,
-  onCancelEdit,
-  onSaveEdit,
-  onDelete,
-}: ActivityTypeItemProps) => {
+export const ActivityTypeItem = ({ type }: ActivityTypeItemProps) => {
+  const [isEditing, setIsEditing] = useState(false)
+  const [editedValue, setEditedValue] = useState(type.value)
+  const [editedLabel, setEditedLabel] = useState(type.label)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+
+  const updateMutation = useActivityTypeUpdateMutation()
+  const deleteMutation = useActivityTypeDeleteMutation()
+
+  const handleStartEdit = () => {
+    setIsEditing(true)
+    setEditedValue(type.value)
+    setEditedLabel(type.label)
+  }
+
+  const handleCancelEdit = () => {
+    setIsEditing(false)
+    setEditedValue(type.value)
+    setEditedLabel(type.label)
+  }
+
+  const handleSaveEdit = () => {
+    updateMutation.mutate({
+      id: type.id,
+      value: editedValue,
+      label: editedLabel,
+    })
+    setIsEditing(false)
+  }
+
+  const handleDelete = () => {
+    deleteMutation.mutate(type.id)
+    setIsDeleteDialogOpen(false)
+  }
 
   return (
     <div className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/5 transition-colors">
       {isEditing ? (
         <div className="flex-1 flex gap-3">
           <Input
-            placeholder="Code unique"
             value={editedValue}
-            onChange={(e) => onEditValueChange(e.target.value)}
+            onChange={(e) => setEditedValue(e.target.value)}
+            placeholder="Code unique"
             className="max-w-[200px]"
           />
           <Input
-            placeholder="Nom affiché"
             value={editedLabel}
-            onChange={(e) => onEditLabelChange(e.target.value)}
+            onChange={(e) => setEditedLabel(e.target.value)}
+            placeholder="Nom affiché"
           />
         </div>
       ) : (
@@ -74,7 +88,7 @@ export const ActivityTypeItem = ({
             <Button
               size="sm"
               variant="ghost"
-              onClick={onSaveEdit}
+              onClick={handleSaveEdit}
               className="hover:bg-primary/10"
             >
               <Save className="h-4 w-4" />
@@ -82,7 +96,7 @@ export const ActivityTypeItem = ({
             <Button
               size="sm"
               variant="ghost"
-              onClick={onCancelEdit}
+              onClick={handleCancelEdit}
               className="hover:bg-destructive/10"
             >
               <X className="h-4 w-4" />
@@ -93,7 +107,7 @@ export const ActivityTypeItem = ({
             <Button
               size="sm"
               variant="ghost"
-              onClick={onStartEdit}
+              onClick={handleStartEdit}
               className="hover:bg-primary/10"
             >
               <Edit2 className="h-4 w-4" />
@@ -121,10 +135,7 @@ export const ActivityTypeItem = ({
           <AlertDialogFooter>
             <AlertDialogCancel>Annuler</AlertDialogCancel>
             <AlertDialogAction 
-              onClick={() => {
-                onDelete();
-                setIsDeleteDialogOpen(false);
-              }}
+              onClick={handleDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               Supprimer
