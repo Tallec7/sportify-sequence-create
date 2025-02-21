@@ -3,16 +3,6 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Edit2, Save, X, Trash2 } from "lucide-react"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
 import { useActivityTypeUpdateMutation } from "@/hooks/mutations/useActivityTypeUpdateMutation"
 import { useActivityTypeDeleteMutation } from "@/hooks/mutations/useActivityTypeDeleteMutation"
 
@@ -62,12 +52,11 @@ export const ActivityTypeItem = ({ type }: ActivityTypeItemProps) => {
   return (
     <div className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/5 transition-colors">
       {isEditing ? (
-        <div className="flex-1 flex gap-3">
+        <div className="flex-1">
           <Input
+            type="hidden"
             value={editedValue}
             onChange={(e) => setEditedValue(e.target.value)}
-            placeholder="Code unique"
-            className="max-w-[200px]"
           />
           <Input
             value={editedLabel}
@@ -76,9 +65,8 @@ export const ActivityTypeItem = ({ type }: ActivityTypeItemProps) => {
           />
         </div>
       ) : (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center">
           <span className="font-medium">{type.label}</span>
-          <span className="text-sm text-muted-foreground">({type.value})</span>
         </div>
       )}
       
@@ -146,3 +134,4 @@ export const ActivityTypeItem = ({ type }: ActivityTypeItemProps) => {
     </div>
   )
 }
+

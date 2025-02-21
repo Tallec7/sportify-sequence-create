@@ -48,12 +48,11 @@ export const ProgressionLevelItem = ({
   return (
     <div className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/5 transition-colors">
       {isEditing ? (
-        <div className="flex-1 flex gap-3">
+        <div className="flex-1">
           <Input
+            type="hidden"
             value={editedValue}
             onChange={(e) => onEditValueChange(e.target.value)}
-            placeholder="Code unique"
-            className="max-w-[200px]"
           />
           <Input
             value={editedLabel}
@@ -62,9 +61,8 @@ export const ProgressionLevelItem = ({
           />
         </div>
       ) : (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center">
           <span className="font-medium">{level.label}</span>
-          <span className="text-sm text-muted-foreground">({level.value})</span>
         </div>
       )}
       
@@ -135,3 +133,4 @@ export const ProgressionLevelItem = ({
     </div>
   )
 }
+
