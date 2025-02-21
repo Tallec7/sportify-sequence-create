@@ -7,12 +7,14 @@ interface SequenceListProps {
   sequences: Sequence[]
   selectedSequenceId: string | null
   setSelectedSequenceId: (id: string | null) => void
+  onReorder: (sequences: Sequence[]) => void
 }
 
 export const SequenceList = ({
   sequences,
   selectedSequenceId,
   setSelectedSequenceId,
+  onReorder,
 }: SequenceListProps) => {
   return (
     <div className="space-y-6">

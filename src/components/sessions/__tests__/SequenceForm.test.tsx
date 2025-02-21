@@ -3,6 +3,7 @@ import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { SequenceForm } from '../SequenceForm'
 import { Sequence } from '@/types/sequence'
+import { BrowserRouter } from 'react-router-dom'
 
 // Mock supabase client
 vi.mock('@/integrations/supabase/client', () => ({
@@ -35,10 +36,13 @@ const mockSequences: Sequence[] = [
 describe('SequenceForm Component', () => {
   it('affiche les séquences existantes', () => {
     render(
-      <SequenceForm 
-        sequences={mockSequences} 
-        onAddSequence={() => {}}
-      />
+      <BrowserRouter>
+        <SequenceForm 
+          sequences={mockSequences} 
+          onAddSequence={() => {}}
+          onReorderSequences={() => {}}
+        />
+      </BrowserRouter>
     )
 
     expect(screen.getByText('Échauffement')).toBeInTheDocument()
@@ -48,10 +52,13 @@ describe('SequenceForm Component', () => {
   it('permet d\'ajouter une nouvelle séquence', async () => {
     const onAddSequence = vi.fn()
     render(
-      <SequenceForm 
-        sequences={mockSequences} 
-        onAddSequence={onAddSequence}
-      />
+      <BrowserRouter>
+        <SequenceForm 
+          sequences={mockSequences} 
+          onAddSequence={onAddSequence}
+          onReorderSequences={() => {}}
+        />
+      </BrowserRouter>
     )
 
     // Remplir le formulaire
@@ -69,7 +76,6 @@ describe('SequenceForm Component', () => {
     const submitButton = screen.getByText('Ajouter la séquence')
     await fireEvent.click(submitButton)
 
-    // Vérifier que onAddSequence a été appelé avec les bonnes valeurs
     expect(onAddSequence).toHaveBeenCalledWith(expect.objectContaining({
       title: 'Nouvelle séquence',
       description: 'Description test',
@@ -79,18 +85,19 @@ describe('SequenceForm Component', () => {
 
   it('valide les champs requis', async () => {
     render(
-      <SequenceForm 
-        sequences={[]} 
-        onAddSequence={() => {}}
-      />
+      <BrowserRouter>
+        <SequenceForm 
+          sequences={[]} 
+          onAddSequence={() => {}}
+          onReorderSequences={() => {}}
+        />
+      </BrowserRouter>
     )
 
     // Soumettre le formulaire sans remplir les champs
     const submitButton = screen.getByText('Ajouter la séquence')
     await fireEvent.click(submitButton)
 
-    // Vérifier que les messages d'erreur sont affichés
     expect(screen.getByText('Le titre est requis')).toBeInTheDocument()
   })
 })
-
