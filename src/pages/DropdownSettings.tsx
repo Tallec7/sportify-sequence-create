@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Exercise, TacticalConcept } from "@/types/sequence";
+import { TacticalConcept } from "@/types/sequence";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
@@ -18,17 +18,37 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Save } from "lucide-react";
 
+interface Sport {
+  value: string;
+  label: string;
+}
+
+interface TacticalConceptOption {
+  value: TacticalConcept;
+  label: string;
+}
+
 const DropdownSettings = () => {
   useAuthCheck(); // Protect this route
   const [selectedSport, setSelectedSport] = useState<string>("handball");
   const [selectedTacticalConcept, setSelectedTacticalConcept] = useState<TacticalConcept | "">("");
   const [hasAccess, setHasAccess] = useState(false);
+  const [sports, setSports] = useState<Sport[]>([]);
+  const [tacticalConcepts, setTacticalConcepts] = useState<TacticalConceptOption[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
     checkUserAccess();
+    fetchSports();
   }, []);
+
+  useEffect(() => {
+    if (selectedSport) {
+      fetchTacticalConcepts(selectedSport);
+    }
+  }, [selectedSport]);
 
   const checkUserAccess = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -58,32 +78,56 @@ const DropdownSettings = () => {
     setHasAccess(true);
   };
 
-  const sports = [
-    { value: "handball", label: "Handball" },
-    { value: "basketball", label: "Basketball" },
-    { value: "football", label: "Football" },
-  ];
+  const fetchSports = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('sports')
+        .select('value, label')
+        .order('label');
 
-  const tacticalConceptsByActivity: Record<string, TacticalConcept[]> = {
-    handball: ["montee_de_balle", "repli_defensif", "contre_attaque", "attaque_placee", "defense_alignee", "defense_etagee"],
-    basketball: ["montee_de_balle", "repli_defensif", "contre_attaque"],
-    football: ["attaque_placee", "defense_alignee", "defense_etagee"],
+      if (error) throw error;
+      setSports(data || []);
+    } catch (error) {
+      console.error('Error fetching sports:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de charger la liste des sports"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const getConceptLabel = (concept: TacticalConcept) => {
-    const labels: Record<TacticalConcept, string> = {
-      montee_de_balle: "Montée de balle",
-      repli_defensif: "Repli défensif",
-      contre_attaque: "Contre-attaque",
-      attaque_placee: "Attaque placée",
-      defense_alignee: "Défense alignée",
-      defense_etagee: "Défense étagée"
-    };
-    return labels[concept];
+  const fetchTacticalConcepts = async (sportValue: string) => {
+    try {
+      const { data: sportData } = await supabase
+        .from('sports')
+        .select('id')
+        .eq('value', sportValue)
+        .single();
+
+      if (sportData) {
+        const { data, error } = await supabase
+          .from('tactical_concepts')
+          .select('value, label')
+          .eq('sport_id', sportData.id)
+          .order('label');
+
+        if (error) throw error;
+        setTacticalConcepts(data as TacticalConceptOption[] || []);
+      }
+    } catch (error) {
+      console.error('Error fetching tactical concepts:', error);
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de charger les concepts tactiques"
+      });
+    }
   };
 
   const handleSave = async () => {
-    // For now, we'll just show a success message
     // In the future, this could save configurations to the database
     toast({
       title: "Configuration sauvegardée",
@@ -91,8 +135,8 @@ const DropdownSettings = () => {
     });
   };
 
-  if (!hasAccess) {
-    return null; // Render nothing while checking access
+  if (!hasAccess || isLoading) {
+    return null;
   }
 
   return (
@@ -143,9 +187,9 @@ const DropdownSettings = () => {
                 <SelectValue placeholder="Sélectionnez un concept tactique" />
               </SelectTrigger>
               <SelectContent>
-                {tacticalConceptsByActivity[selectedSport]?.map((concept) => (
-                  <SelectItem key={concept} value={concept}>
-                    {getConceptLabel(concept)}
+                {tacticalConcepts.map((concept) => (
+                  <SelectItem key={concept.value} value={concept.value}>
+                    {concept.label}
                   </SelectItem>
                 ))}
               </SelectContent>
