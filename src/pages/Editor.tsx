@@ -54,16 +54,23 @@ const Editor = () => {
 
       if (sessionError) throw sessionError
 
+      // Ensure sequences have valid sequence_type values before saving
+      const validatedSequences = sequences.map(sequence => ({
+        ...sequence,
+        sequence_type: sequence.sequence_type.toLowerCase() as "warmup" | "main" | "cooldown",
+        session_id: sessionData.id,
+      }))
+
+      // Validate sequence types
+      if (!validatedSequences.every(seq => ['warmup', 'main', 'cooldown'].includes(seq.sequence_type))) {
+        throw new Error("Invalid sequence type. Must be 'warmup', 'main', or 'cooldown'")
+      }
+
       // Then save all sequences
-      if (sequences.length > 0) {
+      if (validatedSequences.length > 0) {
         const { error: sequencesError } = await supabase
           .from('session_sequences')
-          .insert(
-            sequences.map(sequence => ({
-              ...sequence,
-              session_id: sessionData.id,
-            }))
-          )
+          .insert(validatedSequences)
 
         if (sequencesError) throw sequencesError
       }
@@ -74,6 +81,7 @@ const Editor = () => {
       })
       navigate("/dashboard")
     } catch (error: any) {
+      console.error("Save error:", error)
       toast({
         variant: "destructive",
         title: "Erreur",
@@ -107,4 +115,3 @@ const Editor = () => {
 }
 
 export default Editor
-
