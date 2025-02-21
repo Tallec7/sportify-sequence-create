@@ -1,7 +1,7 @@
 
 import { render, screen, fireEvent } from "@testing-library/react"
 import { AddSequenceForm } from "../AddSequenceForm"
-import { vi } from "vitest"
+import { vi, describe, it, expect, beforeEach } from 'vitest'
 
 describe("AddSequenceForm", () => {
   const mockNewSequence = {
@@ -84,4 +84,3 @@ describe("AddSequenceForm", () => {
     expect(sequenceTypeInput).toBeRequired()
   })
 })
-

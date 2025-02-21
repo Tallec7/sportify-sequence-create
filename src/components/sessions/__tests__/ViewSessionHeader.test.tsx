@@ -1,7 +1,7 @@
 
 import { render, screen, fireEvent } from "@testing-library/react"
 import { ViewSessionHeader } from "../ViewSessionHeader"
-import { vi } from "vitest"
+import { vi, describe, it, expect, beforeEach } from 'vitest'
 
 describe("ViewSessionHeader", () => {
   const mockFormData = {
@@ -69,4 +69,3 @@ describe("ViewSessionHeader", () => {
     expect(mockOnDelete).not.toHaveBeenCalled()
   })
 })
-
