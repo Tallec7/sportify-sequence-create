@@ -31,7 +31,7 @@ const Editor = () => {
     duration: sessionData?.duration || 60,
     participants_min: sessionData?.participants_min || 1,
     participants_max: sessionData?.participants_max || 10,
-    age_category: sessionData?.age_category || "",
+    age_category: sessionData?.age_category || "U13",
     intensity_level: sessionData?.intensity_level || "medium",
     cycle_id: sessionData?.cycle_id || null
   })
@@ -43,6 +43,9 @@ const Editor = () => {
 
   // Handlers
   const handleSave = () => {
+    if (!formData.age_category) {
+      formData.age_category = "U13" // Valeur par défaut si vide
+    }
     sessionMutation.mutate(formData)
   }
 
@@ -94,4 +97,3 @@ const Editor = () => {
 }
 
 export default Editor
-

@@ -8,6 +8,10 @@ import { Database } from "@/integrations/supabase/types"
 
 type AgeCategory = Database["public"]["Enums"]["age_category_enum"]
 
+const isValidAgeCategory = (category: string): category is AgeCategory => {
+  return ['U9', 'U11', 'U13', 'U15', 'U17', 'U19', 'Senior'].includes(category)
+}
+
 export const useSessionMutation = (sessionId: string | undefined, userId: string | null) => {
   const { toast } = useToast()
   const navigate = useNavigate()
@@ -15,13 +19,17 @@ export const useSessionMutation = (sessionId: string | undefined, userId: string
 
   return useMutation({
     mutationFn: async (formData: SessionFormData) => {
+      if (!formData.age_category || !isValidAgeCategory(formData.age_category)) {
+        throw new Error("Catégorie d'âge invalide")
+      }
+
       if (sessionId) {
         const { error } = await supabase
           .from('sessions')
           .update({
             ...formData,
             user_id: userId,
-            age_category: formData.age_category as AgeCategory
+            age_category: formData.age_category
           })
           .eq('id', sessionId)
 
@@ -32,7 +40,7 @@ export const useSessionMutation = (sessionId: string | undefined, userId: string
           .insert([{
             ...formData,
             user_id: userId,
-            age_category: formData.age_category as AgeCategory
+            age_category: formData.age_category
           }])
 
         if (error) throw error
@@ -50,10 +58,9 @@ export const useSessionMutation = (sessionId: string | undefined, userId: string
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: `Une erreur est survenue lors de la ${sessionId ? 'modification' : 'création'} de la séance.`,
+        description: error.message || `Une erreur est survenue lors de la ${sessionId ? 'modification' : 'création'} de la séance.`,
       })
       console.error("Erreur mutation session:", error)
     }
   })
 }
-
