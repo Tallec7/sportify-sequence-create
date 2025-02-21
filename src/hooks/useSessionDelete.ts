@@ -1,6 +1,7 @@
 
 import { useNavigate } from "react-router-dom"
 import { useToast } from "@/components/ui/use-toast"
+import { useErrorToast } from "@/hooks/use-error-toast"
 import { supabase } from "@/integrations/supabase/client"
 
 type UseSessionDeleteOptions = {
@@ -10,6 +11,7 @@ type UseSessionDeleteOptions = {
 export const useSessionDelete = (options?: UseSessionDeleteOptions) => {
   const navigate = useNavigate()
   const { toast } = useToast()
+  const { showError } = useErrorToast()
 
   const handleDelete = async (sessionId: string) => {
     try {
@@ -31,12 +33,7 @@ export const useSessionDelete = (options?: UseSessionDeleteOptions) => {
         navigate("/dashboard")
       }
     } catch (error: any) {
-      console.error("Error deleting session:", error)
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Une erreur est survenue lors de la suppression de la séance.",
-      })
+      showError(error, "Erreur lors de la suppression")
     }
   }
 

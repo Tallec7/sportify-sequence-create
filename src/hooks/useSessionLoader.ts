@@ -2,13 +2,13 @@
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { supabase } from "@/integrations/supabase/client"
-import { useToast } from "@/components/ui/use-toast"
+import { useErrorToast } from "@/hooks/use-error-toast"
 import { SessionFormData } from "@/components/sessions/SessionForm"
 import { useSequenceLoader } from "./useSequenceLoader"
 
 export const useSessionLoader = (id: string | undefined, userId: string | null) => {
   const navigate = useNavigate()
-  const { toast } = useToast()
+  const { showError } = useErrorToast()
   const { sequences, setSequences, loadSequences } = useSequenceLoader(id)
   const [loading, setLoading] = useState(true)
   const [formData, setFormData] = useState<SessionFormData>({
@@ -44,12 +44,7 @@ export const useSessionLoader = (id: string | undefined, userId: string | null) 
       setFormData(sessionData)
       await loadSequences(sessionId)
     } catch (error: any) {
-      console.error("Error loading session:", error)
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Impossible de charger la séance.",
-      })
+      showError(error, "Erreur lors du chargement")
       navigate("/dashboard")
     } finally {
       setLoading(false)
@@ -58,4 +53,3 @@ export const useSessionLoader = (id: string | undefined, userId: string | null) 
 
   return { formData, setFormData, sequences, setSequences, loading }
 }
-

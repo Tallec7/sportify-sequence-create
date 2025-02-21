@@ -1,11 +1,11 @@
 
 import { useState } from "react"
-import { useToast } from "@/components/ui/use-toast"
+import { useErrorToast } from "@/hooks/use-error-toast"
 import { supabase } from "@/integrations/supabase/client"
 import { Sequence } from "@/types/sequence"
 
 export const useSequenceLoader = (sessionId: string | undefined) => {
-  const { toast } = useToast()
+  const { showError } = useErrorToast()
   const [sequences, setSequences] = useState<Sequence[]>([])
 
   const loadSequences = async (id: string) => {
@@ -21,7 +21,7 @@ export const useSequenceLoader = (sessionId: string | undefined) => {
       const validatedSequences = sequencesData.map(sequence => {
         const validSequenceType = sequence.sequence_type.toLowerCase() as "warmup" | "main" | "cooldown"
         if (!["warmup", "main", "cooldown"].includes(validSequenceType)) {
-          throw new Error(`Invalid sequence type: ${sequence.sequence_type}`)
+          throw new Error(`Type de séquence invalide: ${sequence.sequence_type}`)
         }
         return {
           id: sequence.id,
@@ -37,15 +37,9 @@ export const useSequenceLoader = (sessionId: string | undefined) => {
 
       setSequences(validatedSequences)
     } catch (error: any) {
-      console.error("Error loading sequences:", error)
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Impossible de charger les séquences.",
-      })
+      showError(error, "Erreur lors du chargement des séquences")
     }
   }
 
   return { sequences, setSequences, loadSequences }
 }
-
