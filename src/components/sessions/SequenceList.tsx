@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button"
-import { Sequence } from "./SequenceForm"
+import { Sequence } from "@/types/sequence"
 import { ExerciseForm } from "./ExerciseForm"
 
 interface SequenceListProps {

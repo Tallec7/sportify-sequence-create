@@ -4,17 +4,7 @@ import { toast } from "@/components/ui/use-toast"
 import { supabase } from "@/integrations/supabase/client"
 import { SequenceList } from "./SequenceList"
 import { AddSequenceForm } from "./AddSequenceForm"
-
-export interface Sequence {
-  id?: string
-  title: string
-  description: string
-  duration: number
-  sequence_type: "warmup" | "main" | "cooldown"
-  intensity_level: string
-  sequence_order: number
-  session_id?: string
-}
+import { Sequence } from "@/types/sequence"
 
 interface SequenceFormProps {
   sequences: Sequence[]

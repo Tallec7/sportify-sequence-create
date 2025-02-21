@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Sequence } from "./SequenceForm"
+import { Sequence } from "@/types/sequence"
 
 interface AddSequenceFormProps {
   newSequence: Sequence
