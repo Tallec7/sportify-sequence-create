@@ -44,17 +44,30 @@ export const SequenceForm = ({ sequences, onAddSequence }: SequenceFormProps) =>
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Validate sequence_type before insertion
+    if (!["warmup", "main", "cooldown"].includes(newSequence.sequence_type)) {
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Le type de séquence doit être 'warmup', 'main' ou 'cooldown'.",
+      })
+      return
+    }
+
     try {
       const { data: sequence, error } = await supabase
         .from("session_sequences")
-        .insert([newSequence])
+        .insert([{
+          ...newSequence,
+          sequence_type: newSequence.sequence_type // Explicitly ensure type is set
+        }])
         .select()
         .single()
 
       if (error) throw error
 
-      // Assurez-vous que sequence_type est correctement typé avant d'appeler onAddSequence
-      if (sequence && (sequence.sequence_type === "warmup" || sequence.sequence_type === "main" || sequence.sequence_type === "cooldown")) {
+      if (sequence) {
         onAddSequence(sequence as Sequence)
         toast({
           title: "Succès",
@@ -159,6 +172,7 @@ export const SequenceForm = ({ sequences, onAddSequence }: SequenceFormProps) =>
                 onValueChange={(value: "warmup" | "main" | "cooldown") =>
                   setNewSequence({ ...newSequence, sequence_type: value })
                 }
+                required
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Sélectionner un type" />
