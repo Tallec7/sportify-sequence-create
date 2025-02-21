@@ -7,6 +7,7 @@ import NotFound from "@/pages/NotFound"
 import Navbar from "@/components/Navbar"
 import Dashboard from "@/pages/Dashboard"
 import Editor from "@/pages/Editor"
+import Settings from "@/pages/Settings"
 
 const Layout = () => {
   return (
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
         element: <Editor />,
       },
       {
+        path: "/settings",
+        element: <Settings />,
+      },
+      {
         path: "*",
         element: <NotFound />,
       },
@@ -55,3 +60,4 @@ function App() {
 }
 
 export default App
+

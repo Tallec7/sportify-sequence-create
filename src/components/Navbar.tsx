@@ -5,6 +5,13 @@ import { Link, useNavigate } from "react-router-dom"
 import { supabase } from "@/integrations/supabase/client"
 import { User } from "@supabase/supabase-js"
 import { useToast } from "./ui/use-toast"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Settings, LogOut } from "lucide-react"
 
 const Navbar = () => {
   const [user, setUser] = useState<User | null>(null)
@@ -65,9 +72,21 @@ const Navbar = () => {
         <div className="flex-1" />
         <div className="flex items-center space-x-4">
           {user ? (
-            <Button variant="outline" onClick={handleSignOut}>
-              Déconnexion
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">Mon compte</Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => navigate('/settings')}>
+                  <Settings className="mr-2 h-4 w-4" />
+                  Paramètres
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleSignOut}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Déconnexion
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
             <Button variant="outline" onClick={() => navigate('/auth')}>
               Connexion
@@ -80,3 +99,4 @@ const Navbar = () => {
 }
 
 export default Navbar
+
