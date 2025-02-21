@@ -18,7 +18,7 @@ import {
 
 interface ViewSessionHeaderProps {
   formData: SessionFormData
-  onDelete: () => Promise<void>
+  onDelete: () => void
   onEdit: () => void
 }
 

@@ -12,7 +12,7 @@ import { toast } from "@/components/ui/use-toast"
 const ViewSession = () => {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { handleDelete } = useSessionDelete(id)
+  const { handleDelete } = useSessionDelete()
 
   const { 
     data: formData,
@@ -46,7 +46,7 @@ const ViewSession = () => {
     <div className="container py-8 space-y-8">
       <ViewSessionHeader
         formData={formData}
-        onDelete={handleDelete}
+        onDelete={() => id && handleDelete(id)}
         onEdit={() => navigate(`/editor/${id}`)}
       />
 
@@ -58,7 +58,7 @@ const ViewSession = () => {
       <ViewSessionDetails formData={formData} />
       <ViewSessionSequences sequences={sequences} />
     </div>
-  )
-}
+  );
+};
 
-export default ViewSession
+export default ViewSession;
