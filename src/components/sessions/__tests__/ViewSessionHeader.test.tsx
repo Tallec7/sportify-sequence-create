@@ -12,7 +12,7 @@ describe("ViewSessionHeader", () => {
     description: "Test description",
     participants_min: 1,
     participants_max: 10,
-    age_category: "adult",
+    age_category: "Senior",
     intensity_level: "medium",
     cycle_id: null
   }
