@@ -16,6 +16,9 @@ import { SessionObjective } from "@/hooks/queries/useObjectivesQuery"
 import { useObjectiveMutation } from "@/hooks/mutations/useObjectiveMutation"
 import { useObjectiveOrderMutation } from "@/hooks/mutations/useObjectiveOrderMutation"
 import { Badge } from "@/components/ui/badge"
+import { Database } from "@/integrations/supabase/types"
+
+type ObjectiveType = Database["public"]["Enums"]["objective_type_enum"]
 
 interface SessionObjectivesFormProps {
   objectives: SessionObjective[]
@@ -116,7 +119,7 @@ export const SessionObjectivesForm = ({
               <Label htmlFor="objective_type">Catégorie</Label>
               <Select
                 value={newObjective.objective_type}
-                onValueChange={(value) =>
+                onValueChange={(value: ObjectiveType) =>
                   setNewObjective({ ...newObjective, objective_type: value })
                 }
               >
