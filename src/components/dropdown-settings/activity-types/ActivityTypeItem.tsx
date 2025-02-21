@@ -1,8 +1,8 @@
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Check, X, Pencil, Trash2 } from "lucide-react"
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { Edit2, Save, X, Trash2 } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
 
 interface ActivityTypeItemProps {
   type: {
@@ -34,38 +34,49 @@ export const ActivityTypeItem = ({
   onDelete,
 }: ActivityTypeItemProps) => {
   return (
-    <div className="flex items-center justify-between p-2 rounded border bg-background">
+    <div className="flex items-center justify-between p-4 rounded-lg bg-card hover:bg-accent/5 transition-colors group">
       {isEditing ? (
-        <div className="flex-1 flex gap-2">
+        <div className="flex-1 space-y-2">
           <Input
+            placeholder="Code unique"
             value={editedValue}
             onChange={(e) => onEditValueChange(e.target.value)}
-            placeholder="Code unique"
             className="max-w-[200px]"
           />
           <Input
+            placeholder="Nom affiché"
             value={editedLabel}
             onChange={(e) => onEditLabelChange(e.target.value)}
-            placeholder="Nom affiché"
+            className="max-w-[200px]"
           />
         </div>
       ) : (
-        <span className="font-medium">{type.label}</span>
+        <div className="flex items-center gap-3">
+          <Badge variant="secondary" className="font-medium">
+            {type.label}
+          </Badge>
+          <span className="text-sm text-muted-foreground">
+            {type.value}
+          </span>
+        </div>
       )}
-      <div className="flex gap-2">
+      
+      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
         {isEditing ? (
           <>
             <Button
-              size="sm"
               variant="ghost"
+              size="sm"
               onClick={onSaveEdit}
+              className="h-8 px-2"
             >
-              <Check className="h-4 w-4" />
+              <Save className="h-4 w-4" />
             </Button>
             <Button
-              size="sm"
               variant="ghost"
+              size="sm"
               onClick={onCancelEdit}
+              className="h-8 px-2"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -73,36 +84,21 @@ export const ActivityTypeItem = ({
         ) : (
           <>
             <Button
-              size="sm"
               variant="ghost"
+              size="sm"
               onClick={onStartEdit}
+              className="h-8 px-2"
             >
-              <Pencil className="h-4 w-4" />
+              <Edit2 className="h-4 w-4" />
             </Button>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button size="sm" variant="ghost">
-                  <Trash2 className="h-4 w-4 text-destructive" />
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Cette action est irréversible. Cela supprimera définitivement ce type d'activité.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Annuler</AlertDialogCancel>
-                  <AlertDialogAction 
-                    onClick={onDelete}
-                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                  >
-                    Supprimer
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onDelete}
+              className="h-8 px-2 hover:text-destructive"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
           </>
         )}
       </div>
