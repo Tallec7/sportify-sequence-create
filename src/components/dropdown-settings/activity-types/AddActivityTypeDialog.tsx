@@ -1,5 +1,4 @@
 
-import { useState } from "react"
 import { useForm } from "react-hook-form"
 import {
   Dialog,
@@ -26,7 +25,6 @@ export const AddActivityTypeDialog = ({
   open,
   onOpenChange,
 }: AddActivityTypeDialogProps) => {
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const form = useForm<FormValues>({
     defaultValues: {
       value: "",
@@ -34,18 +32,13 @@ export const AddActivityTypeDialog = ({
     },
   })
 
-  const { handleAddType } = useActivityTypeMutation(() => {
+  const { handleAddType, isAddingType } = useActivityTypeMutation(() => {
     form.reset()
     onOpenChange(false)
   })
 
   const onSubmit = async (values: FormValues) => {
-    setIsSubmitting(true)
-    try {
-      await handleAddType(values.value, values.label)
-    } finally {
-      setIsSubmitting(false)
-    }
+    handleAddType(values)
   }
 
   return (
@@ -84,7 +77,7 @@ export const AddActivityTypeDialog = ({
               <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
                 Annuler
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button type="submit" disabled={isAddingType}>
                 Ajouter
               </Button>
             </div>
@@ -94,4 +87,3 @@ export const AddActivityTypeDialog = ({
     </Dialog>
   )
 }
-
