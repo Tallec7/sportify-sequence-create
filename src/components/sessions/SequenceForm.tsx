@@ -1,30 +1,32 @@
 
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import React, { useEffect, useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Plus } from "lucide-react"
+import { supabase } from "@/integrations/supabase/client"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Plus } from "lucide-react";
+} from "@/components/ui/select"
+import { ExerciseForm, Exercise } from "./ExerciseForm"
 
 export interface Sequence {
-  id?: string;
-  title: string;
-  description: string;
-  duration: number;
-  sequence_type: string;
-  intensity_level: string;
-  sequence_order: number;
+  id?: string
+  title: string
+  description: string
+  duration: number
+  sequence_type: string
+  intensity_level: string
+  sequence_order: number
 }
 
 interface SequenceFormProps {
-  sequences: Sequence[];
-  onAddSequence: (sequence: Sequence) => void;
+  sequences: Sequence[]
+  onAddSequence: (sequence: Sequence) => void
 }
 
 export const SequenceForm = ({ sequences, onAddSequence }: SequenceFormProps) => {
@@ -35,11 +37,37 @@ export const SequenceForm = ({ sequences, onAddSequence }: SequenceFormProps) =>
     sequence_type: "warmup",
     intensity_level: "medium",
     sequence_order: sequences.length + 1,
-  });
+  })
+
+  const [selectedSequenceId, setSelectedSequenceId] = useState<string | null>(null)
+  const [sequenceExercises, setSequenceExercises] = useState<{ [key: string]: Exercise[] }>({})
+
+  useEffect(() => {
+    const fetchExercises = async () => {
+      for (const sequence of sequences) {
+        if (sequence.id) {
+          const { data: exercises, error } = await supabase
+            .from("exercises")
+            .select("*")
+            .eq("sequence_id", sequence.id)
+            .order("exercise_order", { ascending: true })
+
+          if (!error && exercises) {
+            setSequenceExercises(prev => ({
+              ...prev,
+              [sequence.id!]: exercises
+            }))
+          }
+        }
+      }
+    }
+
+    fetchExercises()
+  }, [sequences])
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onAddSequence(newSequence);
+    e.preventDefault()
+    onAddSequence(newSequence)
     setNewSequence({
       title: "",
       description: "",
@@ -47,8 +75,15 @@ export const SequenceForm = ({ sequences, onAddSequence }: SequenceFormProps) =>
       sequence_type: "warmup",
       intensity_level: "medium",
       sequence_order: sequences.length + 2,
-    });
-  };
+    })
+  }
+
+  const handleExerciseAdded = (sequenceId: string) => (exercise: Exercise) => {
+    setSequenceExercises(prev => ({
+      ...prev,
+      [sequenceId]: [...(prev[sequenceId] || []), exercise]
+    }))
+  }
 
   return (
     <div className="space-y-6">
@@ -71,18 +106,34 @@ export const SequenceForm = ({ sequences, onAddSequence }: SequenceFormProps) =>
           {sequences.map((sequence, index) => (
             <div
               key={index}
-              className="flex items-center gap-4 rounded-lg border p-4"
+              className="space-y-4 rounded-lg border p-4"
             >
-              <div className="flex-1 space-y-1">
-                <h4 className="font-medium">{sequence.title}</h4>
-                <div className="flex gap-2 text-sm text-muted-foreground">
-                  <span>{sequence.duration} min</span>
-                  <span>•</span>
-                  <span className="capitalize">{sequence.sequence_type}</span>
-                  <span>•</span>
-                  <span className="capitalize">{sequence.intensity_level}</span>
+              <div className="flex items-center gap-4">
+                <div className="flex-1 space-y-1">
+                  <h4 className="font-medium">{sequence.title}</h4>
+                  <div className="flex gap-2 text-sm text-muted-foreground">
+                    <span>{sequence.duration} min</span>
+                    <span>•</span>
+                    <span className="capitalize">{sequence.sequence_type}</span>
+                    <span>•</span>
+                    <span className="capitalize">{sequence.intensity_level}</span>
+                  </div>
                 </div>
+                <Button
+                  variant="outline"
+                  onClick={() => setSelectedSequenceId(sequence.id === selectedSequenceId ? null : sequence.id)}
+                >
+                  {sequence.id === selectedSequenceId ? "Masquer les exercices" : "Gérer les exercices"}
+                </Button>
               </div>
+
+              {sequence.id && sequence.id === selectedSequenceId && (
+                <ExerciseForm
+                  sequenceId={sequence.id}
+                  exercises={sequenceExercises[sequence.id] || []}
+                  onExerciseAdded={handleExerciseAdded(sequence.id)}
+                />
+              )}
             </div>
           ))}
         </div>
@@ -177,5 +228,5 @@ export const SequenceForm = ({ sequences, onAddSequence }: SequenceFormProps) =>
         </div>
       </form>
     </div>
-  );
-};
+  )
+}
