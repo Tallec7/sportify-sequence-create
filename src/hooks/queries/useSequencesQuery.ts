@@ -17,24 +17,18 @@ export const useSequencesQuery = (sessionId: string | undefined) => {
 
       if (sequencesError) throw sequencesError
 
-      const validatedSequences = sequencesData.map(sequence => {
-        const validSequenceType = sequence.sequence_type.toLowerCase() as "warmup" | "main" | "cooldown"
-        if (!["warmup", "main", "cooldown"].includes(validSequenceType)) {
-          throw new Error(`Invalid sequence type: ${sequence.sequence_type}`)
-        }
-        return {
-          id: sequence.id,
-          title: sequence.title,
-          description: sequence.description,
-          duration: sequence.duration,
-          sequence_type: validSequenceType,
-          intensity_level: sequence.intensity_level,
-          sequence_order: sequence.sequence_order,
-          session_id: sequence.session_id
-        } satisfies Sequence
-      })
+      const validatedSequences = sequencesData.map(sequence => ({
+        id: sequence.id,
+        title: sequence.title,
+        description: sequence.description || "",
+        duration: sequence.duration,
+        sequence_type: sequence.sequence_type?.toLowerCase() as "warmup" | "main" | "cooldown",
+        intensity_level: sequence.intensity_level || "medium",
+        sequence_order: sequence.sequence_order,
+        session_id: sequence.session_id
+      }))
 
-      return validatedSequences
+      return validatedSequences as Sequence[]
     },
     enabled: !!sessionId,
   })

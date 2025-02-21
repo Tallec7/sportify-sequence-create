@@ -3,17 +3,57 @@ import { useParams } from "react-router-dom"
 import { SessionForm } from "@/components/sessions/SessionForm"
 import { SequenceForm } from "@/components/sessions/SequenceForm"
 import { motion } from "framer-motion"
-import { useSession } from "@/hooks/useSession"
+import { useAuthCheck } from "@/hooks/useAuthCheck"
+import { useSessionQuery } from "@/hooks/queries/useSessionQuery"
+import { useSequencesQuery } from "@/hooks/queries/useSequencesQuery"
+import { useSessionMutation } from "@/hooks/mutations/useSessionMutation"
+import { useSequenceMutation } from "@/hooks/mutations/useSequenceMutation"
+import { useState } from "react"
+import { SessionFormData } from "@/components/sessions/SessionForm"
+import { Sequence } from "@/types/sequence"
 
 const Editor = () => {
   const { id } = useParams()
-  const {
-    formData,
-    setFormData,
-    sequences,
-    handleSave,
-    handleAddSequence
-  } = useSession(id)
+  const { userId } = useAuthCheck()
+  
+  // Queries
+  const { data: sessionData, isLoading: isLoadingSession } = useSessionQuery(id)
+  const { data: sequences = [] } = useSequencesQuery(id)
+  
+  // Local state
+  const [formData, setFormData] = useState<SessionFormData>({
+    title: sessionData?.title || "",
+    description: sessionData?.description || "",
+    sport: sessionData?.sport || "",
+    level: sessionData?.level || "",
+    duration: sessionData?.duration || 60,
+    participants_min: sessionData?.participants_min || 1,
+    participants_max: sessionData?.participants_max || 10,
+    age_category: sessionData?.age_category || "",
+    intensity_level: sessionData?.intensity_level || "medium",
+    cycle_id: sessionData?.cycle_id || null
+  })
+
+  // Mutations
+  const sessionMutation = useSessionMutation(id, userId)
+  const sequenceMutation = useSequenceMutation(id)
+
+  // Handlers
+  const handleSave = () => {
+    sessionMutation.mutate(formData)
+  }
+
+  const handleAddSequence = (sequence: Sequence) => {
+    sequenceMutation.mutate(sequence)
+  }
+
+  if (isLoadingSession) {
+    return (
+      <div className="container py-8">
+        <p>Chargement...</p>
+      </div>
+    )
+  }
 
   return (
     <motion.div
