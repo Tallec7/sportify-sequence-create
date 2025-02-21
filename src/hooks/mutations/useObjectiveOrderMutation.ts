@@ -12,14 +12,19 @@ export const useObjectiveOrderMutation = (sessionId: string | undefined) => {
     mutationFn: async (objectives: SessionObjective[]) => {
       if (!sessionId) throw new Error("Session ID is required")
 
-      const updates = objectives.map((objective, index) => ({
+      const updates = objectives.map((objective) => ({
         id: objective.id,
-        order_index: index
+        description: objective.description,
+        type: objective.type,
+        is_priority: objective.is_priority,
+        order_index: objective.order_index,
+        objective_type: objective.objective_type,
+        session_id: sessionId
       }))
 
       const { error } = await supabase
         .from("session_objectives")
-        .upsert(updates)
+        .upsert(updates, { onConflict: 'id' })
 
       if (error) throw error
     },

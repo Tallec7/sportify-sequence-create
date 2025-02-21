@@ -29,24 +29,28 @@ export const SessionObjectivesForm = ({
   const objectiveMutation = useObjectiveMutation(sessionId)
   const objectiveOrderMutation = useObjectiveOrderMutation(sessionId)
 
-  const [newObjective, setNewObjective] = useState<Omit<SessionObjective, "id" | "session_id">>({
+  const [newObjective, setNewObjective] = useState<Omit<SessionObjective, "id">>({
     description: "",
     type: "technique",
     is_priority: false,
     order_index: objectives.length,
-    objective_type: "apprentissage"
+    objective_type: "apprentissage",
+    session_id: sessionId || ""
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    objectiveMutation.mutate(newObjective)
-    setNewObjective({
-      description: "",
-      type: "technique",
-      is_priority: false,
-      order_index: objectives.length + 1,
-      objective_type: "apprentissage"
-    })
+    if (sessionId) {
+      objectiveMutation.mutate(newObjective)
+      setNewObjective({
+        description: "",
+        type: "technique",
+        is_priority: false,
+        order_index: objectives.length + 1,
+        objective_type: "apprentissage",
+        session_id: sessionId
+      })
+    }
   }
 
   return (
