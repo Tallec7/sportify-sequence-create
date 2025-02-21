@@ -27,6 +27,17 @@ export const SequenceForm = ({ sequences, onAddSequence }: SequenceFormProps) =>
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    const { data: { session } } = await supabase.auth.getSession()
+    
+    if (!session) {
+      toast({
+        variant: "destructive",
+        title: "Non autorisé",
+        description: "Vous devez être connecté pour ajouter une séquence.",
+      })
+      return
+    }
+
     if (!["warmup", "main", "cooldown"].includes(newSequence.sequence_type)) {
       toast({
         variant: "destructive",
@@ -46,6 +57,12 @@ export const SequenceForm = ({ sequences, onAddSequence }: SequenceFormProps) =>
     }
 
     try {
+      console.log("Tentative d'ajout de séquence avec:", {
+        ...newSequence,
+        session_id: sessionId,
+        user_id: session.user.id
+      })
+
       const { data: sequence, error } = await supabase
         .from("session_sequences")
         .insert([{
