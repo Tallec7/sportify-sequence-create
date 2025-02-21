@@ -63,11 +63,12 @@ export const AgeCategoryItem = ({ category }: AgeCategoryItemProps) => {
   return (
     <div className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/5 transition-colors">
       {isEditing ? (
-        <div className="flex-1">
+        <div className="flex-1 flex gap-3">
           <Input
-            type="hidden"
             value={editedValue}
             onChange={(e) => setEditedValue(e.target.value)}
+            placeholder="Code unique"
+            className="max-w-[200px]"
           />
           <Input
             value={editedLabel}
@@ -76,8 +77,9 @@ export const AgeCategoryItem = ({ category }: AgeCategoryItemProps) => {
           />
         </div>
       ) : (
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
           <span className="font-medium">{category.label}</span>
+          <span className="text-sm text-muted-foreground">({category.value})</span>
         </div>
       )}
       
@@ -145,4 +147,3 @@ export const AgeCategoryItem = ({ category }: AgeCategoryItemProps) => {
     </div>
   )
 }
-
