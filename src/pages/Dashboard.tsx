@@ -4,15 +4,19 @@ import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import { PlusCircle } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
-import { useToast } from "@/components/ui/use-toast"
 import { SessionCard } from "@/components/sessions/SessionCard"
 import { EmptySessionsState } from "@/components/sessions/EmptySessionsState"
 import { useSessionsQuery } from "@/hooks/queries/useSessionsQuery"
+import { useSessionDelete } from "@/hooks/useSessionDelete"
 
 const Dashboard = () => {
   const navigate = useNavigate()
-  const { toast } = useToast()
   const { sessions, loading, setSessions } = useSessionsQuery(undefined)
+  const { handleDelete } = useSessionDelete({
+    onSuccess: (sessionId) => {
+      setSessions(sessions.filter(session => session.id !== sessionId))
+    }
+  })
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -23,30 +27,6 @@ const Dashboard = () => {
     }
     checkAuth()
   }, [navigate])
-
-  const handleDelete = async (sessionId: string) => {
-    try {
-      const { error } = await supabase
-        .from('sessions')
-        .delete()
-        .eq('id', sessionId)
-
-      if (error) throw error
-
-      setSessions(sessions.filter(session => session.id !== sessionId))
-      toast({
-        title: "Succès",
-        description: "La séance a été supprimée avec succès.",
-      })
-    } catch (error) {
-      console.error("Error deleting session:", error)
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Une erreur est survenue lors de la suppression de la séance.",
-      })
-    }
-  }
 
   return (
     <div className="container py-8 animate-fade-in">
