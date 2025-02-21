@@ -12,13 +12,13 @@ export const Navbar = () => {
           </div>
           <div className="hidden md:flex items-center space-x-8">
             <a href="#features" className="text-sm font-medium hover:text-primary transition-colors">
-              Features
+              Fonctionnalités
             </a>
             <a href="#how-it-works" className="text-sm font-medium hover:text-primary transition-colors">
-              How It Works
+              Comment ça marche
             </a>
             <Button className="bg-primary hover:bg-primary-hover text-white">
-              Get Started
+              Commencer
             </Button>
           </div>
           <Button variant="ghost" className="md:hidden">

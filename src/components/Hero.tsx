@@ -13,7 +13,7 @@ export const Hero = () => {
             transition={{ duration: 0.6 }}
             className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary-hover mb-6"
           >
-            Create and Share Your Training Sessions
+            Créez et Partagez vos Séances d'Entraînement
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -21,7 +21,7 @@ export const Hero = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-lg md:text-xl text-muted-foreground mb-8"
           >
-            Build, validate, and share professional training sessions with your team and the community.
+            Construisez, validez et partagez des séances d'entraînement professionnelles avec votre équipe et la communauté.
           </motion.p>
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -30,10 +30,10 @@ export const Hero = () => {
             className="flex flex-col md:flex-row items-center justify-center gap-4"
           >
             <Button size="lg" className="bg-primary hover:bg-primary-hover text-white min-w-[200px]">
-              Start Creating
+              Commencer
             </Button>
             <Button size="lg" variant="outline" className="min-w-[200px]">
-              Learn More
+              En savoir plus
             </Button>
           </motion.div>
         </div>

@@ -9,27 +9,27 @@ export const Footer = () => {
           <div>
             <h3 className="text-xl font-bold mb-4">KAP</h3>
             <p className="text-muted-foreground">
-              Professional training session management for coaches and teams.
+              Gestion professionnelle des séances d'entraînement pour les coachs et les équipes.
             </p>
           </div>
           <div>
-            <h4 className="font-semibold mb-4">Product</h4>
+            <h4 className="font-semibold mb-4">Produit</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Features</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Pricing</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Fonctionnalités</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Tarifs</a></li>
               <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Support</a></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold mb-4">Company</h4>
+            <h4 className="font-semibold mb-4">Entreprise</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">About</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">À propos</a></li>
               <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Blog</a></li>
-              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Careers</a></li>
+              <li><a href="#" className="text-muted-foreground hover:text-primary transition-colors">Carrières</a></li>
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold mb-4">Connect</h4>
+            <h4 className="font-semibold mb-4">Suivez-nous</h4>
             <div className="flex space-x-4">
               <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
                 <Facebook className="w-5 h-5" />
@@ -45,7 +45,7 @@ export const Footer = () => {
         </div>
         <div className="border-t mt-12 pt-8">
           <p className="text-center text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Kalon App Partners. All rights reserved.
+            © {new Date().getFullYear()} Kalon App Partners. Tous droits réservés.
           </p>
         </div>
       </div>

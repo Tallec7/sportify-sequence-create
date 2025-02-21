@@ -5,23 +5,23 @@ import { motion } from "framer-motion";
 const features = [
   {
     icon: Clock,
-    title: "Quick Creation",
-    description: "Create professional training sessions in minutes with our intuitive interface."
+    title: "Création Rapide",
+    description: "Créez des séances d'entraînement professionnelles en quelques minutes avec notre interface intuitive."
   },
   {
     icon: Shield,
-    title: "Expert Validation",
-    description: "Get your sessions validated by experts to ensure quality and effectiveness."
+    title: "Validation Expert",
+    description: "Faites valider vos séances par des experts pour garantir leur qualité et leur efficacité."
   },
   {
     icon: Share2,
-    title: "Easy Sharing",
-    description: "Share your sessions with your team or the community with just one click."
+    title: "Partage Facile",
+    description: "Partagez vos séances avec votre équipe ou la communauté en un seul clic."
   },
   {
     icon: Trophy,
-    title: "Growth Together",
-    description: "Join a community of coaches and grow together through shared knowledge."
+    title: "Progression Collective",
+    description: "Rejoignez une communauté d'entraîneurs et progressez ensemble grâce au partage des connaissances."
   }
 ];
 
@@ -30,9 +30,9 @@ export const Features = () => {
     <section id="features" className="py-24 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Why Choose KAP</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">Pourquoi Choisir KAP</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Everything you need to create and manage professional training sessions in one place.
+            Tout ce dont vous avez besoin pour créer et gérer des séances d'entraînement professionnelles en un seul endroit.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
