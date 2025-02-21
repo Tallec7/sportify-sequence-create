@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client"
 import { SequenceList } from "./SequenceList"
 import { AddSequenceForm } from "./AddSequenceForm"
 import { Sequence } from "@/types/sequence"
+import { useParams } from "react-router-dom"
 
 interface SequenceFormProps {
   sequences: Sequence[]
@@ -12,6 +13,7 @@ interface SequenceFormProps {
 }
 
 export const SequenceForm = ({ sequences, onAddSequence }: SequenceFormProps) => {
+  const { id: sessionId } = useParams()
   const [newSequence, setNewSequence] = useState<Sequence>({
     title: "",
     description: "",
@@ -28,8 +30,17 @@ export const SequenceForm = ({ sequences, onAddSequence }: SequenceFormProps) =>
     if (!["warmup", "main", "cooldown"].includes(newSequence.sequence_type)) {
       toast({
         variant: "destructive",
+        title: "Type de séquence invalide",
+        description: "Le type de séquence doit être 'Échauffement', 'Principal' ou 'Retour au calme'.",
+      })
+      return
+    }
+
+    if (!sessionId) {
+      toast({
+        variant: "destructive",
         title: "Erreur",
-        description: "Le type de séquence doit être 'warmup', 'main' ou 'cooldown'.",
+        description: "Impossible d'ajouter une séquence sans session associée.",
       })
       return
     }
@@ -39,18 +50,27 @@ export const SequenceForm = ({ sequences, onAddSequence }: SequenceFormProps) =>
         .from("session_sequences")
         .insert([{
           ...newSequence,
+          session_id: sessionId,
           sequence_type: newSequence.sequence_type
         }])
         .select()
         .single()
 
-      if (error) throw error
+      if (error) {
+        console.error("Error adding sequence:", error)
+        toast({
+          variant: "destructive",
+          title: "Erreur",
+          description: "Une erreur est survenue lors de l'ajout de la séquence. Veuillez réessayer.",
+        })
+        return
+      }
 
       if (sequence) {
         onAddSequence(sequence as Sequence)
         toast({
-          title: "Succès",
-          description: "La séquence a été ajoutée avec succès.",
+          title: "Séquence ajoutée",
+          description: "La séquence a été ajoutée avec succès à votre séance.",
         })
 
         setNewSequence({
@@ -63,10 +83,11 @@ export const SequenceForm = ({ sequences, onAddSequence }: SequenceFormProps) =>
         })
       }
     } catch (error: any) {
+      console.error("Error in handleSubmit:", error)
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: error.message,
+        description: "Une erreur est survenue lors de l'ajout de la séquence. Veuillez réessayer.",
       })
     }
   }
