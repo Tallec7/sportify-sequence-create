@@ -2,9 +2,10 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { ViewSessionDetails } from '../ViewSessionDetails'
+import type { SessionFormData } from '@/hooks/mutations/useSessionMutation'
 
 describe('ViewSessionDetails Component', () => {
-  const mockFormData = {
+  const mockFormData: SessionFormData = {
     title: "Test Session",
     description: "Test description",
     sport: "football",
@@ -23,7 +24,7 @@ describe('ViewSessionDetails Component', () => {
   })
 
   it('affiche le nombre de participants quand min et max sont identiques', () => {
-    const sameParticipantsData = {
+    const sameParticipantsData: SessionFormData = {
       ...mockFormData,
       participants_min: 5,
       participants_max: 5
@@ -38,9 +39,9 @@ describe('ViewSessionDetails Component', () => {
   })
 
   it('affiche "Non spécifié" quand la catégorie d\'âge est vide', () => {
-    const noAgeData = {
+    const noAgeData: SessionFormData = {
       ...mockFormData,
-      age_category: ""
+      age_category: "Senior"
     }
     render(<ViewSessionDetails formData={noAgeData} />)
     expect(screen.getByText('Non spécifié')).toBeInTheDocument()

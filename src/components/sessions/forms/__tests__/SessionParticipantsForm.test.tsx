@@ -2,9 +2,10 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { SessionParticipantsForm } from '../SessionParticipantsForm'
+import type { SessionFormData } from '@/hooks/mutations/useSessionMutation'
 
 describe('SessionParticipantsForm Component', () => {
-  const mockFormData = {
+  const mockFormData: SessionFormData = {
     title: "Test Session",
     description: "Test description",
     sport: "football",
