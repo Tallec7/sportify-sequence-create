@@ -9,6 +9,7 @@ import Dashboard from "@/pages/Dashboard"
 import Editor from "@/pages/Editor"
 import Settings from "@/pages/Settings"
 import ViewSession from "@/pages/ViewSession"
+import DropdownSettings from "@/pages/DropdownSettings"
 
 const Layout = () => {
   return (
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
       {
         path: "/settings",
         element: <Settings />,
+      },
+      {
+        path: "/dropdown-settings",
+        element: <DropdownSettings />,
       },
       {
         path: "*",
