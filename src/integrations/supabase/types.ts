@@ -162,7 +162,7 @@ export type Database = {
           description: string
           id: string
           is_priority: boolean | null
-          objective_type: string | null
+          objective_type: Database["public"]["Enums"]["objective_type_enum"]
           order_index: number | null
           session_id: string | null
           type: string | null
@@ -172,7 +172,7 @@ export type Database = {
           description: string
           id?: string
           is_priority?: boolean | null
-          objective_type?: string | null
+          objective_type: Database["public"]["Enums"]["objective_type_enum"]
           order_index?: number | null
           session_id?: string | null
           type?: string | null
@@ -182,7 +182,7 @@ export type Database = {
           description?: string
           id?: string
           is_priority?: boolean | null
-          objective_type?: string | null
+          objective_type?: Database["public"]["Enums"]["objective_type_enum"]
           order_index?: number | null
           session_id?: string | null
           type?: string | null
@@ -323,7 +323,7 @@ export type Database = {
       }
       sessions: {
         Row: {
-          age_category: string | null
+          age_category: Database["public"]["Enums"]["age_category_enum"]
           created_at: string | null
           cycle_id: string | null
           description: string | null
@@ -339,7 +339,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
-          age_category?: string | null
+          age_category: Database["public"]["Enums"]["age_category_enum"]
           created_at?: string | null
           cycle_id?: string | null
           description?: string | null
@@ -355,7 +355,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
-          age_category?: string | null
+          age_category?: Database["public"]["Enums"]["age_category_enum"]
           created_at?: string | null
           cycle_id?: string | null
           description?: string | null
@@ -429,7 +429,11 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      age_category_enum: "U9" | "U11" | "U13" | "U15" | "U17" | "U19" | "Senior"
+      objective_type_enum:
+        | "apprentissage"
+        | "developpement"
+        | "perfectionnement"
     }
     CompositeTypes: {
       [_ in never]: never
