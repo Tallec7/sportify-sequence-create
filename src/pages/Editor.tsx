@@ -40,6 +40,8 @@ const Editor = () => {
 
   const handleSave = async () => {
     try {
+      console.log("Starting save process with sequences:", sequences)
+
       // Save the session first
       const { data: sessionData, error: sessionError } = await supabase
         .from('sessions')
@@ -52,27 +54,47 @@ const Editor = () => {
         .select()
         .single()
 
-      if (sessionError) throw sessionError
+      if (sessionError) {
+        console.error("Error saving session:", sessionError)
+        throw sessionError
+      }
+
+      console.log("Session saved successfully:", sessionData)
 
       // Ensure sequences have valid sequence_type values before saving
-      const validatedSequences = sequences.map(sequence => ({
-        ...sequence,
-        sequence_type: sequence.sequence_type.toLowerCase() as "warmup" | "main" | "cooldown",
-        session_id: sessionData.id,
-      }))
+      const validatedSequences = sequences.map(sequence => {
+        const sequenceType = sequence.sequence_type.toLowerCase()
+        console.log("Validating sequence type:", sequenceType)
+        return {
+          ...sequence,
+          sequence_type: sequenceType as "warmup" | "main" | "cooldown",
+          session_id: sessionData.id,
+        }
+      })
 
       // Validate sequence types
-      if (!validatedSequences.every(seq => ['warmup', 'main', 'cooldown'].includes(seq.sequence_type))) {
-        throw new Error("Invalid sequence type. Must be 'warmup', 'main', or 'cooldown'")
+      const validTypes = ['warmup', 'main', 'cooldown']
+      const invalidSequences = validatedSequences.filter(seq => !validTypes.includes(seq.sequence_type))
+      
+      if (invalidSequences.length > 0) {
+        console.error("Invalid sequence types found:", invalidSequences)
+        throw new Error(`Types de séquence invalides détectés : ${invalidSequences.map(seq => seq.sequence_type).join(', ')}. Les types autorisés sont : warmup, main, cooldown.`)
       }
 
       // Then save all sequences
       if (validatedSequences.length > 0) {
+        console.log("Attempting to save sequences:", validatedSequences)
+        
         const { error: sequencesError } = await supabase
           .from('session_sequences')
           .insert(validatedSequences)
 
-        if (sequencesError) throw sequencesError
+        if (sequencesError) {
+          console.error("Error saving sequences:", sequencesError)
+          throw sequencesError
+        }
+
+        console.log("Sequences saved successfully")
       }
 
       toast({
@@ -84,13 +106,14 @@ const Editor = () => {
       console.error("Save error:", error)
       toast({
         variant: "destructive",
-        title: "Erreur",
-        description: error.message,
+        title: "Erreur lors de la sauvegarde",
+        description: error.message || "Une erreur est survenue lors de la sauvegarde de la séance.",
       })
     }
   }
 
   const handleAddSequence = (sequence: Sequence) => {
+    console.log("Adding new sequence:", sequence)
     setSequences([...sequences, sequence])
   }
 
