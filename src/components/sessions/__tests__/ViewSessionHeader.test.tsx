@@ -2,9 +2,10 @@
 import { render, screen, fireEvent } from "@testing-library/react"
 import { ViewSessionHeader } from "../ViewSessionHeader"
 import { vi, describe, it, expect, beforeEach } from 'vitest'
+import type { SessionFormData } from "@/hooks/mutations/useSessionMutation"
 
 describe("ViewSessionHeader", () => {
-  const mockFormData = {
+  const mockFormData: SessionFormData = {
     title: "Test Session",
     sport: "Football",
     level: "Débutant",
