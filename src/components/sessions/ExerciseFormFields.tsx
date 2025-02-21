@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Plus, X } from "lucide-react"
 import { ExerciseFormFieldsProps } from "./types/exercise-form"
+import { Separator } from "@/components/ui/separator"
 
 export const ExerciseFormFields = ({ exercise, onChange }: ExerciseFormFieldsProps) => {
   const handleVariationChange = (index: number, value: string) => {
@@ -29,8 +30,24 @@ export const ExerciseFormFields = ({ exercise, onChange }: ExerciseFormFieldsPro
     onChange({ ...exercise, variations: newVariations })
   }
 
+  const handleDecisionMakingFocusChange = (focus: string) => {
+    const currentFocus = exercise.decision_making_focus || []
+    const updatedFocus = currentFocus.includes(focus)
+      ? currentFocus.filter(f => f !== focus)
+      : [...currentFocus, focus]
+    onChange({ ...exercise, decision_making_focus: updatedFocus })
+  }
+
+  const handleTacticalObjectivesChange = (objective: string) => {
+    const currentObjectives = exercise.tactical_objectives || []
+    const updatedObjectives = currentObjectives.includes(objective)
+      ? currentObjectives.filter(o => o !== objective)
+      : [...currentObjectives, objective]
+    onChange({ ...exercise, tactical_objectives: updatedObjectives })
+  }
+
   return (
-    <>
+    <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="title">Titre</Label>
@@ -74,6 +91,24 @@ export const ExerciseFormFields = ({ exercise, onChange }: ExerciseFormFieldsPro
       </div>
 
       <div className="space-y-2">
+        <Label htmlFor="activity_type">Type d'activité</Label>
+        <Select
+          value={exercise.activity_type}
+          onValueChange={(value: 'exercise' | 'situation') =>
+            onChange({ ...exercise, activity_type: value })
+          }
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Sélectionner un type d'activité" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="exercise">Exercice</SelectItem>
+            <SelectItem value="situation">Situation</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="space-y-2">
         <Label htmlFor="intensity_level">Niveau d'intensité</Label>
         <Select
           value={exercise.intensity_level}
@@ -91,6 +126,67 @@ export const ExerciseFormFields = ({ exercise, onChange }: ExerciseFormFieldsPro
           </SelectContent>
         </Select>
       </div>
+
+      {exercise.activity_type === 'situation' && (
+        <>
+          <Separator />
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="opposition_type">Type d'opposition</Label>
+              <Select
+                value={exercise.opposition_type}
+                onValueChange={(value) =>
+                  onChange({ ...exercise, opposition_type: value })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Sélectionner un type d'opposition" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Sans opposition</SelectItem>
+                  <SelectItem value="passive">Opposition passive</SelectItem>
+                  <SelectItem value="active">Opposition active</SelectItem>
+                  <SelectItem value="match">Situation de match</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-4">
+              <Label>Focus sur la prise de décision</Label>
+              <div className="flex flex-wrap gap-2">
+                {["Lecture du jeu", "Prise d'information", "Choix tactiques", "Timing"].map((focus) => (
+                  <Button
+                    key={focus}
+                    type="button"
+                    variant={exercise.decision_making_focus?.includes(focus) ? "default" : "outline"}
+                    onClick={() => handleDecisionMakingFocusChange(focus)}
+                    size="sm"
+                  >
+                    {focus}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <Label>Objectifs tactiques</Label>
+              <div className="flex flex-wrap gap-2">
+                {["Conservation", "Progression", "Finition", "Transition", "Organisation défensive"].map((objective) => (
+                  <Button
+                    key={objective}
+                    type="button"
+                    variant={exercise.tactical_objectives?.includes(objective) ? "default" : "outline"}
+                    onClick={() => handleTacticalObjectivesChange(objective)}
+                    size="sm"
+                  >
+                    {objective}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
@@ -126,6 +222,6 @@ export const ExerciseFormFields = ({ exercise, onChange }: ExerciseFormFieldsPro
           ))}
         </div>
       </div>
-    </>
+    </div>
   )
 }
