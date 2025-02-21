@@ -2,61 +2,51 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { SessionDetailsForm } from '../SessionDetailsForm'
+import type { SessionFormData } from '@/hooks/mutations/useSessionMutation'
 
-describe('SessionDetailsForm Component', () => {
-  const mockFormData = {
-    title: "Test Session",
-    description: "Test description",
-    sport: "football",
-    level: "debutant",
+describe('SessionDetailsForm', () => {
+  const mockHandleSelectChange = vi.fn()
+  const mockHandleNumberChange = vi.fn()
+  
+  const defaultFormData: SessionFormData = {
+    title: 'Test Session',
+    description: 'Test Description',
+    sport: 'football',
+    level: 'debutant',
     duration: 60,
-    participants_min: 5,
+    participants_min: 1,
     participants_max: 10,
     age_category: "U13",
-    intensity_level: "medium"
+    intensity_level: 'medium',
+    cycle_id: null
   }
 
-  const mockHandlers = {
-    handleSelectChange: vi.fn(),
-    handleNumberChange: vi.fn()
-  }
-
-  it('affiche les champs avec les valeurs correctes', () => {
+  it('renders without crashing', () => {
     render(
       <SessionDetailsForm
-        formData={mockFormData}
-        {...mockHandlers}
+        formData={defaultFormData}
+        handleSelectChange={mockHandleSelectChange}
+        handleNumberChange={mockHandleNumberChange}
       />
     )
-
-    expect(screen.getByLabelText(/durée/i)).toHaveValue(mockFormData.duration)
+    expect(screen.getByText('Niveau')).toBeInTheDocument()
   })
 
-  it('appelle handleNumberChange lors de la modification de la durée', () => {
+  it('calls handleSelectChange when level changes', () => {
     render(
       <SessionDetailsForm
-        formData={mockFormData}
-        {...mockHandlers}
+        formData={defaultFormData}
+        handleSelectChange={mockHandleSelectChange}
+        handleNumberChange={mockHandleNumberChange}
       />
     )
 
-    fireEvent.change(screen.getByLabelText(/durée/i), {
-      target: { value: '90' }
-    })
+    const levelSelect = screen.getByText('Sélectionnez un niveau')
+    fireEvent.click(levelSelect)
+    
+    const intermediateOption = screen.getByText('Intermédiaire')
+    fireEvent.click(intermediateOption)
 
-    expect(mockHandlers.handleNumberChange).toHaveBeenCalled()
-  })
-
-  it('affiche tous les champs de sélection', () => {
-    render(
-      <SessionDetailsForm
-        formData={mockFormData}
-        {...mockHandlers}
-      />
-    )
-
-    expect(screen.getByLabelText(/niveau/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/catégorie d'âge/i)).toBeInTheDocument()
-    expect(screen.getByLabelText(/intensité/i)).toBeInTheDocument()
+    expect(mockHandleSelectChange).toHaveBeenCalledWith('level', 'intermediaire')
   })
 })

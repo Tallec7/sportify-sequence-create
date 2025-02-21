@@ -1,3 +1,4 @@
+
 import { type SessionFormData } from "@/hooks/mutations/useSessionMutation"
 import {
   Card,
@@ -23,25 +24,25 @@ export const SessionForm = ({
 }: SessionFormProps) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    setFormData(prevState => ({
-      ...prevState,
+    setFormData({
+      ...formData,
       [name]: value,
-    }))
+    })
   }
 
   const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    setFormData(prevState => ({
-      ...prevState,
+    setFormData({
+      ...formData,
       [name]: parseInt(value),
-    }))
+    })
   }
 
   const handleSelectChange = (name: string, value: string) => {
-    setFormData(prevState => ({
-      ...prevState,
+    setFormData({
+      ...formData,
       [name]: value,
-    }))
+    })
   }
 
   return (
@@ -101,3 +102,6 @@ export const SessionForm = ({
     </Card>
   )
 }
+
+// Re-export the SessionFormData type from useSessionMutation
+export type { SessionFormData } from "@/hooks/mutations/useSessionMutation"
