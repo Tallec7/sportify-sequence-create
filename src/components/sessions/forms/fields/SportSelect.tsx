@@ -22,8 +22,8 @@ export const SportSelect = ({ value, onValueChange }: SportSelectProps) => {
       <Label htmlFor="sport" className="text-base">Sport</Label>
       <Select 
         name="sport" 
-        value={value}
-        onValueChange={(value) => onValueChange(value)}
+        value={value || ""} 
+        onValueChange={onValueChange}
       >
         <SelectTrigger className="h-12">
           <SelectValue placeholder="Sélectionnez un sport" />
