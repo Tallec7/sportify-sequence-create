@@ -9,6 +9,14 @@ import { ExerciseListItem } from "./ExerciseListItem"
 import { ExerciseFormCard } from "./ExerciseFormCard"
 import { ExerciseObjectivesList } from "./ExerciseObjectivesList"
 import { ExerciseFormProps } from "./types/exercise-form"
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Label } from "@/components/ui/label"
 
 export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
   const { data: exercises = [] } = useExercisesQuery(sequenceId)
@@ -17,6 +25,7 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
   const exerciseDeleteMutation = useExerciseDeleteMutation(sequenceId)
 
   const [editingExercise, setEditingExercise] = useState<Exercise | null>(null)
+  const [activityFilter, setActivityFilter] = useState<string>("all")
   const [newExercise, setNewExercise] = useState<Exercise>({
     id: '',
     title: "",
@@ -25,6 +34,11 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
     intensity_level: "medium",
     exercise_order: exercises.length + 1,
     activity_type: "exercise"
+  })
+
+  const filteredExercises = exercises.filter(exercise => {
+    if (activityFilter === "all") return true
+    return exercise.activity_type === activityFilter
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -77,7 +91,26 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
       <ExerciseObjectivesList objectives={objectives} />
 
       <div className="space-y-4">
-        {exercises.map((exercise, index) => (
+        <div className="flex items-center justify-between">
+          <div className="space-y-1.5">
+            <Label>Filtrer par type d'activité</Label>
+            <Select
+              value={activityFilter}
+              onValueChange={setActivityFilter}
+            >
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="Tous les types" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tous les types</SelectItem>
+                <SelectItem value="exercise">Exercices</SelectItem>
+                <SelectItem value="situation">Situations</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {filteredExercises.map((exercise, index) => (
           <ExerciseListItem
             key={exercise.id || index}
             exercise={exercise}

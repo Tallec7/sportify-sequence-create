@@ -1,13 +1,33 @@
 
 import { Button } from "@/components/ui/button"
-import { Edit, Trash2 } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Edit, Trash2, Activity, List } from "lucide-react"
 import { ExerciseListItemProps } from "./types/exercise-form"
 
 export const ExerciseListItem = ({ exercise, onEdit, onDelete }: ExerciseListItemProps) => {
+  const getActivityIcon = () => {
+    return exercise.activity_type === 'exercise' ? (
+      <List className="h-4 w-4" />
+    ) : (
+      <Activity className="h-4 w-4" />
+    )
+  }
+
   return (
     <div className="flex items-start gap-4 rounded-lg border p-4">
       <div className="flex-1 space-y-2">
-        <h4 className="font-medium">{exercise.title}</h4>
+        <div className="flex items-center gap-2">
+          <h4 className="font-medium">{exercise.title}</h4>
+          <Badge 
+            variant={exercise.activity_type === 'exercise' ? "outline" : "default"}
+            className="flex items-center gap-1"
+          >
+            {getActivityIcon()}
+            <span className="capitalize">
+              {exercise.activity_type === 'exercise' ? 'Exercice' : 'Situation'}
+            </span>
+          </Badge>
+        </div>
         <div className="flex gap-2 text-sm text-muted-foreground">
           <span>{exercise.duration} min</span>
           <span>•</span>
