@@ -54,31 +54,39 @@ export const SessionForm = ({ onSave, formData, setFormData }: SessionFormProps)
 
   return (
     <div className="container py-8">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">Nouvelle séance</h1>
-        <Button onClick={onSave} className="gap-2">
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary-hover bg-clip-text text-transparent">
+            Nouvelle séance
+          </h1>
+          <p className="text-muted-foreground mt-2">
+            Créez une nouvelle séance d'entraînement personnalisée
+          </p>
+        </div>
+        <Button onClick={onSave} size="lg" className="gap-2">
           <Save className="h-5 w-5" />
           Sauvegarder
         </Button>
       </div>
-      <div className="rounded-lg border p-8">
-        <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
-          <div className="grid gap-4 md:grid-cols-2">
+      <div className="rounded-xl border bg-card p-8 shadow-sm">
+        <form className="space-y-8" onSubmit={(e) => e.preventDefault()}>
+          <div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="title">Titre</Label>
+              <Label htmlFor="title" className="text-base">Titre</Label>
               <Input
                 id="title"
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
                 placeholder="Titre de la séance"
+                className="h-12"
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="sport">Sport</Label>
+              <Label htmlFor="sport" className="text-base">Sport</Label>
               <Select name="sport" onValueChange={(value) => handleSelectChange("sport", value)}>
-                <SelectTrigger>
+                <SelectTrigger className="h-12">
                   <SelectValue placeholder="Sélectionnez un sport" />
                 </SelectTrigger>
                 <SelectContent>
@@ -90,9 +98,9 @@ export const SessionForm = ({ onSave, formData, setFormData }: SessionFormProps)
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="level">Niveau</Label>
+              <Label htmlFor="level" className="text-base">Niveau</Label>
               <Select name="level" onValueChange={(value) => handleSelectChange("level", value)}>
-                <SelectTrigger>
+                <SelectTrigger className="h-12">
                   <SelectValue placeholder="Sélectionnez un niveau" />
                 </SelectTrigger>
                 <SelectContent>
@@ -104,36 +112,39 @@ export const SessionForm = ({ onSave, formData, setFormData }: SessionFormProps)
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="duration">Durée (minutes)</Label>
+              <Label htmlFor="duration" className="text-base">Durée (minutes)</Label>
               <Input
                 id="duration"
                 name="duration"
                 type="number"
                 min="1"
+                className="h-12"
                 value={formData.duration}
                 onChange={handleNumberChange}
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="participants_min">Nombre minimum de participants</Label>
+              <Label htmlFor="participants_min" className="text-base">Nombre minimum de participants</Label>
               <Input
                 id="participants_min"
                 name="participants_min"
                 type="number"
                 min="1"
+                className="h-12"
                 value={formData.participants_min}
                 onChange={handleNumberChange}
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="participants_max">Nombre maximum de participants</Label>
+              <Label htmlFor="participants_max" className="text-base">Nombre maximum de participants</Label>
               <Input
                 id="participants_max"
                 name="participants_max"
                 type="number"
                 min="1"
+                className="h-12"
                 value={formData.participants_max}
                 onChange={handleNumberChange}
                 required
@@ -141,14 +152,14 @@ export const SessionForm = ({ onSave, formData, setFormData }: SessionFormProps)
             </div>
           </div>
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description" className="text-base">Description</Label>
             <textarea
               id="description"
               name="description"
               value={formData.description}
               onChange={handleChange}
               placeholder="Description détaillée de la séance"
-              className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              className="w-full min-h-[150px] rounded-md border border-input bg-background px-4 py-3 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-y"
             />
           </div>
         </form>
@@ -156,4 +167,3 @@ export const SessionForm = ({ onSave, formData, setFormData }: SessionFormProps)
     </div>
   )
 }
-
