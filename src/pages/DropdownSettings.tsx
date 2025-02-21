@@ -9,9 +9,9 @@ import { IntensityLevelsList } from "@/components/dropdown-settings/IntensityLev
 import { SequenceTypesList } from "@/components/dropdown-settings/SequenceTypesList"
 import { SettingsHeader } from "@/components/dropdown-settings/SettingsHeader"
 import { useDropdownSettings } from "@/hooks/useDropdownSettings"
-import { AgeCategoriesList } from "@/components/dropdown-settings/readonly/AgeCategoriesList"
-import { ActivityTypesList } from "@/components/dropdown-settings/readonly/ActivityTypesList"
-import { ProgressionLevelsList } from "@/components/dropdown-settings/readonly/ProgressionLevelsList"
+import { AgeCategoriesList } from "@/components/dropdown-settings/age-categories/AgeCategoriesList"
+import { ActivityTypesList } from "@/components/dropdown-settings/activity-types/ActivityTypesList"
+import { ProgressionLevelsList } from "@/components/dropdown-settings/progression-levels/ProgressionLevelsList"
 
 const DropdownSettings = () => {
   useAuthCheck()
