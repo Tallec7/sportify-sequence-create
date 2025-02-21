@@ -57,11 +57,7 @@ export const SequenceList = ({
             )}
           </div>
           {selectedSequenceId === sequence.id && sequence.id && (
-            <ExerciseForm
-              sequenceId={sequence.id}
-              exercises={[]}
-              onExerciseAdded={() => {}}
-            />
+            <ExerciseForm sequenceId={sequence.id} />
           )}
         </div>
       ))}

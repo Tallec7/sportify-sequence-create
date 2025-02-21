@@ -27,6 +27,9 @@ export interface Exercise {
   setup_instructions?: string
   exercise_order: number
   sequence_id?: string
+  created_at?: string
+  updated_at?: string
+  variations?: string[]
 }
 
 interface ExerciseFormProps {

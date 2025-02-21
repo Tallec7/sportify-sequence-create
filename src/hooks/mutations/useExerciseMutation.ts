@@ -15,11 +15,24 @@ export const useExerciseMutation = (sequenceId: string | undefined) => {
     }: Partial<Exercise> & { id?: string }) => {
       if (!sequenceId) throw new Error("Sequence ID is required")
 
+      // Ensure required fields are present
+      const exerciseData = {
+        sequence_id: sequenceId,
+        title: exercise.title || "",
+        description: exercise.description || "",
+        duration: exercise.duration || 0,
+        intensity_level: exercise.intensity_level || "medium",
+        exercise_order: exercise.exercise_order || 0,
+        coach_instructions: exercise.coach_instructions,
+        player_instructions: exercise.player_instructions,
+        setup_instructions: exercise.setup_instructions,
+      }
+
       if (id) {
         // Update existing exercise
         const { data, error } = await supabase
           .from("exercises")
-          .update(exercise)
+          .update(exerciseData)
           .eq("id", id)
           .select()
           .single()
@@ -30,7 +43,7 @@ export const useExerciseMutation = (sequenceId: string | undefined) => {
         // Create new exercise
         const { data, error } = await supabase
           .from("exercises")
-          .insert([{ ...exercise, sequence_id: sequenceId }])
+          .insert([exerciseData])
           .select()
           .single()
 
