@@ -13,7 +13,8 @@ describe('ViewSessionDetails Component', () => {
     participants_min: 5,
     participants_max: 10,
     age_category: "U13",
-    intensity_level: "medium"
+    intensity_level: "medium",
+    cycle_id: null
   }
 
   it('affiche correctement les détails des participants', () => {
