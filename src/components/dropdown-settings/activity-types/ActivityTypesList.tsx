@@ -1,66 +1,61 @@
 
-import { Label } from "@/components/ui/label"
-import { ActivityTypeItem } from "./ActivityTypeItem"
+import { useState } from "react"
+import { Plus } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { AddActivityTypeDialog } from "./AddActivityTypeDialog"
-import { useActivityTypeMutation } from "@/hooks/mutations/useActivityTypeMutation"
+import { ActivityTypeItem } from "../ActivityTypeItem"
 import { useActivityTypesQuery } from "@/hooks/queries/useActivityTypesQuery"
+import { Input } from "@/components/ui/input"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export const ActivityTypesList = () => {
-  const { data: activityTypes, refetch } = useActivityTypesQuery()
-  const {
-    isEditingType,
-    editedTypeValue,
-    editedTypeLabel,
-    newTypeValue,
-    newTypeLabel,
-    setIsEditingType,
-    setEditedTypeValue,
-    setEditedTypeLabel,
-    setNewTypeValue,
-    setNewTypeLabel,
-    handleAddType,
-    handleEditType,
-    handleDeleteType,
-  } = useActivityTypeMutation(refetch)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
+  const { data: activityTypes = [], isLoading } = useActivityTypesQuery()
+
+  const filteredTypes = activityTypes.filter(type => 
+    type.label.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    type.value.toLowerCase().includes(searchQuery.toLowerCase())
+  )
 
   return (
-    <div className="space-y-2">
-      <div className="flex justify-between items-center mb-4">
-        <Label>Type d'activité</Label>
-        <AddActivityTypeDialog
-          newValue={newTypeValue}
-          newLabel={newTypeLabel}
-          onNewValueChange={setNewTypeValue}
-          onNewLabelChange={setNewTypeLabel}
-          onCancel={() => {
-            setNewTypeValue("")
-            setNewTypeLabel("")
-          }}
-          onAdd={handleAddType}
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-7">
+        <CardTitle className="text-xl font-semibold">Types d'activité</CardTitle>
+        <Button variant="outline" size="sm" onClick={() => setIsDialogOpen(true)}>
+          <Plus className="h-4 w-4 mr-2" />
+          Ajouter
+        </Button>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <Input
+          placeholder="Rechercher un type d'activité..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="mb-4"
         />
-      </div>
-
-      <div className="space-y-2">
-        {activityTypes?.map((type) => (
-          <ActivityTypeItem
-            key={type.id}
-            type={type}
-            isEditing={isEditingType === type.id}
-            editedValue={editedTypeValue}
-            editedLabel={editedTypeLabel}
-            onEditValueChange={setEditedTypeValue}
-            onEditLabelChange={setEditedTypeLabel}
-            onStartEdit={() => {
-              setIsEditingType(type.id)
-              setEditedTypeValue(type.value)
-              setEditedTypeLabel(type.label)
-            }}
-            onCancelEdit={() => setIsEditingType(null)}
-            onSaveEdit={() => handleEditType(type.id)}
-            onDelete={() => handleDeleteType(type.id)}
-          />
-        ))}
-      </div>
-    </div>
+        
+        {isLoading ? (
+          <div className="space-y-4">
+            <Skeleton className="h-12" />
+            <Skeleton className="h-12" />
+            <Skeleton className="h-12" />
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {filteredTypes.map((type) => (
+              <ActivityTypeItem key={type.id} type={type} />
+            ))}
+            {filteredTypes.length === 0 && searchQuery && (
+              <p className="text-center text-muted-foreground py-4">
+                Aucun type d'activité ne correspond à votre recherche
+              </p>
+            )}
+          </div>
+        )}
+        <AddActivityTypeDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+      </CardContent>
+    </Card>
   )
 }
