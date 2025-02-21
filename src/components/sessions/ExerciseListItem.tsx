@@ -5,8 +5,8 @@ import { ExerciseListItemProps } from "./types/exercise-form"
 
 export const ExerciseListItem = ({ exercise, onEdit, onDelete }: ExerciseListItemProps) => {
   return (
-    <div className="flex items-center gap-4 rounded-lg border p-4">
-      <div className="flex-1 space-y-1">
+    <div className="flex items-start gap-4 rounded-lg border p-4">
+      <div className="flex-1 space-y-2">
         <h4 className="font-medium">{exercise.title}</h4>
         <div className="flex gap-2 text-sm text-muted-foreground">
           <span>{exercise.duration} min</span>
@@ -17,6 +17,16 @@ export const ExerciseListItem = ({ exercise, onEdit, onDelete }: ExerciseListIte
           <p className="text-sm text-muted-foreground">
             {exercise.description}
           </p>
+        )}
+        {exercise.variations && exercise.variations.length > 0 && (
+          <div className="space-y-1">
+            <p className="text-sm font-medium">Variations :</p>
+            <ul className="list-inside list-disc text-sm text-muted-foreground">
+              {exercise.variations.map((variation, index) => (
+                <li key={index}>{variation}</li>
+              ))}
+            </ul>
+          </div>
         )}
       </div>
       <div className="flex gap-2">
