@@ -3,12 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Check, X, Pencil, Trash2 } from "lucide-react"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
-
-interface IntensityLevel {
-  id?: string
-  value: string
-  label: string
-}
+import { IntensityLevel } from "@/types/settings"
 
 interface IntensityLevelItemProps {
   level: IntensityLevel
@@ -42,7 +37,7 @@ export const IntensityLevelItem = ({
           <Input
             value={editedValue}
             onChange={(e) => onEditValueChange(e.target.value)}
-            placeholder="Identifiant unique"
+            placeholder="Code unique"
             className="max-w-[200px]"
           />
           <Input
@@ -52,7 +47,7 @@ export const IntensityLevelItem = ({
           />
         </div>
       ) : (
-        <span>{level.label} ({level.value})</span>
+        <span className="font-medium">{level.label}</span>
       )}
       <div className="flex gap-2">
         {isEditing ? (
@@ -111,4 +106,3 @@ export const IntensityLevelItem = ({
     </div>
   )
 }
-

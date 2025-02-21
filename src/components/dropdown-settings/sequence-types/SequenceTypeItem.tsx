@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Pencil, Trash2, X, Save } from "lucide-react"
+import { Pencil, Trash2, Save, X } from "lucide-react"
 import { SequenceType } from "@/types/settings"
 
 interface SequenceTypeItemProps {
@@ -35,12 +35,12 @@ export const SequenceTypeItem = ({
         <>
           <div className="flex-1 space-y-2">
             <Input
-              placeholder="Valeur"
+              placeholder="Code unique"
               value={editedValue}
               onChange={(e) => onEditValueChange(e.target.value)}
             />
             <Input
-              placeholder="Label"
+              placeholder="Nom affiché"
               value={editedLabel}
               onChange={(e) => onEditLabelChange(e.target.value)}
             />
@@ -65,8 +65,7 @@ export const SequenceTypeItem = ({
       ) : (
         <>
           <div className="flex-1">
-            <p className="text-sm font-medium">{type.label}</p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">{type.value}</p>
+            <p className="font-medium">{type.label}</p>
           </div>
           <div className="space-x-1">
             <Button
