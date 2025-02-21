@@ -1,4 +1,5 @@
 
+import { useState, useEffect } from "react"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import {
@@ -9,6 +10,14 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { SessionFormData } from "../SessionForm"
+import { supabase } from "@/integrations/supabase/client"
+import { useToast } from "@/components/ui/use-toast"
+
+interface Sport {
+  id?: string
+  value: string
+  label: string
+}
 
 interface SessionBasicInfoFormProps {
   formData: SessionFormData
@@ -23,6 +32,32 @@ export const SessionBasicInfoForm = ({
   handleSelectChange,
   handleNumberChange,
 }: SessionBasicInfoFormProps) => {
+  const [sports, setSports] = useState<Sport[]>([])
+  const { toast } = useToast()
+
+  useEffect(() => {
+    fetchSports()
+  }, [])
+
+  const fetchSports = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('sports')
+        .select('id, value, label')
+        .order('label')
+
+      if (error) throw error
+      setSports(data || [])
+    } catch (error) {
+      console.error('Error fetching sports:', error)
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de charger la liste des sports"
+      })
+    }
+  }
+
   return (
     <div className="grid gap-6 md:grid-cols-2">
       <div className="space-y-2">
@@ -39,16 +74,20 @@ export const SessionBasicInfoForm = ({
       </div>
       <div className="space-y-2">
         <Label htmlFor="sport" className="text-base">Sport</Label>
-        <Select name="sport" onValueChange={(value) => handleSelectChange("sport", value)}>
+        <Select 
+          name="sport" 
+          value={formData.sport}
+          onValueChange={(value) => handleSelectChange("sport", value)}
+        >
           <SelectTrigger className="h-12">
             <SelectValue placeholder="Sélectionnez un sport" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="football">Football</SelectItem>
-            <SelectItem value="basketball">Basketball</SelectItem>
-            <SelectItem value="tennis">Tennis</SelectItem>
-            <SelectItem value="athletisme">Athlétisme</SelectItem>
-            <SelectItem value="handball">Handball</SelectItem>
+            {sports.map((sport) => (
+              <SelectItem key={sport.id} value={sport.value}>
+                {sport.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
