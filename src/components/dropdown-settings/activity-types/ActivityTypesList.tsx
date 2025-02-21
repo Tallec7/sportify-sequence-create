@@ -1,63 +1,33 @@
 
-import { useState } from "react"
-import { Plus } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Skeleton } from "@/components/ui/skeleton"
-import { AddActivityTypeDialog } from "./AddActivityTypeDialog"
-import { ActivityTypeItem } from "./ActivityTypeItem"
+import { Label } from "@/components/ui/label"
 import { useActivityTypesQuery } from "@/hooks/queries/useActivityTypesQuery"
+import { ActivityTypeItem } from "./ActivityTypeItem"
+import { AddActivityTypeDialog } from "./AddActivityTypeDialog"
+import { useState } from "react"
 
 export const ActivityTypesList = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
-  const { data: activityTypes = [], isLoading } = useActivityTypesQuery()
-
-  const filteredTypes = activityTypes.filter(type => 
-    type.label.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    type.value.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  const { data: activityTypes = [] } = useActivityTypesQuery()
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-7">
-        <CardTitle className="text-xl font-semibold">Types d'activité</CardTitle>
-        <Button variant="outline" size="sm" onClick={() => setIsDialogOpen(true)}>
-          <Plus className="h-4 w-4 mr-2" />
-          Ajouter
-        </Button>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          <Input
-            placeholder="Rechercher un type d'activité..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="mb-4"
-          />
-
-          {isLoading ? (
-            <div className="space-y-4">
-              <Skeleton className="h-12" />
-              <Skeleton className="h-12" />
-              <Skeleton className="h-12" />
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {filteredTypes.map((type) => (
-                <ActivityTypeItem key={type.id} type={type} />
-              ))}
-              {filteredTypes.length === 0 && searchQuery && (
-                <p className="text-center text-muted-foreground py-4">
-                  Aucun type d'activité ne correspond à votre recherche
-                </p>
-              )}
-            </div>
-          )}
+    <div className="space-y-4">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <Label className="text-lg font-semibold">Types d'activité</Label>
+          <p className="text-sm text-muted-foreground mt-1">
+            Gérez les types d'activités disponibles
+          </p>
         </div>
-        <AddActivityTypeDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
-      </CardContent>
-    </Card>
+        <AddActivityTypeDialog 
+          open={isAddDialogOpen}
+          onOpenChange={setIsAddDialogOpen}
+        />
+      </div>
+
+      <div className="grid gap-3">
+        {activityTypes.map((type) => (
+          <ActivityTypeItem key={type.id} type={type} />
+        ))}
+      </div>
+    </div>
   )
-}
