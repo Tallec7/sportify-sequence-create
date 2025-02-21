@@ -16,20 +16,15 @@ export interface Exercise {
   tactical_objectives?: string[]
   diagram_url?: string
   video_url?: string
-  tactical_concepts?: TacticalConcept[]
+  tactical_concepts?: string[]
   performance_metrics?: PerformanceMetrics
   progression_level?: number
   success_criteria?: ExerciseSuccessCriteria[]
   technical_progressions?: TechnicalProgression[]
 }
 
-export type TacticalConcept = 
-  | 'montee_de_balle'
-  | 'repli_defensif'
-  | 'contre_attaque'
-  | 'attaque_placee'
-  | 'defense_alignee'
-  | 'defense_etagee'
+// Change from union type to string
+export type TacticalConcept = string
 
 export interface PerformanceMetrics {
   [key: string]: number | string | boolean
