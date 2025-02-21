@@ -3,12 +3,14 @@ import { Exercise } from "@/types/sequence"
 import { Button } from "@/components/ui/button"
 import { Plus, Edit, X } from "lucide-react"
 import { ExerciseFormFields } from "./ExerciseFormFields"
+import { ExerciseTemplateSelector } from "./ExerciseTemplateSelector"
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
 
 interface ExerciseFormCardProps {
   editingExercise: Exercise | null
@@ -25,6 +27,15 @@ export const ExerciseFormCard = ({
   onChange,
   onCancelEdit,
 }: ExerciseFormCardProps) => {
+  const handleTemplateSelect = (template: Partial<Exercise>) => {
+    onChange({
+      ...exercise,
+      ...template,
+      id: exercise.id,
+      exercise_order: exercise.exercise_order
+    })
+  }
+
   return (
     <Card>
       <CardHeader className="pb-3">
@@ -45,7 +56,17 @@ export const ExerciseFormCard = ({
         </div>
       </CardHeader>
       <CardContent>
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form onSubmit={onSubmit} className="space-y-6">
+          {!editingExercise && (
+            <>
+              <ExerciseTemplateSelector
+                activityType={exercise.activity_type}
+                onSelectTemplate={handleTemplateSelect}
+              />
+              <Separator />
+            </>
+          )}
+
           <ExerciseFormFields
             exercise={editingExercise || exercise}
             onChange={onChange}
@@ -71,3 +92,4 @@ export const ExerciseFormCard = ({
     </Card>
   )
 }
+
