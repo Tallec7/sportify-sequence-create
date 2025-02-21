@@ -32,13 +32,13 @@ const Navbar = () => {
     if (error) {
       toast({
         variant: "destructive",
-        title: "Error",
+        title: "Erreur",
         description: error.message
       })
     } else {
       toast({
-        title: "Success",
-        description: "Successfully signed out"
+        title: "Succès",
+        description: "Déconnexion réussie"
       })
       navigate('/')
     }
@@ -53,19 +53,24 @@ const Navbar = () => {
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
             <Link to="/" className="transition-colors hover:text-foreground/80 text-foreground">
-              Home
+              Accueil
             </Link>
+            {user && (
+              <Link to="/dashboard" className="transition-colors hover:text-foreground/80 text-foreground">
+                Tableau de bord
+              </Link>
+            )}
           </nav>
         </div>
         <div className="flex-1" />
         <div className="flex items-center space-x-4">
           {user ? (
             <Button variant="outline" onClick={handleSignOut}>
-              Sign Out
+              Déconnexion
             </Button>
           ) : (
             <Button variant="outline" onClick={() => navigate('/auth')}>
-              Sign In
+              Connexion
             </Button>
           )}
         </div>

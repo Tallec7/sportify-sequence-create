@@ -5,6 +5,8 @@ import Index from "@/pages/Index"
 import Auth from "@/pages/Auth"
 import NotFound from "@/pages/NotFound"
 import Navbar from "@/components/Navbar"
+import Dashboard from "@/pages/Dashboard"
+import Editor from "@/pages/Editor"
 
 const Layout = () => {
   return (
@@ -26,6 +28,14 @@ const router = createBrowserRouter([
       {
         path: "/auth",
         element: <Auth />,
+      },
+      {
+        path: "/dashboard",
+        element: <Dashboard />,
+      },
+      {
+        path: "/editor",
+        element: <Editor />,
       },
       {
         path: "*",
