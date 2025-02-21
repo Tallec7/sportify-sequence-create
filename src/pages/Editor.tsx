@@ -43,9 +43,6 @@ const Editor = () => {
 
   // Handlers
   const handleSave = () => {
-    if (!formData.age_category) {
-      formData.age_category = "U13" // Valeur par défaut si vide
-    }
     sessionMutation.mutate(formData)
   }
 
