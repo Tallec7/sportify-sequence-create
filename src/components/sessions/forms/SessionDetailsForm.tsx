@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { SessionFormData } from "../SessionForm"
+import { type SessionFormData } from "@/hooks/mutations/useSessionMutation"
 
 interface SessionDetailsFormProps {
   formData: SessionFormData

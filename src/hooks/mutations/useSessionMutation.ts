@@ -3,10 +3,23 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/components/ui/use-toast"
 import { useNavigate } from "react-router-dom"
-import { SessionFormData } from "@/components/sessions/SessionForm"
 import { Database } from "@/integrations/supabase/types"
 
 type AgeCategory = Database["public"]["Enums"]["age_category_enum"]
+
+export type SessionFormData = {
+  title: string
+  description: string
+  sport: string
+  level: string
+  duration: number
+  participants_min: number
+  participants_max: number
+  age_category: AgeCategory
+  intensity_level: string
+  cycle_id: string | null
+}
+
 type ValidationError = { field: string; message: string }
 
 const isValidAgeCategory = (category: string): category is AgeCategory => {
@@ -59,23 +72,26 @@ export const useSessionMutation = (sessionId: string | undefined, userId: string
         throw new Error(validationErrors.map(e => e.message).join('\n'))
       }
 
+      if (!isValidAgeCategory(formData.age_category)) {
+        throw new Error('Catégorie d\'âge invalide')
+      }
+
+      const sessionData = {
+        ...formData,
+        user_id: userId,
+      }
+
       if (sessionId) {
         const { error } = await supabase
           .from('sessions')
-          .update({
-            ...formData,
-            user_id: userId,
-          })
+          .update(sessionData)
           .eq('id', sessionId)
 
         if (error) throw error
       } else {
         const { error } = await supabase
           .from('sessions')
-          .insert([{
-            ...formData,
-            user_id: userId,
-          }])
+          .insert([sessionData])
 
         if (error) throw error
       }
