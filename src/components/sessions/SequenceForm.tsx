@@ -1,10 +1,10 @@
 
-import React, { useEffect, useState } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Plus } from "lucide-react"
-import { supabase } from "@/integrations/supabase/client"
+import { ExerciseForm, Exercise } from "./ExerciseForm"
 import {
   Select,
   SelectContent,
@@ -12,16 +12,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { ExerciseForm, Exercise } from "./ExerciseForm"
+import { toast } from "@/components/ui/use-toast"
+import { supabase } from "@/integrations/supabase/client"
 
 export interface Sequence {
   id?: string
   title: string
   description: string
   duration: number
-  sequence_type: string
+  sequence_type: "warmup" | "main" | "cooldown"
   intensity_level: string
   sequence_order: number
+  session_id?: string
 }
 
 interface SequenceFormProps {
@@ -30,203 +32,195 @@ interface SequenceFormProps {
 }
 
 export const SequenceForm = ({ sequences, onAddSequence }: SequenceFormProps) => {
-  const [newSequence, setNewSequence] = React.useState<Sequence>({
+  const [newSequence, setNewSequence] = useState<Sequence>({
     title: "",
     description: "",
-    duration: 10,
-    sequence_type: "warmup",
+    duration: 15,
+    sequence_type: "main",
     intensity_level: "medium",
     sequence_order: sequences.length + 1,
   })
-
   const [selectedSequenceId, setSelectedSequenceId] = useState<string | null>(null)
-  const [sequenceExercises, setSequenceExercises] = useState<{ [key: string]: Exercise[] }>({})
 
-  useEffect(() => {
-    const fetchExercises = async () => {
-      for (const sequence of sequences) {
-        if (sequence.id) {
-          const { data: exercises, error } = await supabase
-            .from("exercises")
-            .select("*")
-            .eq("sequence_id", sequence.id)
-            .order("exercise_order", { ascending: true })
-
-          if (!error && exercises) {
-            setSequenceExercises(prev => ({
-              ...prev,
-              [sequence.id!]: exercises
-            }))
-          }
-        }
-      }
-    }
-
-    fetchExercises()
-  }, [sequences])
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    onAddSequence(newSequence)
-    setNewSequence({
-      title: "",
-      description: "",
-      duration: 10,
-      sequence_type: "warmup",
-      intensity_level: "medium",
-      sequence_order: sequences.length + 2,
-    })
-  }
+    try {
+      const { data: sequence, error } = await supabase
+        .from("session_sequences")
+        .insert([newSequence])
+        .select()
+        .single()
 
-  const handleExerciseAdded = (sequenceId: string) => (exercise: Exercise) => {
-    setSequenceExercises(prev => ({
-      ...prev,
-      [sequenceId]: [...(prev[sequenceId] || []), exercise]
-    }))
+      if (error) throw error
+
+      onAddSequence(sequence)
+      toast({
+        title: "Succès",
+        description: "La séquence a été ajoutée avec succès.",
+      })
+
+      setNewSequence({
+        title: "",
+        description: "",
+        duration: 15,
+        sequence_type: "main",
+        intensity_level: "medium",
+        sequence_order: sequences.length + 2,
+      })
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: error.message,
+      })
+    }
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-medium">Séquences</h3>
-          <p className="text-sm text-muted-foreground">
-            Ajoutez des séquences à votre séance
+    <div className="space-y-8">
+      <div className="rounded-xl border bg-card p-8 shadow-sm">
+        <div className="mb-6">
+          <h2 className="text-2xl font-semibold">Séquences</h2>
+          <p className="text-muted-foreground">
+            Ajoutez et organisez les séquences de votre séance
           </p>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="text-sm text-muted-foreground">
-            {sequences.length} séquence{sequences.length !== 1 ? "s" : ""}
-          </div>
-        </div>
-      </div>
 
-      {sequences.length > 0 && (
-        <div className="grid gap-4">
+        <div className="space-y-6">
           {sequences.map((sequence, index) => (
             <div
-              key={index}
-              className="space-y-4 rounded-lg border p-4"
+              key={sequence.id || index}
+              className="rounded-lg border bg-background p-6"
             >
-              <div className="flex items-center gap-4">
-                <div className="flex-1 space-y-1">
-                  <h4 className="font-medium">{sequence.title}</h4>
-                  <div className="flex gap-2 text-sm text-muted-foreground">
-                    <span>{sequence.duration} min</span>
-                    <span>•</span>
-                    <span className="capitalize">{sequence.sequence_type}</span>
-                    <span>•</span>
-                    <span className="capitalize">{sequence.intensity_level}</span>
+              <div className="mb-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold">{sequence.title}</h3>
+                    <div className="flex gap-2 text-sm text-muted-foreground">
+                      <span>{sequence.duration} min</span>
+                      <span>•</span>
+                      <span className="capitalize">{sequence.sequence_type}</span>
+                      <span>•</span>
+                      <span className="capitalize">
+                        Intensité {sequence.intensity_level}
+                      </span>
+                    </div>
                   </div>
+                  <Button
+                    variant="outline"
+                    onClick={() =>
+                      setSelectedSequenceId(
+                        selectedSequenceId === sequence.id ? null : sequence.id
+                      )
+                    }
+                  >
+                    {selectedSequenceId === sequence.id
+                      ? "Masquer les exercices"
+                      : "Voir les exercices"}
+                  </Button>
                 </div>
-                <Button
-                  variant="outline"
-                  onClick={() => setSelectedSequenceId(sequence.id === selectedSequenceId ? null : sequence.id)}
-                >
-                  {sequence.id === selectedSequenceId ? "Masquer les exercices" : "Gérer les exercices"}
-                </Button>
+                {sequence.description && (
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    {sequence.description}
+                  </p>
+                )}
               </div>
-
-              {sequence.id && sequence.id === selectedSequenceId && (
+              {selectedSequenceId === sequence.id && sequence.id && (
                 <ExerciseForm
                   sequenceId={sequence.id}
-                  exercises={sequenceExercises[sequence.id] || []}
-                  onExerciseAdded={handleExerciseAdded(sequence.id)}
+                  exercises={[]}
+                  onExerciseAdded={() => {}}
                 />
               )}
             </div>
           ))}
         </div>
-      )}
 
-      <form onSubmit={handleSubmit} className="space-y-4 rounded-lg border p-4">
-        <h4 className="font-medium">Nouvelle séquence</h4>
-        <div className="grid gap-4 md:grid-cols-2">
+        <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+          <div className="grid gap-6 md:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="title">Titre</Label>
+              <Input
+                id="title"
+                value={newSequence.title}
+                onChange={(e) =>
+                  setNewSequence({ ...newSequence, title: e.target.value })
+                }
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="sequence_type">Type de séquence</Label>
+              <Select
+                value={newSequence.sequence_type}
+                onValueChange={(value: "warmup" | "main" | "cooldown") =>
+                  setNewSequence({ ...newSequence, sequence_type: value })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Sélectionner un type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="warmup">Échauffement</SelectItem>
+                  <SelectItem value="main">Principal</SelectItem>
+                  <SelectItem value="cooldown">Retour au calme</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="duration">Durée (minutes)</Label>
+              <Input
+                id="duration"
+                type="number"
+                min="1"
+                value={newSequence.duration}
+                onChange={(e) =>
+                  setNewSequence({
+                    ...newSequence,
+                    duration: parseInt(e.target.value) || 0,
+                  })
+                }
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="intensity_level">Niveau d'intensité</Label>
+              <Select
+                value={newSequence.intensity_level}
+                onValueChange={(value) =>
+                  setNewSequence({ ...newSequence, intensity_level: value })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Sélectionner une intensité" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="low">Faible</SelectItem>
+                  <SelectItem value="medium">Moyenne</SelectItem>
+                  <SelectItem value="high">Élevée</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
           <div className="space-y-2">
-            <Label htmlFor="title">Titre</Label>
-            <Input
-              id="title"
-              value={newSequence.title}
+            <Label htmlFor="description">Description</Label>
+            <textarea
+              id="description"
+              value={newSequence.description}
               onChange={(e) =>
-                setNewSequence({ ...newSequence, title: e.target.value })
+                setNewSequence({ ...newSequence, description: e.target.value })
               }
-              required
+              className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-y"
             />
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="duration">Durée (minutes)</Label>
-            <Input
-              id="duration"
-              type="number"
-              min="1"
-              value={newSequence.duration}
-              onChange={(e) =>
-                setNewSequence({
-                  ...newSequence,
-                  duration: parseInt(e.target.value) || 0,
-                })
-              }
-              required
-            />
+          <div>
+            <Button type="submit" className="gap-2">
+              <Plus className="h-4 w-4" />
+              Ajouter la séquence
+            </Button>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="sequence_type">Type de séquence</Label>
-            <Select
-              value={newSequence.sequence_type}
-              onValueChange={(value) =>
-                setNewSequence({ ...newSequence, sequence_type: value })
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Sélectionner un type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="warmup">Échauffement</SelectItem>
-                <SelectItem value="technical">Technique</SelectItem>
-                <SelectItem value="tactical">Tactique</SelectItem>
-                <SelectItem value="physical">Physique</SelectItem>
-                <SelectItem value="game">Jeu</SelectItem>
-                <SelectItem value="cooldown">Retour au calme</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="intensity_level">Niveau d'intensité</Label>
-            <Select
-              value={newSequence.intensity_level}
-              onValueChange={(value) =>
-                setNewSequence({ ...newSequence, intensity_level: value })
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Sélectionner une intensité" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="low">Faible</SelectItem>
-                <SelectItem value="medium">Moyenne</SelectItem>
-                <SelectItem value="high">Élevée</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="description">Description</Label>
-          <textarea
-            id="description"
-            value={newSequence.description}
-            onChange={(e) =>
-              setNewSequence({ ...newSequence, description: e.target.value })
-            }
-            className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-y"
-          />
-        </div>
-        <div className="flex justify-end">
-          <Button type="submit" className="gap-2">
-            <Plus className="h-4 w-4" />
-            Ajouter la séquence
-          </Button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   )
 }
