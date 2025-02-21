@@ -1,8 +1,8 @@
 
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { AddTacticalConceptDialog } from "./tactical-concepts/AddTacticalConceptDialog"
-import { TacticalConceptItem } from "./tactical-concepts/TacticalConceptItem"
+import { SportSelector } from "./tactical-concepts/SportSelector"
+import { TacticalConceptsListComponent } from "./tactical-concepts/TacticalConceptsList"
 import { TacticalConceptsListProps } from "@/types/tactical-concepts"
 
 export const TacticalConceptsList = ({ 
@@ -22,31 +22,17 @@ export const TacticalConceptsList = ({
         />
       </div>
 
-      <Select
-        value={selectedSport}
-        onValueChange={onSportChange}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Sélectionnez un sport" />
-        </SelectTrigger>
-        <SelectContent>
-          {sports.map((sport) => (
-            <SelectItem key={sport.value} value={sport.value}>
-              {sport.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <SportSelector
+        sports={sports}
+        selectedSport={selectedSport}
+        onSportChange={onSportChange}
+      />
 
-      <div className="space-y-2 mt-4">
-        {tacticalConcepts.map((concept) => (
-          <TacticalConceptItem
-            key={concept.id}
-            concept={concept}
-            onConceptsChange={onConceptsChange}
-          />
-        ))}
-      </div>
+      <TacticalConceptsListComponent
+        tacticalConcepts={tacticalConcepts}
+        onConceptsChange={onConceptsChange}
+      />
     </div>
   )
 }
+
