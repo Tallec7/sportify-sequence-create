@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -43,9 +42,9 @@ interface Sport {
   label: string;
 }
 
-interface TacticalConceptOption {
+type TacticalConceptOption = {
   id?: string;
-  value: TacticalConcept;
+  value: string;
   label: string;
   sport_id?: string;
 }
@@ -53,7 +52,7 @@ interface TacticalConceptOption {
 const DropdownSettings = () => {
   useAuthCheck();
   const [selectedSport, setSelectedSport] = useState<string>("handball");
-  const [selectedTacticalConcept, setSelectedTacticalConcept] = useState<TacticalConcept | "">("");
+  const [selectedTacticalConcept, setSelectedTacticalConcept] = useState<string>("");
   const [hasAccess, setHasAccess] = useState(false);
   const [sports, setSports] = useState<Sport[]>([]);
   const [tacticalConcepts, setTacticalConcepts] = useState<TacticalConceptOption[]>([]);
@@ -659,4 +658,3 @@ const DropdownSettings = () => {
 };
 
 export default DropdownSettings;
-
