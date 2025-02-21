@@ -2,7 +2,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/components/ui/use-toast"
-import { Exercise } from "@/types/sequence"
+import { Exercise, TacticalConcept } from "@/types/sequence"
 
 export const useExerciseMutation = (sequenceId: string | undefined) => {
   const { toast } = useToast()
@@ -14,6 +14,11 @@ export const useExerciseMutation = (sequenceId: string | undefined) => {
       ...exercise 
     }: Partial<Exercise> & { id?: string }) => {
       if (!sequenceId) throw new Error("Sequence ID is required")
+
+      // Validate tactical concepts to ensure they match the expected enum values
+      const validTacticalConcepts = exercise.tactical_concepts?.filter((concept): concept is TacticalConcept => {
+        return ["montee_de_balle", "repli_defensif", "contre_attaque", "attaque_placee", "defense_alignee", "defense_etagee"].includes(concept)
+      }) || []
 
       // Ensure required fields are present
       const exerciseData = {
@@ -32,7 +37,7 @@ export const useExerciseMutation = (sequenceId: string | undefined) => {
         tactical_objectives: exercise.tactical_objectives,
         diagram_url: exercise.diagram_url,
         video_url: exercise.video_url,
-        tactical_concepts: exercise.tactical_concepts || [],
+        tactical_concepts: validTacticalConcepts,
         performance_metrics: exercise.performance_metrics || {},
         progression_level: exercise.progression_level || 1,
       }
@@ -77,4 +82,3 @@ export const useExerciseMutation = (sequenceId: string | undefined) => {
     }
   })
 }
-
