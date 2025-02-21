@@ -1,5 +1,5 @@
 
-import { useState } from "react"
+import { useForm } from "react-hook-form"
 import {
   Dialog,
   DialogContent,
@@ -8,7 +8,13 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form"
 import { useActivityTypeMutation } from "@/hooks/mutations/useActivityTypeMutation"
+
+interface FormValues {
+  value: string
+  label: string
+}
 
 interface AddActivityTypeDialogProps {
   open: boolean
@@ -19,18 +25,26 @@ export const AddActivityTypeDialog = ({
   open,
   onOpenChange,
 }: AddActivityTypeDialogProps) => {
-  const [value, setValue] = useState("")
-  const [label, setLabel] = useState("")
-  
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const form = useForm<FormValues>({
+    defaultValues: {
+      value: "",
+      label: "",
+    },
+  })
+
   const { handleAddType } = useActivityTypeMutation(() => {
-    setValue("")
-    setLabel("")
+    form.reset()
     onOpenChange(false)
   })
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    await handleAddType()
+  const onSubmit = async (values: FormValues) => {
+    setIsSubmitting(true)
+    try {
+      await handleAddType(values.value, values.label)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -39,28 +53,42 @@ export const AddActivityTypeDialog = ({
         <DialogHeader>
           <DialogTitle>Ajouter un type d'activité</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Input
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              placeholder="Code unique"
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="value"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Code unique</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="course_sprint" />
+                  </FormControl>
+                </FormItem>
+              )}
             />
-          </div>
-          <div>
-            <Input
-              value={label}
-              onChange={(e) => setLabel(e.target.value)}
-              placeholder="Nom affiché"
+            <FormField
+              control={form.control}
+              name="label"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nom affiché</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Course sprint" />
+                  </FormControl>
+                </FormItem>
+              )}
             />
-          </div>
-          <div className="flex justify-end gap-2">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Annuler
-            </Button>
-            <Button type="submit">Ajouter</Button>
-          </div>
-        </form>
+            <div className="flex justify-end gap-2">
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                Annuler
+              </Button>
+              <Button type="submit" disabled={isSubmitting}>
+                Ajouter
+              </Button>
+            </div>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   )

@@ -1,18 +1,16 @@
 
 import { useState } from "react"
-import { useToast } from "@/components/ui/use-toast"
+import { useToast } from "@/hooks/use-toast"
 import { supabase } from "@/integrations/supabase/client"
 
 export const useActivityTypeMutation = (onSuccess: () => void) => {
   const [isEditingType, setIsEditingType] = useState<string | null>(null)
   const [editedTypeValue, setEditedTypeValue] = useState("")
   const [editedTypeLabel, setEditedTypeLabel] = useState("")
-  const [newTypeValue, setNewTypeValue] = useState("")
-  const [newTypeLabel, setNewTypeLabel] = useState("")
   const { toast } = useToast()
 
-  const handleAddType = async () => {
-    if (!newTypeValue || !newTypeLabel) {
+  const handleAddType = async (value: string, label: string) => {
+    if (!value || !label) {
       toast({
         variant: "destructive",
         title: "Erreur",
@@ -25,19 +23,17 @@ export const useActivityTypeMutation = (onSuccess: () => void) => {
       const { error } = await supabase
         .from('activity_types')
         .insert([{
-          value: newTypeValue,
-          label: newTypeLabel
+          value,
+          label
         }])
 
       if (error) throw error
 
       toast({
         title: "Type d'activité ajouté",
-        description: `Le type d'activité ${newTypeLabel} a été ajouté avec succès`
+        description: `Le type d'activité ${label} a été ajouté avec succès`
       })
 
-      setNewTypeValue("")
-      setNewTypeLabel("")
       onSuccess()
     } catch (error) {
       console.error('Error adding activity type:', error)
@@ -113,13 +109,9 @@ export const useActivityTypeMutation = (onSuccess: () => void) => {
     isEditingType,
     editedTypeValue,
     editedTypeLabel,
-    newTypeValue,
-    newTypeLabel,
     setIsEditingType,
     setEditedTypeValue,
     setEditedTypeLabel,
-    setNewTypeValue,
-    setNewTypeLabel,
     handleAddType,
     handleEditType,
     handleDeleteType,
