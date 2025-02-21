@@ -1,8 +1,9 @@
 
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Edit, Trash2, Activity, List } from "lucide-react"
+import { Edit, Trash2, Activity, List, ChevronRight, Trophy, ChartBar } from "lucide-react"
 import { ExerciseListItemProps } from "./types/exercise-form"
+import { TacticalConcept } from "@/types/sequence"
 
 export const ExerciseListItem = ({ exercise, onEdit, onDelete }: ExerciseListItemProps) => {
   const getActivityIcon = () => {
@@ -11,6 +12,18 @@ export const ExerciseListItem = ({ exercise, onEdit, onDelete }: ExerciseListIte
     ) : (
       <Activity className="h-4 w-4" />
     )
+  }
+
+  const getConceptLabel = (concept: TacticalConcept) => {
+    const labels: Record<TacticalConcept, string> = {
+      montee_de_balle: "Montée de balle",
+      repli_defensif: "Repli défensif",
+      contre_attaque: "Contre-attaque",
+      attaque_placee: "Attaque placée",
+      defense_alignee: "Défense alignée",
+      defense_etagee: "Défense étagée"
+    }
+    return labels[concept]
   }
 
   return (
@@ -28,15 +41,64 @@ export const ExerciseListItem = ({ exercise, onEdit, onDelete }: ExerciseListIte
             </span>
           </Badge>
         </div>
+        
         <div className="flex gap-2 text-sm text-muted-foreground">
           <span>{exercise.duration} min</span>
           <span>•</span>
           <span className="capitalize">{exercise.intensity_level}</span>
         </div>
+        
         {exercise.description && (
           <p className="text-sm text-muted-foreground">
             {exercise.description}
           </p>
+        )}
+        
+        {exercise.tactical_concepts && exercise.tactical_concepts.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {exercise.tactical_concepts.map(concept => (
+              <Badge
+                key={concept}
+                variant="outline"
+                className="flex items-center gap-1"
+              >
+                <ChevronRight className="h-3 w-3" />
+                {getConceptLabel(concept)}
+              </Badge>
+            ))}
+          </div>
+        )}
+
+        {exercise.success_criteria && exercise.success_criteria.length > 0 && (
+          <div className="space-y-2">
+            <h5 className="text-sm font-medium flex items-center gap-2">
+              <Trophy className="h-4 w-4" />
+              Critères de réussite
+            </h5>
+            <div className="flex flex-wrap gap-2">
+              {exercise.success_criteria.map(criteria => (
+                <Badge key={criteria.id} variant="outline">
+                  {criteria.target_value} {criteria.unit} - {criteria.description}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {exercise.technical_progressions && exercise.technical_progressions.length > 0 && (
+          <div className="space-y-2">
+            <h5 className="text-sm font-medium flex items-center gap-2">
+              <ChartBar className="h-4 w-4" />
+              Progressions techniques
+            </h5>
+            <div className="flex flex-wrap gap-2">
+              {exercise.technical_progressions.map(progression => (
+                <Badge key={progression.id} variant="outline">
+                  {progression.skill_name}: {progression.current_level} → {progression.target_level}
+                </Badge>
+              ))}
+            </div>
+          </div>
         )}
         
         <div className="grid gap-4 md:grid-cols-2 mt-4">
