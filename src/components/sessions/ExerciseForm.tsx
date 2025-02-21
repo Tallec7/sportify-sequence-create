@@ -1,5 +1,5 @@
 
-import React, { useState } from "react"
+import React, { useState, useCallback } from "react"
 import { Exercise } from "@/types/sequence"
 import { useExerciseMutation } from "@/hooks/mutations/useExerciseMutation"
 import { useExerciseDeleteMutation } from "@/hooks/mutations/useExerciseDeleteMutation"
@@ -26,6 +26,7 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
   const exerciseMutation = useExerciseMutation(sequenceId)
   const exerciseDeleteMutation = useExerciseDeleteMutation(sequenceId)
   const exerciseOrderMutation = useExerciseOrderMutation(sequenceId)
+  const [localExercises, setLocalExercises] = useState(exercises)
 
   const [editingExercise, setEditingExercise] = useState<Exercise | null>(null)
   const [activityFilter, setActivityFilter] = useState<string>("all")
@@ -39,7 +40,11 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
     activity_type: "exercise"
   })
 
-  const filteredExercises = exercises.filter(exercise => {
+  React.useEffect(() => {
+    setLocalExercises(exercises)
+  }, [exercises])
+
+  const filteredExercises = localExercises.filter(exercise => {
     if (activityFilter === "all") return true
     return exercise.activity_type === activityFilter
   })
@@ -89,9 +94,13 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
     setEditingExercise(null)
   }
 
-  const handleReorderExercises = (reorderedExercises: Exercise[]) => {
-    exerciseOrderMutation.mutate(reorderedExercises)
-  }
+  const debouncedUpdateOrder = useCallback(
+    async (reorderedExercises: Exercise[]) => {
+      setLocalExercises(reorderedExercises)
+      exerciseOrderMutation.mutate(reorderedExercises)
+    },
+    [exerciseOrderMutation]
+  )
 
   return (
     <div className="space-y-6">
@@ -117,13 +126,21 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
           </div>
         </div>
 
-        <Reorder.Group axis="y" values={filteredExercises} onReorder={handleReorderExercises}>
-          <AnimatePresence>
+        <Reorder.Group 
+          axis="y" 
+          values={filteredExercises} 
+          onReorder={debouncedUpdateOrder}
+        >
+          <AnimatePresence mode="popLayout">
             {filteredExercises.map((exercise) => (
               <Reorder.Item
                 key={exercise.id}
                 value={exercise}
                 className="touch-none cursor-move"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.2 }}
               >
                 <ExerciseListItem
                   exercise={exercise}
@@ -146,3 +163,4 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
     </div>
   )
 }
+

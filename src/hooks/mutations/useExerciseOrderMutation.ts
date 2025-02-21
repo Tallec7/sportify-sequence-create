@@ -12,8 +12,6 @@ export const useExerciseOrderMutation = (sequenceId: string) => {
     mutationFn: async (exercises: Exercise[]) => {
       if (!sequenceId) throw new Error("Sequence ID is required")
 
-      console.log("Updating exercise order:", exercises.map(e => ({ id: e.id, order: e.exercise_order })))
-
       const updatePromises = exercises.map((exercise, index) =>
         supabase
           .from("exercises")
@@ -24,10 +22,6 @@ export const useExerciseOrderMutation = (sequenceId: string) => {
       await Promise.all(updatePromises)
     },
     onSuccess: () => {
-      toast({
-        title: "Succès",
-        description: "L'ordre des exercices a été mis à jour.",
-      })
       queryClient.invalidateQueries({ queryKey: ["exercises", sequenceId] })
     },
     onError: (error: Error) => {
@@ -40,3 +34,4 @@ export const useExerciseOrderMutation = (sequenceId: string) => {
     }
   })
 }
+
