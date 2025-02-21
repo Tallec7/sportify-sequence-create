@@ -129,30 +129,60 @@ const DropdownSettings = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="container py-8 space-y-8"
+      className="container max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8 space-y-8"
     >
-      <div className="rounded-xl border bg-card p-8 shadow-sm">
-        <h2 className="text-2xl font-semibold mb-6">Paramètres des listes déroulantes</h2>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="rounded-xl border bg-card shadow-lg backdrop-blur-sm bg-white/50 dark:bg-gray-900/50 p-8"
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="mb-8"
+        >
+          <h2 className="text-3xl font-bold tracking-tight text-foreground mb-2">
+            Paramètres des listes déroulantes
+          </h2>
+          <p className="text-muted-foreground">
+            Gérez les sports et les concepts tactiques disponibles dans l'application
+          </p>
+        </motion.div>
         
-        <div className="space-y-6">
-          <SportsList 
-            sports={sports}
-            onSportsChange={fetchSports}
-          />
+        <div className="space-y-8">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <SportsList 
+              sports={sports}
+              onSportsChange={fetchSports}
+            />
+          </motion.div>
 
-          <Separator />
+          <Separator className="my-8" />
 
-          <TacticalConceptsList 
-            sports={sports}
-            selectedSport={selectedSport}
-            tacticalConcepts={tacticalConcepts}
-            onSportChange={setSelectedSport}
-            onConceptsChange={() => fetchTacticalConcepts(selectedSport)}
-          />
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5 }}
+          >
+            <TacticalConceptsList 
+              sports={sports}
+              selectedSport={selectedSport}
+              tacticalConcepts={tacticalConcepts}
+              onSportChange={setSelectedSport}
+              onConceptsChange={() => fetchTacticalConcepts(selectedSport)}
+            />
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
     </motion.div>
   )
 }
 
 export default DropdownSettings
+

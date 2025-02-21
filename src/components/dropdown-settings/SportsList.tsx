@@ -1,4 +1,3 @@
-
 import { useState } from "react"
 import { Plus, Pencil, Trash2, Check, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -8,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { useToast } from "@/components/ui/use-toast"
 import { supabase } from "@/integrations/supabase/client"
+import { motion } from "framer-motion"
 
 interface Sport {
   id?: string
@@ -126,35 +126,52 @@ export const SportsList = ({ sports, onSportsChange }: SportsListProps) => {
   }
 
   return (
-    <div className="space-y-2">
-      <div className="flex justify-between items-center mb-4">
-        <Label>Sports</Label>
+    <div className="space-y-4">
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <Label className="text-lg font-semibold">Sports</Label>
+          <p className="text-sm text-muted-foreground mt-1">
+            Gérez la liste des sports disponibles
+          </p>
+        </div>
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline" onClick={() => setIsAddingSport(true)}>
+            <Button 
+              variant="outline" 
+              onClick={() => setIsAddingSport(true)}
+              className="hover:scale-105 transition-transform duration-200"
+            >
               <Plus className="h-4 w-4 mr-2" />
               Ajouter un sport
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle>Ajouter un nouveau sport</DialogTitle>
+              <DialogDescription>
+                Remplissez les informations pour ajouter un nouveau sport à la liste
+              </DialogDescription>
             </DialogHeader>
-            <div className="space-y-4">
-              <div>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
                 <Label>Identifiant unique</Label>
                 <Input
                   value={newSportValue}
                   onChange={(e) => setNewSportValue(e.target.value)}
                   placeholder="handball"
+                  className="focus:ring-2 focus:ring-primary"
                 />
+                <p className="text-xs text-muted-foreground">
+                  L'identifiant doit être unique et en minuscules, sans espaces
+                </p>
               </div>
-              <div>
+              <div className="space-y-2">
                 <Label>Nom affiché</Label>
                 <Input
                   value={newSportLabel}
                   onChange={(e) => setNewSportLabel(e.target.value)}
                   placeholder="Handball"
+                  className="focus:ring-2 focus:ring-primary"
                 />
               </div>
               <div className="flex justify-end gap-2">
@@ -170,11 +187,17 @@ export const SportsList = ({ sports, onSportsChange }: SportsListProps) => {
         </Dialog>
       </div>
 
-      <div className="space-y-2">
+      <div className="grid gap-3">
         {sports.map((sport) => (
-          <div key={sport.id} className="flex items-center justify-between p-2 rounded border bg-background">
+          <motion.div
+            key={sport.id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="flex items-center justify-between p-4 rounded-lg border bg-card hover:shadow-md transition-shadow duration-200"
+          >
             {isEditingSport === sport.id ? (
-              <div className="flex-1 flex gap-2">
+              <div className="flex-1 flex gap-3">
                 <Input
                   value={editedSportValue}
                   onChange={(e) => setEditedSportValue(e.target.value)}
@@ -188,7 +211,10 @@ export const SportsList = ({ sports, onSportsChange }: SportsListProps) => {
                 />
               </div>
             ) : (
-              <span>{sport.label} ({sport.value})</span>
+              <div className="flex items-center gap-2">
+                <span className="font-medium">{sport.label}</span>
+                <span className="text-sm text-muted-foreground">({sport.value})</span>
+              </div>
             )}
             <div className="flex gap-2">
               {isEditingSport === sport.id ? (
@@ -197,6 +223,7 @@ export const SportsList = ({ sports, onSportsChange }: SportsListProps) => {
                     size="sm"
                     variant="ghost"
                     onClick={() => handleEditSport(sport.id!)}
+                    className="hover:bg-primary/10"
                   >
                     <Check className="h-4 w-4" />
                   </Button>
@@ -204,6 +231,7 @@ export const SportsList = ({ sports, onSportsChange }: SportsListProps) => {
                     size="sm"
                     variant="ghost"
                     onClick={() => setIsEditingSport(null)}
+                    className="hover:bg-destructive/10"
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -218,12 +246,17 @@ export const SportsList = ({ sports, onSportsChange }: SportsListProps) => {
                       setEditedSportValue(sport.value)
                       setEditedSportLabel(sport.label)
                     }}
+                    className="hover:bg-primary/10"
                   >
                     <Pencil className="h-4 w-4" />
                   </Button>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button size="sm" variant="ghost">
+                      <Button 
+                        size="sm" 
+                        variant="ghost"
+                        className="hover:bg-destructive/10"
+                      >
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
                     </AlertDialogTrigger>
@@ -249,7 +282,7 @@ export const SportsList = ({ sports, onSportsChange }: SportsListProps) => {
                 </>
               )}
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>
