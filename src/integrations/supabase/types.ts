@@ -161,22 +161,31 @@ export type Database = {
           created_at: string | null
           description: string
           id: string
+          is_priority: boolean | null
           objective_type: string | null
+          order_index: number | null
           session_id: string | null
+          type: string | null
         }
         Insert: {
           created_at?: string | null
           description: string
           id?: string
+          is_priority?: boolean | null
           objective_type?: string | null
+          order_index?: number | null
           session_id?: string | null
+          type?: string | null
         }
         Update: {
           created_at?: string | null
           description?: string
           id?: string
+          is_priority?: boolean | null
           objective_type?: string | null
+          order_index?: number | null
           session_id?: string | null
+          type?: string | null
         }
         Relationships: [
           {
