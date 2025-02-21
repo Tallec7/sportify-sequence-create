@@ -6,6 +6,7 @@ import { SportsList } from "@/components/dropdown-settings/SportsList"
 import { TacticalConceptsList } from "@/components/dropdown-settings/TacticalConceptsList"
 import { LevelsList } from "@/components/dropdown-settings/LevelsList"
 import { IntensityLevelsList } from "@/components/dropdown-settings/IntensityLevelsList"
+import { SequenceTypesList } from "@/components/dropdown-settings/SequenceTypesList"
 import { SettingsHeader } from "@/components/dropdown-settings/SettingsHeader"
 import { useDropdownSettings } from "@/hooks/useDropdownSettings"
 
@@ -20,10 +21,12 @@ const DropdownSettings = () => {
     tacticalConcepts,
     levels,
     intensityLevels,
+    sequenceTypes,
     fetchSports,
     fetchTacticalConcepts,
     fetchLevels,
-    fetchIntensityLevels
+    fetchIntensityLevels,
+    fetchSequenceTypes
   } = useDropdownSettings()
 
   if (!hasAccess || isLoading) {
@@ -96,6 +99,19 @@ const DropdownSettings = () => {
             <IntensityLevelsList
               intensityLevels={intensityLevels}
               onIntensityLevelsChange={fetchIntensityLevels}
+            />
+          </motion.div>
+
+          <Separator className="my-8" />
+
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.8 }}
+          >
+            <SequenceTypesList
+              sequenceTypes={sequenceTypes}
+              onSequenceTypesChange={fetchSequenceTypes}
             />
           </motion.div>
         </div>

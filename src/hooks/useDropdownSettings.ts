@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/components/ui/use-toast"
-import { Sport, TacticalConceptOption, Level, IntensityLevel } from "@/types/settings"
+import { Sport, TacticalConceptOption, Level, IntensityLevel, SequenceType } from "@/types/settings"
 
 export const useDropdownSettings = () => {
   const [selectedSport, setSelectedSport] = useState<string>("handball")
@@ -12,6 +12,7 @@ export const useDropdownSettings = () => {
   const [tacticalConcepts, setTacticalConcepts] = useState<TacticalConceptOption[]>([])
   const [levels, setLevels] = useState<Level[]>([])
   const [intensityLevels, setIntensityLevels] = useState<IntensityLevel[]>([])
+  const [sequenceTypes, setSequenceTypes] = useState<SequenceType[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate()
   const { toast } = useToast()
@@ -131,11 +132,31 @@ export const useDropdownSettings = () => {
     }
   }
 
+  const fetchSequenceTypes = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('sequence_types')
+        .select('id, value, label')
+        .order('label')
+
+      if (error) throw error
+      setSequenceTypes(data || [])
+    } catch (error) {
+      console.error('Error fetching sequence types:', error)
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Impossible de charger la liste des types de séquence"
+      })
+    }
+  }
+
   useEffect(() => {
     checkUserAccess()
     fetchSports()
     fetchLevels()
     fetchIntensityLevels()
+    fetchSequenceTypes()
   }, [])
 
   useEffect(() => {
@@ -153,9 +174,11 @@ export const useDropdownSettings = () => {
     tacticalConcepts,
     levels,
     intensityLevels,
+    sequenceTypes,
     fetchSports,
     fetchTacticalConcepts,
     fetchLevels,
-    fetchIntensityLevels
+    fetchIntensityLevels,
+    fetchSequenceTypes
   }
 }

@@ -23,3 +23,9 @@ export interface IntensityLevel {
   value: string
   label: string
 }
+
+export interface SequenceType {
+  id?: string
+  value: string
+  label: string
+}

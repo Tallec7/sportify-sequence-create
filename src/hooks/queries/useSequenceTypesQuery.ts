@@ -2,12 +2,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/components/ui/use-toast"
-
-export interface SequenceType {
-  id: string
-  value: string
-  label: string
-}
+import { SequenceType } from "@/types/settings"
 
 export const useSequenceTypesQuery = () => {
   const { toast } = useToast()
@@ -25,15 +20,14 @@ export const useSequenceTypesQuery = () => {
         toast({
           variant: "destructive",
           title: "Erreur",
-          description: "Impossible de charger la liste des types de séquence"
+          description: "Impossible de charger les types de séquence"
         })
         return []
       }
 
-      return data || []
+      return data as SequenceType[]
     }
   })
 
   return sequenceTypes
 }
-
