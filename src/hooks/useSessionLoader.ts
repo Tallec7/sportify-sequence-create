@@ -10,6 +10,7 @@ export const useSessionLoader = (id: string | undefined, userId: string | null) 
   const navigate = useNavigate()
   const { toast } = useToast()
   const { sequences, setSequences, loadSequences } = useSequenceLoader(id)
+  const [loading, setLoading] = useState(true)
   const [formData, setFormData] = useState<SessionFormData>({
     title: "",
     description: "",
@@ -31,6 +32,7 @@ export const useSessionLoader = (id: string | undefined, userId: string | null) 
 
   const loadSession = async (sessionId: string) => {
     try {
+      setLoading(true)
       const { data: sessionData, error: sessionError } = await supabase
         .from('sessions')
         .select('*')
@@ -49,9 +51,11 @@ export const useSessionLoader = (id: string | undefined, userId: string | null) 
         description: "Impossible de charger la séance.",
       })
       navigate("/dashboard")
+    } finally {
+      setLoading(false)
     }
   }
 
-  return { formData, setFormData, sequences, setSequences }
+  return { formData, setFormData, sequences, setSequences, loading }
 }
 

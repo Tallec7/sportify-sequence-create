@@ -6,7 +6,7 @@ import { Sequence } from "@/types/sequence"
 
 export const useSession = (id: string | undefined) => {
   const { userId } = useAuthCheck()
-  const { formData, setFormData, sequences, setSequences } = useSessionLoader(id, userId)
+  const { formData, setFormData, sequences, setSequences, loading } = useSessionLoader(id, userId)
   const { handleSave } = useSessionSaver(id, userId)
 
   const handleAddSequence = (sequence: Sequence) => {
@@ -19,6 +19,7 @@ export const useSession = (id: string | undefined) => {
     sequences,
     formData,
     setFormData,
+    loading,
     handleSave: () => handleSave(formData, sequences),
     handleAddSequence
   }
