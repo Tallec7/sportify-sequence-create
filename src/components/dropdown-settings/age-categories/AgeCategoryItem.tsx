@@ -61,49 +61,44 @@ export const AgeCategoryItem = ({ category }: AgeCategoryItemProps) => {
   }
 
   return (
-    <div className="flex items-center justify-between p-4 rounded-lg bg-card hover:bg-accent/5 transition-colors group">
+    <div className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/5 transition-colors">
       {isEditing ? (
-        <div className="flex-1 space-y-2">
+        <div className="flex-1 flex gap-3">
           <Input
-            placeholder="Code unique"
             value={editedValue}
             onChange={(e) => setEditedValue(e.target.value)}
+            placeholder="Code unique"
             className="max-w-[200px]"
           />
           <Input
-            placeholder="Nom affiché"
             value={editedLabel}
             onChange={(e) => setEditedLabel(e.target.value)}
-            className="max-w-[200px]"
+            placeholder="Nom affiché"
           />
         </div>
       ) : (
-        <div className="flex items-center gap-3">
-          <Badge variant="secondary" className="font-medium">
-            {category.label}
-          </Badge>
-          <span className="text-sm text-muted-foreground">
-            {category.value}
-          </span>
+        <div className="flex items-center gap-2">
+          <span className="font-medium">{category.label}</span>
+          <span className="text-sm text-muted-foreground">({category.value})</span>
         </div>
       )}
       
-      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="flex items-center gap-2">
         {isEditing ? (
           <>
             <Button
-              variant="ghost"
               size="sm"
+              variant="ghost"
               onClick={handleSaveEdit}
-              className="h-8 px-2"
+              className="hover:bg-primary/10"
             >
               <Save className="h-4 w-4" />
             </Button>
             <Button
-              variant="ghost"
               size="sm"
+              variant="ghost"
               onClick={handleCancelEdit}
-              className="h-8 px-2"
+              className="hover:bg-destructive/10"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -111,20 +106,20 @@ export const AgeCategoryItem = ({ category }: AgeCategoryItemProps) => {
         ) : (
           <>
             <Button
-              variant="ghost"
               size="sm"
+              variant="ghost"
               onClick={handleStartEdit}
-              className="h-8 px-2"
+              className="hover:bg-primary/10"
             >
               <Edit2 className="h-4 w-4" />
             </Button>
             <Button
-              variant="ghost"
               size="sm"
+              variant="ghost"
               onClick={() => setIsDeleteDialogOpen(true)}
-              className="h-8 px-2 hover:text-destructive"
+              className="hover:bg-destructive/10"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="h-4 w-4 text-destructive" />
             </Button>
           </>
         )}
@@ -140,7 +135,10 @@ export const AgeCategoryItem = ({ category }: AgeCategoryItemProps) => {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Annuler</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>
+            <AlertDialogAction 
+              onClick={handleDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
               Supprimer
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -149,4 +147,3 @@ export const AgeCategoryItem = ({ category }: AgeCategoryItemProps) => {
     </div>
   )
 }
-
