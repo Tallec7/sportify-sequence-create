@@ -10,6 +10,10 @@ export interface Exercise {
   intensity_level?: string
   variations?: string[]
   exercise_order: number
+  activity_type: 'exercise' | 'situation'
+  opposition_type?: string
+  decision_making_focus?: string[]
+  tactical_objectives?: string[]
 }
 
 export interface Sequence {

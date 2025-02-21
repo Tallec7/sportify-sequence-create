@@ -46,46 +46,58 @@ export type Database = {
       }
       exercises: {
         Row: {
+          activity_type: Database["public"]["Enums"]["activity_type_enum"]
           coach_instructions: string | null
           created_at: string | null
+          decision_making_focus: string[] | null
           description: string
           duration: number
           exercise_order: number
           id: string
           intensity_level: string | null
+          opposition_type: string | null
           player_instructions: string | null
           sequence_id: string | null
           setup_instructions: string | null
+          tactical_objectives: string[] | null
           title: string
           updated_at: string | null
           variations: string[] | null
         }
         Insert: {
+          activity_type?: Database["public"]["Enums"]["activity_type_enum"]
           coach_instructions?: string | null
           created_at?: string | null
+          decision_making_focus?: string[] | null
           description: string
           duration: number
           exercise_order: number
           id?: string
           intensity_level?: string | null
+          opposition_type?: string | null
           player_instructions?: string | null
           sequence_id?: string | null
           setup_instructions?: string | null
+          tactical_objectives?: string[] | null
           title: string
           updated_at?: string | null
           variations?: string[] | null
         }
         Update: {
+          activity_type?: Database["public"]["Enums"]["activity_type_enum"]
           coach_instructions?: string | null
           created_at?: string | null
+          decision_making_focus?: string[] | null
           description?: string
           duration?: number
           exercise_order?: number
           id?: string
           intensity_level?: string | null
+          opposition_type?: string | null
           player_instructions?: string | null
           sequence_id?: string | null
           setup_instructions?: string | null
+          tactical_objectives?: string[] | null
           title?: string
           updated_at?: string | null
           variations?: string[] | null
@@ -429,6 +441,7 @@ export type Database = {
       }
     }
     Enums: {
+      activity_type_enum: "exercise" | "situation"
       age_category_enum: "U9" | "U11" | "U13" | "U15" | "U17" | "U19" | "Senior"
       objective_type_enum:
         | "apprentissage"

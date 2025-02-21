@@ -63,7 +63,10 @@ export const ViewSessionSequences = ({ sequences }: ViewSessionSequencesProps) =
                       .sort((a, b) => a.exercise_order - b.exercise_order)
                       .map((exercise) => (
                         <div key={exercise.id} className="space-y-2 pb-3 border-b last:border-0">
-                          <h5 className="font-medium text-sm">{exercise.title}</h5>
+                          <div className="flex items-center justify-between">
+                            <h5 className="font-medium text-sm">{exercise.title}</h5>
+                            <Badge variant="outline">{exercise.activity_type}</Badge>
+                          </div>
                           <p className="text-sm text-muted-foreground">{exercise.description}</p>
                           <div className="grid grid-cols-2 gap-2 text-sm">
                             <span>Durée: {exercise.duration}min</span>
@@ -71,6 +74,39 @@ export const ViewSessionSequences = ({ sequences }: ViewSessionSequencesProps) =
                               <span>Intensité: {getIntensityLabel(exercise.intensity_level)}</span>
                             )}
                           </div>
+
+                          {/* Afficher les informations spécifiques aux situations */}
+                          {exercise.activity_type === 'situation' && (
+                            <div className="grid gap-2 text-sm border-t pt-2 mt-2">
+                              {exercise.opposition_type && (
+                                <div>
+                                  <span className="font-medium">Type d'opposition:</span>
+                                  <p className="text-muted-foreground">{exercise.opposition_type}</p>
+                                </div>
+                              )}
+                              {exercise.decision_making_focus && exercise.decision_making_focus.length > 0 && (
+                                <div>
+                                  <span className="font-medium">Focus décisionnel:</span>
+                                  <ul className="list-disc list-inside text-muted-foreground">
+                                    {exercise.decision_making_focus.map((focus, index) => (
+                                      <li key={index}>{focus}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                              {exercise.tactical_objectives && exercise.tactical_objectives.length > 0 && (
+                                <div>
+                                  <span className="font-medium">Objectifs tactiques:</span>
+                                  <ul className="list-disc list-inside text-muted-foreground">
+                                    {exercise.tactical_objectives.map((objective, index) => (
+                                      <li key={index}>{objective}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
                           {(exercise.player_instructions || exercise.setup_instructions || exercise.coach_instructions) && (
                             <div className="grid gap-2 text-sm pt-2">
                               {exercise.player_instructions && (

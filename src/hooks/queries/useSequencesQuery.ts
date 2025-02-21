@@ -24,7 +24,11 @@ export const useSequencesQuery = (sessionId: string | undefined) => {
             coach_instructions,
             intensity_level,
             variations,
-            exercise_order
+            exercise_order,
+            activity_type,
+            opposition_type,
+            decision_making_focus,
+            tactical_objectives
           )
         `)
         .eq("session_id", sessionId)

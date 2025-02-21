@@ -2,7 +2,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/components/ui/use-toast"
-import { Exercise } from "@/components/sessions/ExerciseForm"
+import { Exercise } from "@/types/sequence"
 
 export const useExerciseMutation = (sequenceId: string | undefined) => {
   const { toast } = useToast()
@@ -26,6 +26,10 @@ export const useExerciseMutation = (sequenceId: string | undefined) => {
         coach_instructions: exercise.coach_instructions,
         player_instructions: exercise.player_instructions,
         setup_instructions: exercise.setup_instructions,
+        activity_type: exercise.activity_type || "exercise",
+        opposition_type: exercise.opposition_type,
+        decision_making_focus: exercise.decision_making_focus,
+        tactical_objectives: exercise.tactical_objectives,
       }
 
       if (id) {
