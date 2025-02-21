@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
-import { PlusCircle } from "lucide-react"
+import { PlusCircle, Pencil, Trash2 } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
 import {
   Card,
@@ -10,8 +10,21 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { useToast } from "@/components/ui/use-toast"
 
 type Session = {
   id: string
@@ -27,6 +40,7 @@ type Session = {
 
 const Dashboard = () => {
   const navigate = useNavigate()
+  const { toast } = useToast()
   const [sessions, setSessions] = useState<Session[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -60,6 +74,30 @@ const Dashboard = () => {
     }
   }
 
+  const handleDelete = async (sessionId: string) => {
+    try {
+      const { error } = await supabase
+        .from('sessions')
+        .delete()
+        .eq('id', sessionId)
+
+      if (error) throw error
+
+      setSessions(sessions.filter(session => session.id !== sessionId))
+      toast({
+        title: "Succès",
+        description: "La séance a été supprimée avec succès.",
+      })
+    } catch (error) {
+      console.error("Error deleting session:", error)
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la suppression de la séance.",
+      })
+    }
+  }
+
   const formatDuration = (minutes: number) => {
     if (minutes < 60) return `${minutes}min`
     const hours = Math.floor(minutes / 60)
@@ -83,7 +121,7 @@ const Dashboard = () => {
       ) : sessions.length > 0 ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {sessions.map((session) => (
-            <Card key={session.id} className="cursor-pointer hover:bg-accent/50 transition-colors">
+            <Card key={session.id}>
               <CardHeader>
                 <CardTitle>{session.title}</CardTitle>
                 <CardDescription className="flex items-center gap-2">
@@ -104,6 +142,38 @@ const Dashboard = () => {
                   )}
                 </div>
               </CardContent>
+              <CardFooter className="flex justify-end gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate(`/editor/${session.id}`)}
+                >
+                  <Pencil className="h-4 w-4 mr-2" />
+                  Modifier
+                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" size="sm">
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Supprimer
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Cette action est irréversible. La séance sera définitivement supprimée.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Annuler</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => handleDelete(session.id)}>
+                        Supprimer
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </CardFooter>
             </Card>
           ))}
         </div>
@@ -117,3 +187,4 @@ const Dashboard = () => {
 }
 
 export default Dashboard
+
