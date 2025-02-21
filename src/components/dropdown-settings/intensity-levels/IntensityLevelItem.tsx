@@ -1,9 +1,19 @@
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Check, X, Pencil, Trash2 } from "lucide-react"
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { Edit2, Save, X, Trash2 } from "lucide-react"
 import { IntensityLevel } from "@/types/settings"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { useState } from "react"
 
 interface IntensityLevelItemProps {
   level: IntensityLevel
@@ -30,10 +40,12 @@ export const IntensityLevelItem = ({
   onSaveEdit,
   onDelete,
 }: IntensityLevelItemProps) => {
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+
   return (
-    <div className="flex items-center justify-between p-2 rounded border bg-background">
+    <div className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/5 transition-colors">
       {isEditing ? (
-        <div className="flex-1 flex gap-2">
+        <div className="flex-1 flex gap-3">
           <Input
             value={editedValue}
             onChange={(e) => onEditValueChange(e.target.value)}
@@ -47,22 +59,28 @@ export const IntensityLevelItem = ({
           />
         </div>
       ) : (
-        <span className="font-medium">{level.label}</span>
+        <div className="flex items-center gap-2">
+          <span className="font-medium">{level.label}</span>
+          <span className="text-sm text-muted-foreground">({level.value})</span>
+        </div>
       )}
-      <div className="flex gap-2">
+      
+      <div className="flex items-center gap-2">
         {isEditing ? (
           <>
             <Button
               size="sm"
               variant="ghost"
               onClick={onSaveEdit}
+              className="hover:bg-primary/10"
             >
-              <Check className="h-4 w-4" />
+              <Save className="h-4 w-4" />
             </Button>
             <Button
               size="sm"
               variant="ghost"
               onClick={onCancelEdit}
+              className="hover:bg-destructive/10"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -73,36 +91,44 @@ export const IntensityLevelItem = ({
               size="sm"
               variant="ghost"
               onClick={onStartEdit}
+              className="hover:bg-primary/10"
             >
-              <Pencil className="h-4 w-4" />
+              <Edit2 className="h-4 w-4" />
             </Button>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button size="sm" variant="ghost">
-                  <Trash2 className="h-4 w-4 text-destructive" />
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Cette action est irréversible. Cela supprimera définitivement ce niveau d'intensité.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Annuler</AlertDialogCancel>
-                  <AlertDialogAction 
-                    onClick={onDelete}
-                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                  >
-                    Supprimer
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setIsDeleteDialogOpen(true)}
+              className="hover:bg-destructive/10"
+            >
+              <Trash2 className="h-4 w-4 text-destructive" />
+            </Button>
           </>
         )}
       </div>
+
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Cette action ne peut pas être annulée. Le niveau d'intensité sera définitivement supprimé.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                onDelete();
+                setIsDeleteDialogOpen(false);
+              }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Supprimer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

@@ -1,9 +1,18 @@
 
 import { useState } from "react"
-import { Pencil, Trash2, Check, X } from "lucide-react"
+import { Edit2, Save, X, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { motion } from "framer-motion"
 import { Sport } from "@/types/tactical-concepts"
 import { useSportMutation } from "@/hooks/mutations/useSportMutation"
@@ -17,6 +26,7 @@ export const SportItem = ({ sport, onSportsChange }: SportItemProps) => {
   const [isEditing, setIsEditing] = useState(false)
   const [editedSportValue, setEditedSportValue] = useState(sport.value)
   const [editedSportLabel, setEditedSportLabel] = useState(sport.label)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const { updateSport, deleteSport } = useSportMutation(onSportsChange)
 
   const handleEdit = async () => {
@@ -31,14 +41,14 @@ export const SportItem = ({ sport, onSportsChange }: SportItemProps) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="flex items-center justify-between p-4 rounded-lg border bg-card hover:shadow-md transition-shadow duration-200"
+      className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/5 transition-colors"
     >
       {isEditing ? (
         <div className="flex-1 flex gap-3">
           <Input
             value={editedSportValue}
             onChange={(e) => setEditedSportValue(e.target.value)}
-            placeholder="Identifiant unique"
+            placeholder="Code unique"
             className="max-w-[200px]"
           />
           <Input
@@ -53,7 +63,8 @@ export const SportItem = ({ sport, onSportsChange }: SportItemProps) => {
           <span className="text-sm text-muted-foreground">({sport.value})</span>
         </div>
       )}
-      <div className="flex gap-2">
+
+      <div className="flex items-center gap-2">
         {isEditing ? (
           <>
             <Button
@@ -62,7 +73,7 @@ export const SportItem = ({ sport, onSportsChange }: SportItemProps) => {
               onClick={handleEdit}
               className="hover:bg-primary/10"
             >
-              <Check className="h-4 w-4" />
+              <Save className="h-4 w-4" />
             </Button>
             <Button
               size="sm"
@@ -79,46 +90,49 @@ export const SportItem = ({ sport, onSportsChange }: SportItemProps) => {
               size="sm"
               variant="ghost"
               onClick={() => {
-                setIsEditing(true)
-                setEditedSportValue(sport.value)
-                setEditedSportLabel(sport.label)
+                setIsEditing(true);
+                setEditedSportValue(sport.value);
+                setEditedSportLabel(sport.label);
               }}
               className="hover:bg-primary/10"
             >
-              <Pencil className="h-4 w-4" />
+              <Edit2 className="h-4 w-4" />
             </Button>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button 
-                  size="sm" 
-                  variant="ghost"
-                  className="hover:bg-destructive/10"
-                >
-                  <Trash2 className="h-4 w-4 text-destructive" />
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Cette action est irréversible. Cela supprimera définitivement le sport
-                    et tous les concepts tactiques associés.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Annuler</AlertDialogCancel>
-                  <AlertDialogAction 
-                    onClick={() => deleteSport(sport.id!)}
-                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                  >
-                    Supprimer
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setIsDeleteDialogOpen(true)}
+              className="hover:bg-destructive/10"
+            >
+              <Trash2 className="h-4 w-4 text-destructive" />
+            </Button>
           </>
         )}
       </div>
+
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Cette action est irréversible. Cela supprimera définitivement le sport
+              et tous les concepts tactiques associés.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                deleteSport(sport.id!);
+                setIsDeleteDialogOpen(false);
+              }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Supprimer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </motion.div>
   )
 }

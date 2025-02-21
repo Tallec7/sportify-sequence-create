@@ -2,7 +2,17 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Edit2, Save, X, Trash2 } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { useState } from "react"
 
 interface ActivityTypeItemProps {
   type: {
@@ -33,10 +43,12 @@ export const ActivityTypeItem = ({
   onSaveEdit,
   onDelete,
 }: ActivityTypeItemProps) => {
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+
   return (
-    <div className="flex items-center justify-between p-4 rounded-lg bg-card hover:bg-accent/5 transition-colors group">
+    <div className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/5 transition-colors">
       {isEditing ? (
-        <div className="flex-1 space-y-2">
+        <div className="flex-1 flex gap-3">
           <Input
             placeholder="Code unique"
             value={editedValue}
@@ -47,36 +59,31 @@ export const ActivityTypeItem = ({
             placeholder="Nom affiché"
             value={editedLabel}
             onChange={(e) => onEditLabelChange(e.target.value)}
-            className="max-w-[200px]"
           />
         </div>
       ) : (
-        <div className="flex items-center gap-3">
-          <Badge variant="secondary" className="font-medium">
-            {type.label}
-          </Badge>
-          <span className="text-sm text-muted-foreground">
-            {type.value}
-          </span>
+        <div className="flex items-center gap-2">
+          <span className="font-medium">{type.label}</span>
+          <span className="text-sm text-muted-foreground">({type.value})</span>
         </div>
       )}
       
-      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="flex items-center gap-2">
         {isEditing ? (
           <>
             <Button
-              variant="ghost"
               size="sm"
+              variant="ghost"
               onClick={onSaveEdit}
-              className="h-8 px-2"
+              className="hover:bg-primary/10"
             >
               <Save className="h-4 w-4" />
             </Button>
             <Button
-              variant="ghost"
               size="sm"
+              variant="ghost"
               onClick={onCancelEdit}
-              className="h-8 px-2"
+              className="hover:bg-destructive/10"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -84,24 +91,47 @@ export const ActivityTypeItem = ({
         ) : (
           <>
             <Button
-              variant="ghost"
               size="sm"
+              variant="ghost"
               onClick={onStartEdit}
-              className="h-8 px-2"
+              className="hover:bg-primary/10"
             >
               <Edit2 className="h-4 w-4" />
             </Button>
             <Button
-              variant="ghost"
               size="sm"
-              onClick={onDelete}
-              className="h-8 px-2 hover:text-destructive"
+              variant="ghost"
+              onClick={() => setIsDeleteDialogOpen(true)}
+              className="hover:bg-destructive/10"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="h-4 w-4 text-destructive" />
             </Button>
           </>
         )}
       </div>
+
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Cette action ne peut pas être annulée. Le type d'activité sera définitivement supprimé.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                onDelete();
+                setIsDeleteDialogOpen(false);
+              }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Supprimer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
