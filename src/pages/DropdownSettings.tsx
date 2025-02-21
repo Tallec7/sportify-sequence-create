@@ -9,6 +9,9 @@ import { IntensityLevelsList } from "@/components/dropdown-settings/IntensityLev
 import { SequenceTypesList } from "@/components/dropdown-settings/SequenceTypesList"
 import { SettingsHeader } from "@/components/dropdown-settings/SettingsHeader"
 import { useDropdownSettings } from "@/hooks/useDropdownSettings"
+import { AgeCategoriesList } from "@/components/dropdown-settings/readonly/AgeCategoriesList"
+import { ActivityTypesList } from "@/components/dropdown-settings/readonly/ActivityTypesList"
+import { ProgressionLevelsList } from "@/components/dropdown-settings/readonly/ProgressionLevelsList"
 
 const DropdownSettings = () => {
   useAuthCheck()
@@ -83,6 +86,26 @@ const DropdownSettings = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.6 }}
           >
+            <AgeCategoriesList />
+          </motion.div>
+
+          <Separator className="my-8" />
+
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.7 }}
+          >
+            <ActivityTypesList />
+          </motion.div>
+
+          <Separator className="my-8" />
+
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.8 }}
+          >
             <LevelsList
               levels={levels}
               onLevelsChange={fetchLevels}
@@ -94,7 +117,7 @@ const DropdownSettings = () => {
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.7 }}
+            transition={{ delay: 0.9 }}
           >
             <IntensityLevelsList
               intensityLevels={intensityLevels}
@@ -107,12 +130,22 @@ const DropdownSettings = () => {
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.8 }}
+            transition={{ delay: 1.0 }}
           >
             <SequenceTypesList
               sequenceTypes={sequenceTypes}
               onSequenceTypesChange={fetchSequenceTypes}
             />
+          </motion.div>
+
+          <Separator className="my-8" />
+
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 1.1 }}
+          >
+            <ProgressionLevelsList />
           </motion.div>
         </div>
       </motion.div>
