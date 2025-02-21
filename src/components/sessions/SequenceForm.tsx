@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Plus } from "lucide-react"
-import { ExerciseForm, Exercise } from "./ExerciseForm"
+import { ExerciseForm } from "./ExerciseForm"
 import {
   Select,
   SelectContent,
@@ -53,20 +53,23 @@ export const SequenceForm = ({ sequences, onAddSequence }: SequenceFormProps) =>
 
       if (error) throw error
 
-      onAddSequence(sequence)
-      toast({
-        title: "Succès",
-        description: "La séquence a été ajoutée avec succès.",
-      })
+      // Assurez-vous que sequence_type est correctement typé avant d'appeler onAddSequence
+      if (sequence && (sequence.sequence_type === "warmup" || sequence.sequence_type === "main" || sequence.sequence_type === "cooldown")) {
+        onAddSequence(sequence as Sequence)
+        toast({
+          title: "Succès",
+          description: "La séquence a été ajoutée avec succès.",
+        })
 
-      setNewSequence({
-        title: "",
-        description: "",
-        duration: 15,
-        sequence_type: "main",
-        intensity_level: "medium",
-        sequence_order: sequences.length + 2,
-      })
+        setNewSequence({
+          title: "",
+          description: "",
+          duration: 15,
+          sequence_type: "main",
+          intensity_level: "medium",
+          sequence_order: sequences.length + 2,
+        })
+      }
     } catch (error: any) {
       toast({
         variant: "destructive",
