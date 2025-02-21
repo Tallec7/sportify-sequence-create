@@ -1,63 +1,63 @@
 
-# Database Design - KAP
+# Design de la Base de Données - KAP
 
-## 1. Database Schema
+## 1. Schéma de la Base de Données
 
-### 1.1 Core Tables
-- Users & Profiles
-  - Authentication data
-  - User preferences
-  - Profile information
+### 1.1 Tables Principales
+- Utilisateurs & Profils
+  - Données d'authentification
+  - Préférences utilisateur
+  - Informations de profil
 
-- Sessions & Sequences
-  - Training details
-  - Exercise sequences
-  - Session metadata
+- Sessions & Séquences
+  - Détails d'entraînement
+  - Séquences d'exercices
+  - Métadonnées de session
 
-- Exercises & Templates
-  - Exercise definitions
-  - Template structures
-  - Variation options
+- Exercices & Templates
+  - Définitions d'exercices
+  - Structures de template
+  - Options de variation
 
-### 1.2 Auxiliary Tables
-- Comments & Annotations
-  - User feedback
-  - Real-time notes
-  - Review history
+### 1.2 Tables Auxiliaires
+- Commentaires & Annotations
+  - Retours utilisateur
+  - Notes en temps réel
+  - Historique de revue
 
-- Analytics & Metrics
-  - Usage statistics
-  - Performance data
-  - AI insights
+- Analytique & Métriques
+  - Statistiques d'utilisation
+  - Données de performance
+  - Insights IA
 
-## 2. Data Relationships
+## 2. Relations de Données
 
-### 2.1 Primary Relations
-- User -> Sessions (1:N)
-- Session -> Sequences (1:N)
-- Sequence -> Exercises (1:N)
-- Session -> Comments (1:N)
+### 2.1 Relations Primaires
+- Utilisateur -> Sessions (1:N)
+- Session -> Séquences (1:N)
+- Séquence -> Exercices (1:N)
+- Session -> Commentaires (1:N)
 
-### 2.2 Secondary Relations
-- User -> Comments (1:N)
+### 2.2 Relations Secondaires
+- Utilisateur -> Commentaires (1:N)
 - Template -> Sessions (1:N)
-- Exercise -> Variations (1:N)
+- Exercice -> Variations (1:N)
 
-## 3. Data Management
+## 3. Gestion des Données
 
-### 3.1 Storage Strategy
-- BLOB Storage for Assets
-- Cache Management
-- Version Control
-- Backup Systems
+### 3.1 Stratégie de Stockage
+- Stockage BLOB pour Assets
+- Gestion du Cache
+- Contrôle de Version
+- Systèmes de Backup
 
 ### 3.2 Performance
-- Indexing Strategy
-- Query Optimization
-- Connection Pooling
-- Cache Layers
+- Stratégie d'Indexation
+- Optimisation des Requêtes
+- Pool de Connexions
+- Couches de Cache
 
-See also:
-- [Architecture Overview](./overview.md)
-- [Component Design](./component-design.md)
-- [API Design](./api-design.md)
+Voir aussi :
+- [Vue d'ensemble de l'Architecture](./overview.md)
+- [Design des Composants](./component-design.md)
+- [Design de l'API](./api-design.md)

@@ -1,67 +1,66 @@
 
-# Non-Functional Requirements - KAP
+# Exigences Non-Fonctionnelles - KAP
 
-## 1. Performance Requirements
+## 1. Exigences de Performance
 
-### 1.1 Response Time
-- Page load time < 2 seconds
-- API response time < 500ms
-- Real-time updates < 100ms
-- Search results < 1 second
+### 1.1 Temps de Réponse
+- Temps de chargement de page < 2 secondes
+- Temps de réponse API < 500ms
+- Mises à jour temps réel < 100ms
+- Résultats de recherche < 1 seconde
 
-### 1.2 Scalability
-- Support for 1000+ concurrent users
-- Efficient resource utilization
-- Horizontal scaling capability
-- Load balancing
+### 1.2 Scalabilité
+- Support pour 1000+ utilisateurs simultanés
+- Utilisation efficace des ressources
+- Capacité de scaling horizontal
+- Équilibrage de charge
 
-### 1.3 Availability
-- 99.9% uptime guarantee
-- Automated failover
-- Disaster recovery
-- Backup systems
+### 1.3 Disponibilité
+- Garantie de disponibilité 99.9%
+- Basculement automatique
+- Reprise après sinistre
+- Systèmes de sauvegarde
 
-## 2. Security Requirements
+## 2. Exigences de Sécurité
 
-### 2.1 Authentication
-- Multi-factor authentication
-- Session management
-- Password policies
-- Access control
+### 2.1 Authentification
+- Authentification multi-facteurs
+- Gestion des sessions
+- Politiques de mot de passe
+- Contrôle d'accès
 
-### 2.2 Data Protection
-- End-to-end encryption
-- GDPR compliance
-- Data anonymization
-- Secure storage
+### 2.2 Protection des Données
+- Chiffrement de bout en bout
+- Conformité RGPD
+- Anonymisation des données
+- Stockage sécurisé
 
 ### 2.3 Monitoring
-- Security auditing
-- Intrusion detection
-- Activity logging
-- Threat analysis
+- Audit de sécurité
+- Détection d'intrusion
+- Journalisation d'activité
+- Analyse des menaces
 
-## 3. Usability Requirements
+## 3. Exigences d'Utilisabilité
 
-### 3.1 User Interface
-- Responsive design
-- Intuitive navigation
-- Consistent layout
-- Visual feedback
+### 3.1 Interface Utilisateur
+- Design responsive
+- Navigation intuitive
+- Mise en page cohérente
+- Retour visuel
 
-### 3.2 Accessibility
-- WCAG 2.1 compliance
-- Screen reader support
-- Keyboard navigation
-- Color contrast
+### 3.2 Accessibilité
+- Conformité WCAG 2.1
+- Support lecteur d'écran
+- Navigation clavier
+- Contraste des couleurs
 
-### 3.3 Mobile Support
-- Touch-friendly interface
-- Offline capabilities
-- Push notifications
-- Mobile optimization
+### 3.3 Support Mobile
+- Interface tactile
+- Capacités hors-ligne
+- Notifications push
+- Optimisation mobile
 
-See also:
-- [Functional Requirements](./functional-requirements.md)
-- [Technical Specifications](./technical-specifications.md)
-
+Voir aussi :
+- [Exigences Fonctionnelles](./functional-requirements.md)
+- [Spécifications Techniques](./technical-specifications.md)

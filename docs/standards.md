@@ -4,7 +4,7 @@
 ## 1. Normes de Développement
 
 ### 1.1 Code
-- TypeScript strict mode obligatoire
+- Mode strict TypeScript obligatoire
 - ESLint avec config strict
 - Prettier pour formatage
 - Tests unitaires requis (>80%)
@@ -13,46 +13,46 @@
 
 ### 1.2 Architecture
 - Clean Architecture
-- SOLID principles
+- Principes SOLID
 - DRY (Don't Repeat Yourself)
 - KISS (Keep It Simple, Stupid)
-- Modular Design
+- Design Modulaire
 - Event-Driven
 
 ### 1.3 Performance
 - First Paint < 1s
 - Time to Interactive < 2s
 - First Input Delay < 100ms
-- Lighthouse score > 90
-- Bundle size < 100KB initial
+- Score Lighthouse > 90
+- Taille bundle < 100KB initial
 - Core Web Vitals optimisés
 
 ## 2. Standards UI/UX
 
 ### 2.1 Design
-- Design System documenté
-- Mobile-first responsive
-- Dark/Light mode natif
+- System Design documenté
+- Responsive mobile-first
+- Mode sombre/clair natif
 - Animations fluides
 - Feedback visuel immédiat
 - États de chargement clairs
 
 ### 2.2 Accessibilité
 - WCAG 2.1 AA minimum
-- Keyboard navigation
-- Screen reader support
+- Navigation clavier
+- Support lecteur d'écran
 - Contraste suffisant
 - Focus visible
-- Aria labels
-- Semantic HTML
+- Labels Aria
+- HTML sémantique
 
 ### 2.3 Responsive
 - Breakpoints standards
-- Flexbox/Grid layouts
+- Layouts Flexbox/Grid
 - Images optimisées
-- Touch targets adaptés
+- Cibles tactiles adaptées
 - Font scaling
-- Viewport meta tags
+- Meta tags viewport
 
 ## 3. Intelligence Artificielle
 
@@ -60,7 +60,7 @@
 - Validation des inputs
 - Sanitization des outputs
 - Rate limiting
-- Fallback handlers
+- Handlers de fallback
 - Cache intelligent
 - Monitoring usage
 
@@ -74,53 +74,53 @@
 
 ## 4. Sécurité
 
-### 4.1 Authentication
+### 4.1 Authentification
 - JWT sécurisés
 - Sessions gérées
 - HTTPS forcé
-- CSRF protection
+- Protection CSRF
 - Rate limiting
 - Audit logging
 
-### 4.2 Authorization
+### 4.2 Autorisation
 - RBAC implémenté
-- Least privilege
-- Resource isolation
-- Token rotation
-- Session timeout
-- IP blocking
+- Moindre privilège
+- Isolation ressources
+- Rotation tokens
+- Timeout session
+- Blocage IP
 
-### 4.3 Data
-- Encryption at rest
+### 4.3 Données
+- Chiffrement au repos
 - TLS en transit
 - Sanitization inputs
 - Validation données
-- Backup réguliers
-- Data retention
+- Backups réguliers
+- Rétention données
 
 ## 5. Testing
 
-### 5.1 Coverage
-- Unit tests > 80%
-- Integration > 70%
+### 5.1 Couverture
+- Tests unitaires > 80%
+- Intégration > 70%
 - E2E critiques 100%
 - Snapshot UI
-- Performance tests
-- Security scans
+- Tests performance
+- Scans sécurité
 
 ### 5.2 Qualité
-- Sonar analysis
-- Complexity < 15
-- Coverage trends
-- Error tracking
-- UX testing
-- A11Y testing
+- Analyse Sonar
+- Complexité < 15
+- Trends couverture
+- Suivi erreurs
+- Tests UX
+- Tests A11Y
 
 ### 5.3 CI/CD
 - Build automatisé
 - Tests pre-commit
 - Deploy staging
-- Smoke tests
+- Tests smoke
 - Rollback auto
 - Monitoring post-deploy
 
@@ -137,27 +137,27 @@
 ### 6.2 Architecture
 - Diagrammes C4
 - Flow charts
-- Sequence diagrams
-- Decision records
-- Tech stack
-- Dependencies
+- Diagrammes séquence
+- Records décision
+- Stack tech
+- Dépendances
 
 ## 7. Collaboration
 
 ### 7.1 Git
-- Feature branches
+- Branches feature
 - Pull requests
-- Code review
-- Semantic commits
-- Branch protection
-- Merge strategy
+- Revue code
+- Commits sémantiques
+- Protection branches
+- Stratégie merge
 
 ### 7.2 Process
 - Agile/Scrum
-- Sprint planning
+- Planning sprint
 - Daily standup
-- Retrospectives
-- KPIs tracking
+- Rétrospectives
+- Suivi KPIs
 - Documentation
 
 ## 8. Performance
@@ -166,33 +166,32 @@
 - Code splitting
 - Tree shaking
 - Lazy loading
-- Cache strategy
-- Asset optimization
-- Bundle analysis
+- Stratégie cache
+- Optimisation assets
+- Analyse bundle
 
 ### 8.2 Monitoring
-- RUM metrics
-- Error tracking
-- User journeys
-- Performance KPIs
-- Uptime monitoring
-- Alert system
+- Métriques RUM
+- Suivi erreurs
+- Parcours utilisateur
+- KPIs performance
+- Monitoring uptime
+- Système d'alertes
 
 ## 9. DevOps
 
 ### 9.1 Infrastructure
 - Infrastructure as Code
-- Container support
+- Support conteneurs
 - Auto-scaling
 - Load balancing
-- CDN configuration
-- Security groups
+- Configuration CDN
+- Groupes sécurité
 
-### 9.2 Deployment
-- Blue/Green deploy
-- Canary releases
+### 9.2 Déploiement
+- Deploy Blue/Green
+- Releases canary
 - Feature flags
-- Rollback plan
-- Backup strategy
-- Disaster recovery
-
+- Plan rollback
+- Stratégie backup
+- Reprise sinistre

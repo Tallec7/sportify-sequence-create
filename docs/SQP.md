@@ -10,8 +10,8 @@
 - Dette technique < 20%
 
 ### 1.2 Standards
-- Clean Code principles
-- SOLID principles
+- Principes Clean Code
+- Principes SOLID
 - Design patterns adaptés
 - Best practices React/TS
 
@@ -25,27 +25,27 @@
 
 ### 2.2 CI/CD
 - Tests automatisés
-- Linting et formatage
-- Security scanning
-- Performance checks
+- Linting et formatage 
+- Scan de sécurité
+- Vérifications performance
 
 ## 3. Monitoring et Mesures
 
 ### 3.1 Performance
 - Métriques frontend
 - Métriques API
-- User monitoring
-- Error tracking
+- Monitoring utilisateur
+- Suivi des erreurs
 
 ### 3.2 Sécurité
 - Scans réguliers
 - Audit logs
-- Penetration testing
-- RGPD compliance
+- Tests de pénétration
+- Conformité RGPD
 
 ## 4. Amélioration Continue
 
-### 4.1 Feedback Loop
+### 4.1 Boucle de Feedback
 - Retours utilisateurs
 - Métriques d'usage
 - Rapports d'incidents
@@ -61,7 +61,7 @@
 
 ### 5.1 Technique
 - Architecture
-- API docs
+- Docs API
 - Guides développeur
 - Procédures
 
@@ -69,4 +69,4 @@
 - Guides utilisateur
 - FAQ
 - Tutoriels
-- Release notes
+- Notes de version

@@ -1,75 +1,74 @@
 
-# Functional Requirements - KAP
+# Exigences Fonctionnelles - KAP
 
-## 1. User Authentication and Management
+## 1. Authentification et Gestion des Utilisateurs
 
-### 1.1 Authentication
-- User registration and login
-- OAuth integration
-- Session management
-- Password recovery
+### 1.1 Authentification
+- Inscription et connexion utilisateur
+- Intégration OAuth
+- Gestion des sessions
+- Récupération de mot de passe
 
-### 1.2 User Profiles
-- Profile creation and editing
-- Role-based access control
-- Expertise level tracking
-- Activity history
+### 1.2 Profils Utilisateurs
+- Création et édition de profil
+- Contrôle d'accès basé sur les rôles
+- Suivi du niveau d'expertise
+- Historique d'activité
 
-## 2. Training Session Management
+## 2. Gestion des Séances d'Entraînement
 
-### 2.1 Session Creation
-- Template-based creation
-- Custom session builder
-- Duration and intensity settings
-- Participant management
+### 2.1 Création de Séance
+- Création basée sur template
+- Constructeur de séance personnalisé
+- Paramètres de durée et d'intensité
+- Gestion des participants
 
-### 2.2 Session Structure
-- Modular training blocks
-- Exercise sequencing
-- Rest period configuration
-- Equipment requirements
+### 2.2 Structure de Séance
+- Blocs d'entraînement modulaires
+- Séquençage d'exercices
+- Configuration des périodes de repos
+- Exigences en équipement
 
-### 2.3 Session Components
-- Warm-up routines
-- Main training activities
-- Cool-down exercises
-- Recovery protocols
+### 2.3 Composants de Séance
+- Routines d'échauffement
+- Activités d'entraînement principales
+- Exercices de récupération
+- Protocoles de récupération
 
-## 3. Collaboration Features
+## 3. Fonctionnalités de Collaboration
 
-### 3.1 Sharing
-- Session sharing
-- Template distribution
-- Feedback collection
-- Permission management
+### 3.1 Partage
+- Partage de séance
+- Distribution de template
+- Collecte de retours
+- Gestion des permissions
 
-### 3.2 Expert Validation
-- Review workflows
-- Validation criteria
-- Feedback mechanisms
-- Version control
+### 3.2 Validation Expert
+- Flux de revue
+- Critères de validation
+- Mécanismes de feedback
+- Contrôle de version
 
-### 3.3 Team Features
-- Group management
-- Team progress tracking
-- Collaborative planning
-- Resource sharing
+### 3.3 Fonctionnalités d'Équipe
+- Gestion de groupe
+- Suivi de progression d'équipe
+- Planification collaborative
+- Partage de ressources
 
-## 4. Analytics and Reporting
+## 4. Analytique et Reporting
 
-### 4.1 Performance Tracking
-- Progress monitoring
-- Achievement metrics
-- Comparison tools
-- Historical data analysis
+### 4.1 Suivi de Performance
+- Monitoring de progression
+- Métriques de réussite
+- Outils de comparaison
+- Analyse de données historiques
 
 ### 4.2 Reporting
-- Custom report generation
-- Export capabilities
-- Data visualization
-- Trend analysis
+- Génération de rapports personnalisés
+- Capacités d'export
+- Visualisation de données
+- Analyse de tendances
 
-See also:
-- [Non-Functional Requirements](./non-functional-requirements.md)
-- [Technical Specifications](./technical-specifications.md)
-
+Voir aussi :
+- [Exigences Non-Fonctionnelles](./non-functional-requirements.md)
+- [Spécifications Techniques](./technical-specifications.md)

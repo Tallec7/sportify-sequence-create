@@ -1,56 +1,56 @@
 
-# Architecture Overview - KAP
+# Vue d'ensemble de l'Architecture - KAP
 
 ## 1. Introduction
 
-### 1.1 Purpose
-KAP is a web application designed for sports coaches to create, validate, and share training sessions, with AI assistance and collaboration features.
+### 1.1 Objectif
+KAP est une application web conçue pour permettre aux entraîneurs sportifs de créer, valider et partager des séances d'entraînement, avec assistance IA et fonctionnalités collaboratives.
 
-### 1.2 Scope
-The system enables AI-assisted creation, management, validation, and sharing of training sessions, with advanced collaboration and analysis capabilities.
+### 1.2 Portée
+Le système permet la création assistée par IA, la gestion, la validation et le partage de séances d'entraînement, avec des capacités avancées de collaboration et d'analyse.
 
-## 2. High-Level Architecture
+## 2. Architecture de Haut Niveau
 
-### 2.1 System Layers
-1. UI Layer (React)
-   - Components
+### 2.1 Couches du Système
+1. Couche UI (React)
+   - Composants
    - Pages
-   - Layout
-   - Shared UI Kit
+   - Mise en page
+   - Kit UI partagé
 
-2. Core Modules
-   - Auth Module
-   - Editor Module
-   - AI Engine
-   - Collaboration Engine
-   - Analytics Module
+2. Modules Principaux
+   - Module d'Authentification
+   - Module d'Édition
+   - Moteur IA
+   - Moteur de Collaboration
+   - Module d'Analytique
 
-3. State Management
+3. Gestion d'État
    - TanStack Query
    - React Context
-   - Real-time State Sync
+   - Synchronisation état temps réel
 
-4. Data Layer
-   - Supabase Client
-   - API Integrations
-   - Offline Storage
+4. Couche de Données
+   - Client Supabase
+   - Intégrations API
+   - Stockage Hors-ligne
 
-### 2.2 Key Technologies
-- Frontend: React + TypeScript
-- Styling: Tailwind CSS + shadcn/ui
-- State: TanStack Query
-- Database: Supabase (PostgreSQL)
-- Real-time: WebSocket
-- AI: GPT-4 Integration
+### 2.2 Technologies Clés
+- Frontend : React + TypeScript
+- Style : Tailwind CSS + shadcn/ui
+- État : TanStack Query
+- Base de données : Supabase (PostgreSQL)
+- Temps réel : WebSocket
+- IA : Intégration GPT-4
 
-### 2.3 Core Principles
-- Component-Based Architecture
-- Clean Architecture Patterns
-- Event-Driven Design
-- Mobile-First Approach
-- Offline-First Strategy
+### 2.3 Principes Fondamentaux
+- Architecture basée sur les composants
+- Patterns d'Architecture Propre
+- Design Orienté Événements
+- Approche Mobile-First
+- Stratégie Offline-First
 
-See also:
-- [Component Design](./component-design.md)
-- [Database Design](./database-design.md)
-- [API Design](./api-design.md)
+Voir aussi :
+- [Design des Composants](./component-design.md)
+- [Design de la Base de Données](./database-design.md)
+- [Design de l'API](./api-design.md)

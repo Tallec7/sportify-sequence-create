@@ -3,14 +3,14 @@
 
 ## Über das Projekt
 
-KAP ist eine Webanwendung zur Erstellung und Verwaltung von Trainingseinheiten. Die Plattform ermöglicht es Trainern, professionelle Trainingseinheiten zu erstellen, zu validieren und mit ihrem Team sowie der Community zu teilen.
+KAP est une application web qui permet de créer et de gérer des séances d'entraînement. La plateforme permet aux entraîneurs de créer, valider et partager des séances d'entraînement professionnelles avec leur équipe et la communauté.
 
 ## Hauptfunktionen
 
-- Schnelle Erstellung von Trainingseinheiten
-- Validierung durch Experten
-- Einfaches Teilen von Trainingseinheiten
-- Community-basiertes Lernen und Austausch
+- Création rapide de séances d'entraînement
+- Validation par des experts
+- Partage facile des séances d'entraînement
+- Apprentissage et échange communautaire
 
 ## Technologie-Stack
 
@@ -22,19 +22,19 @@ KAP ist eine Webanwendung zur Erstellung und Verwaltung von Trainingseinheiten. 
 ## Installation
 
 ```bash
-# Repository klonen
+# Cloner le dépôt
 git clone <repository-url>
 
-# In das Projektverzeichnis wechseln
+# Se déplacer dans le répertoire du projet
 cd kap
 
-# Abhängigkeiten installieren
+# Installer les dépendances
 npm install
 
-# Entwicklungsserver starten
+# Démarrer le serveur de développement
 npm run dev
 ```
 
-## Lizenz
+## Licence
 
-Alle Rechte vorbehalten.
+Tous droits réservés.

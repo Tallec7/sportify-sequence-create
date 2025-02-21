@@ -1,18 +1,18 @@
 
-# Component Design - KAP
+# Design des Composants - KAP
 
-## 1. Component Architecture
+## 1. Architecture des Composants
 
-### 1.1 Design Patterns
-- Custom Hooks for Logic
-- Atomic Design Pattern
-- Container/Presenter Pattern
-- Service Layer Pattern
-- Command Pattern (Editor)
-- Observer Pattern (Real-time)
-- Strategy Pattern (AI)
+### 1.1 Patterns de Design
+- Hooks Personnalisés pour la Logique
+- Pattern de Design Atomique
+- Pattern Conteneur/Présentateur
+- Pattern de Couche Service
+- Pattern Commande (Éditeur)
+- Pattern Observateur (Temps Réel)
+- Pattern Stratégie (IA)
 
-### 1.2 Component Hierarchy
+### 1.2 Hiérarchie des Composants
 ```
 App
 ├── Layout
@@ -36,38 +36,38 @@ App
     └── Storage
 ```
 
-## 2. Core Modules
+## 2. Modules Principaux
 
-### 2.1 Editor Module
-- Canvas Interface
-- Drag & Drop System
-- Template System
-- Real-time Validation
-- Auto-save Feature
-- Version Control
+### 2.1 Module Éditeur
+- Interface Canvas
+- Système Drag & Drop
+- Système de Templates
+- Validation Temps Réel
+- Fonction Auto-save
+- Contrôle de Version
 
-### 2.2 Collaboration Module
-- Real-time Editing
-- Chat Integration
-- Annotation System
-- Comment System
-- Access Control
+### 2.2 Module Collaboration
+- Édition Temps Réel
+- Intégration Chat
+- Système d'Annotation
+- Système de Commentaires
+- Contrôle d'Accès
 
-### 2.3 AI Module
-- GPT-4 Integration
-- Recommendation Engine
-- Session Optimization
-- Auto-completion
-- Template Generation
+### 2.3 Module IA
+- Intégration GPT-4
+- Moteur de Recommandation
+- Optimisation de Session
+- Auto-complétion
+- Génération de Template
 
-### 2.4 Analytics Module
-- Usage Tracking
-- Performance Metrics
-- AI Insights
-- Custom Reports
-- Data Export
+### 2.4 Module Analytique
+- Suivi d'Utilisation
+- Métriques de Performance
+- Insights IA
+- Rapports Personnalisés
+- Export de Données
 
-See also:
-- [Architecture Overview](./overview.md)
-- [Database Design](./database-design.md)
-- [API Design](./api-design.md)
+Voir aussi :
+- [Vue d'ensemble de l'Architecture](./overview.md)
+- [Design de la Base de Données](./database-design.md)
+- [Design de l'API](./api-design.md)
