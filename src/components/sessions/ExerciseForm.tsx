@@ -9,6 +9,8 @@ import { ExerciseListItem } from "./ExerciseListItem"
 import { ExerciseFormCard } from "./ExerciseFormCard"
 import { ExerciseObjectivesList } from "./ExerciseObjectivesList"
 import { ExerciseFormProps } from "./types/exercise-form"
+import { Reorder, AnimatePresence } from "framer-motion"
+import { useExerciseOrderMutation } from "@/hooks/mutations/useExerciseOrderMutation"
 import { 
   Select,
   SelectContent,
@@ -23,6 +25,7 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
   const { data: objectives = [] } = useSequenceObjectivesQuery(sequenceId)
   const exerciseMutation = useExerciseMutation(sequenceId)
   const exerciseDeleteMutation = useExerciseDeleteMutation(sequenceId)
+  const exerciseOrderMutation = useExerciseOrderMutation(sequenceId)
 
   const [editingExercise, setEditingExercise] = useState<Exercise | null>(null)
   const [activityFilter, setActivityFilter] = useState<string>("all")
@@ -86,6 +89,10 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
     setEditingExercise(null)
   }
 
+  const handleReorderExercises = (reorderedExercises: Exercise[]) => {
+    exerciseOrderMutation.mutate(reorderedExercises)
+  }
+
   return (
     <div className="space-y-6">
       <ExerciseObjectivesList objectives={objectives} />
@@ -110,14 +117,23 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
           </div>
         </div>
 
-        {filteredExercises.map((exercise, index) => (
-          <ExerciseListItem
-            key={exercise.id || index}
-            exercise={exercise}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
-        ))}
+        <Reorder.Group axis="y" values={filteredExercises} onReorder={handleReorderExercises}>
+          <AnimatePresence>
+            {filteredExercises.map((exercise) => (
+              <Reorder.Item
+                key={exercise.id}
+                value={exercise}
+                className="touch-none cursor-move"
+              >
+                <ExerciseListItem
+                  exercise={exercise}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
+              </Reorder.Item>
+            ))}
+          </AnimatePresence>
+        </Reorder.Group>
       </div>
 
       <ExerciseFormCard
