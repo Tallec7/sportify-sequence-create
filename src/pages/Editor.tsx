@@ -4,12 +4,14 @@ import { useNavigate } from "react-router-dom"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/components/ui/use-toast"
 import { SessionForm, SessionFormData } from "@/components/sessions/SessionForm"
+import { SequenceForm, Sequence } from "@/components/sessions/SequenceForm"
 import { motion } from "framer-motion"
 
 const Editor = () => {
   const navigate = useNavigate()
   const { toast } = useToast()
   const [userId, setUserId] = useState<string | null>(null)
+  const [sequences, setSequences] = useState<Sequence[]>([])
   const [formData, setFormData] = useState<SessionFormData>({
     title: "",
     description: "",
@@ -37,7 +39,8 @@ const Editor = () => {
 
   const handleSave = async () => {
     try {
-      const { data, error } = await supabase
+      // Save the session first
+      const { data: sessionData, error: sessionError } = await supabase
         .from('sessions')
         .insert([
           {
@@ -48,7 +51,21 @@ const Editor = () => {
         .select()
         .single()
 
-      if (error) throw error
+      if (sessionError) throw sessionError
+
+      // Then save all sequences
+      if (sequences.length > 0) {
+        const { error: sequencesError } = await supabase
+          .from('session_sequences')
+          .insert(
+            sequences.map(sequence => ({
+              ...sequence,
+              session_id: sessionData.id,
+            }))
+          )
+
+        if (sequencesError) throw sequencesError
+      }
 
       toast({
         title: "Succès",
@@ -64,16 +81,25 @@ const Editor = () => {
     }
   }
 
+  const handleAddSequence = (sequence: Sequence) => {
+    setSequences([...sequences, sequence])
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
+      className="container py-8 space-y-8"
     >
       <SessionForm
         onSave={handleSave}
         formData={formData}
         setFormData={setFormData}
+      />
+      <SequenceForm
+        sequences={sequences}
+        onAddSequence={handleAddSequence}
       />
     </motion.div>
   )
