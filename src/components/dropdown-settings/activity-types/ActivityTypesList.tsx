@@ -14,10 +14,55 @@ export const ActivityTypesList = () => {
   const [searchQuery, setSearchQuery] = useState("")
   const { data: activityTypes = [], isLoading } = useActivityTypesQuery()
 
+  // State for editing
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editedValue, setEditedValue] = useState("")
+  const [editedLabel, setEditedLabel] = useState("")
+
+  // Dialog state
+  const [newValue, setNewValue] = useState("")
+  const [newLabel, setNewLabel] = useState("")
+
   const filteredTypes = activityTypes.filter(type => 
     type.label.toLowerCase().includes(searchQuery.toLowerCase()) || 
     type.value.toLowerCase().includes(searchQuery.toLowerCase())
   )
+
+  const handleStartEdit = (type: { id: string; value: string; label: string }) => {
+    setEditingId(type.id)
+    setEditedValue(type.value)
+    setEditedLabel(type.label)
+  }
+
+  const handleCancelEdit = () => {
+    setEditingId(null)
+    setEditedValue("")
+    setEditedLabel("")
+  }
+
+  const handleSaveEdit = () => {
+    // Implement save logic here
+    setEditingId(null)
+    setEditedValue("")
+    setEditedLabel("")
+  }
+
+  const handleDelete = (id: string) => {
+    // Implement delete logic here
+  }
+
+  const handleAdd = () => {
+    // Implement add logic here
+    setIsDialogOpen(false)
+    setNewValue("")
+    setNewLabel("")
+  }
+
+  const handleDialogCancel = () => {
+    setIsDialogOpen(false)
+    setNewValue("")
+    setNewLabel("")
+  }
 
   return (
     <Card>
@@ -45,7 +90,19 @@ export const ActivityTypesList = () => {
         ) : (
           <div className="space-y-4">
             {filteredTypes.map((type) => (
-              <ActivityTypeItem key={type.id} type={type} />
+              <ActivityTypeItem
+                key={type.id}
+                type={type}
+                isEditing={editingId === type.id}
+                editedValue={editedValue}
+                editedLabel={editedLabel}
+                onEditValueChange={setEditedValue}
+                onEditLabelChange={setEditedLabel}
+                onStartEdit={() => handleStartEdit(type)}
+                onCancelEdit={handleCancelEdit}
+                onSaveEdit={handleSaveEdit}
+                onDelete={() => handleDelete(type.id)}
+              />
             ))}
             {filteredTypes.length === 0 && searchQuery && (
               <p className="text-center text-muted-foreground py-4">
@@ -54,8 +111,16 @@ export const ActivityTypesList = () => {
             )}
           </div>
         )}
-        <AddActivityTypeDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+        <AddActivityTypeDialog
+          newValue={newValue}
+          newLabel={newLabel}
+          onNewValueChange={setNewValue}
+          onNewLabelChange={setNewLabel}
+          onCancel={handleDialogCancel}
+          onAdd={handleAdd}
+        />
       </CardContent>
     </Card>
   )
 }
+
