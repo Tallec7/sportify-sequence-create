@@ -51,6 +51,7 @@ export type Database = {
           created_at: string | null
           decision_making_focus: string[] | null
           description: string
+          diagram_url: string | null
           duration: number
           exercise_order: number
           id: string
@@ -63,6 +64,7 @@ export type Database = {
           title: string
           updated_at: string | null
           variations: string[] | null
+          video_url: string | null
         }
         Insert: {
           activity_type?: Database["public"]["Enums"]["activity_type_enum"]
@@ -70,6 +72,7 @@ export type Database = {
           created_at?: string | null
           decision_making_focus?: string[] | null
           description: string
+          diagram_url?: string | null
           duration: number
           exercise_order: number
           id?: string
@@ -82,6 +85,7 @@ export type Database = {
           title: string
           updated_at?: string | null
           variations?: string[] | null
+          video_url?: string | null
         }
         Update: {
           activity_type?: Database["public"]["Enums"]["activity_type_enum"]
@@ -89,6 +93,7 @@ export type Database = {
           created_at?: string | null
           decision_making_focus?: string[] | null
           description?: string
+          diagram_url?: string | null
           duration?: number
           exercise_order?: number
           id?: string
@@ -101,6 +106,7 @@ export type Database = {
           title?: string
           updated_at?: string | null
           variations?: string[] | null
+          video_url?: string | null
         }
         Relationships: [
           {

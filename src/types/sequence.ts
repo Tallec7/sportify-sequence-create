@@ -14,6 +14,8 @@ export interface Exercise {
   opposition_type?: string
   decision_making_focus?: string[]
   tactical_objectives?: string[]
+  diagram_url?: string
+  video_url?: string
 }
 
 export interface SequenceObjective {

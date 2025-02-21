@@ -2,6 +2,7 @@
 import { Exercise } from "@/types/sequence"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { MediaUploadField } from "./MediaUploadField"
 import {
   Select,
   SelectContent,
@@ -97,6 +98,21 @@ export const BasicExerciseFields = ({ exercise, onChange }: BasicExerciseFieldsP
             </SelectContent>
           </Select>
         </div>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        <MediaUploadField
+          label="Diagramme"
+          accept="image/*"
+          value={exercise.diagram_url}
+          onChange={(url) => onChange({ ...exercise, diagram_url: url })}
+        />
+        <MediaUploadField
+          label="Vidéo"
+          accept="video/*"
+          value={exercise.video_url}
+          onChange={(url) => onChange({ ...exercise, video_url: url })}
+        />
       </div>
     </div>
   )

@@ -38,6 +38,30 @@ export const ExerciseListItem = ({ exercise, onEdit, onDelete }: ExerciseListIte
             {exercise.description}
           </p>
         )}
+        
+        <div className="grid gap-4 md:grid-cols-2 mt-4">
+          {exercise.diagram_url && (
+            <div className="space-y-1">
+              <p className="text-sm font-medium">Diagramme :</p>
+              <img 
+                src={exercise.diagram_url} 
+                alt="Diagramme de l'exercice" 
+                className="rounded-md max-h-40 object-cover"
+              />
+            </div>
+          )}
+          {exercise.video_url && (
+            <div className="space-y-1">
+              <p className="text-sm font-medium">Vidéo :</p>
+              <video 
+                src={exercise.video_url} 
+                className="rounded-md max-h-40 w-full" 
+                controls
+              />
+            </div>
+          )}
+        </div>
+
         {exercise.variations && exercise.variations.length > 0 && (
           <div className="space-y-1">
             <p className="text-sm font-medium">Variations :</p>
