@@ -8,6 +8,7 @@ import { ActivityTypeItem } from "../ActivityTypeItem"
 import { useActivityTypesQuery } from "@/hooks/queries/useActivityTypesQuery"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useActivityTypeUpdateMutation } from "@/hooks/mutations/useActivityTypeUpdateMutation"
 
 export const ActivityTypesList = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -22,6 +23,8 @@ export const ActivityTypesList = () => {
   // Dialog state
   const [newValue, setNewValue] = useState("")
   const [newLabel, setNewLabel] = useState("")
+
+  const { mutate: updateActivityType } = useActivityTypeUpdateMutation()
 
   const filteredTypes = activityTypes.filter(type => 
     type.label.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -40,8 +43,12 @@ export const ActivityTypesList = () => {
     setEditedLabel("")
   }
 
-  const handleSaveEdit = () => {
-    // Implement save logic here
+  const handleSaveEdit = (id: string) => {
+    updateActivityType({
+      id,
+      value: editedValue,
+      label: editedLabel,
+    })
     setEditingId(null)
     setEditedValue("")
     setEditedLabel("")
@@ -100,7 +107,7 @@ export const ActivityTypesList = () => {
                 onEditLabelChange={setEditedLabel}
                 onStartEdit={() => handleStartEdit(type)}
                 onCancelEdit={handleCancelEdit}
-                onSaveEdit={handleSaveEdit}
+                onSaveEdit={() => handleSaveEdit(type.id)}
                 onDelete={() => handleDelete(type.id)}
               />
             ))}
@@ -112,6 +119,7 @@ export const ActivityTypesList = () => {
           </div>
         )}
         <AddActivityTypeDialog
+          isOpen={isDialogOpen}
           newValue={newValue}
           newLabel={newLabel}
           onNewValueChange={setNewValue}
@@ -123,4 +131,3 @@ export const ActivityTypesList = () => {
     </Card>
   )
 }
-
