@@ -1,5 +1,4 @@
-
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
 import Dashboard from '../Dashboard'
@@ -174,4 +173,3 @@ describe('Dashboard Component', () => {
     expect(mockHandlePageChange).toHaveBeenCalledWith(2)
   })
 })
-
