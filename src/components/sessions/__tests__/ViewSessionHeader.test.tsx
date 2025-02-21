@@ -12,6 +12,8 @@ describe("ViewSessionHeader", () => {
     description: "Test description",
     participants_min: 1,
     participants_max: 10,
+    age_category: "adult",
+    intensity_level: "medium"
   }
 
   const mockOnDelete = vi.fn()
