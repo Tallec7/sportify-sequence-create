@@ -3,7 +3,7 @@ import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Plus, Edit, Trash2 } from "lucide-react"
+import { Plus, Edit, Trash2, X } from "lucide-react"
 import { toast } from "@/components/ui/use-toast"
 import {
   Select,
@@ -12,7 +12,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { supabase } from "@/integrations/supabase/client"
+import { useExerciseMutation } from "@/hooks/mutations/useExerciseMutation"
+import { useExerciseDeleteMutation } from "@/hooks/mutations/useExerciseDeleteMutation"
+import { useExercisesQuery } from "@/hooks/queries/useExercisesQuery"
 
 export interface Exercise {
   id?: string
@@ -29,45 +31,41 @@ export interface Exercise {
 
 interface ExerciseFormProps {
   sequenceId: string
-  exercises: Exercise[]
-  onExerciseAdded: (exercise: Exercise) => void
 }
 
-export const ExerciseForm = ({ sequenceId, exercises, onExerciseAdded }: ExerciseFormProps) => {
+export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
+  const { data: exercises = [] } = useExercisesQuery(sequenceId)
+  const exerciseMutation = useExerciseMutation(sequenceId)
+  const exerciseDeleteMutation = useExerciseDeleteMutation(sequenceId)
+
+  const [editingExercise, setEditingExercise] = useState<Exercise | null>(null)
   const [newExercise, setNewExercise] = useState<Exercise>({
     title: "",
     description: "",
     duration: 5,
     intensity_level: "medium",
-    exercise_order: exercises.length + 1,
-    sequence_id: sequenceId,
+    exercise_order: exercises.length + 1
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const { data: exercise, error } = await supabase
-        .from("exercises")
-        .insert([{ ...newExercise, sequence_id: sequenceId }])
-        .select()
-        .single()
-
-      if (error) throw error
-
-      onExerciseAdded(exercise)
-      toast({
-        title: "Succès",
-        description: "L'exercice a été ajouté avec succès.",
-      })
-
-      setNewExercise({
-        title: "",
-        description: "",
-        duration: 5,
-        intensity_level: "medium",
-        exercise_order: exercises.length + 2,
-        sequence_id: sequenceId,
-      })
+      if (editingExercise) {
+        await exerciseMutation.mutateAsync({
+          ...editingExercise,
+          id: editingExercise.id
+        })
+        setEditingExercise(null)
+      } else {
+        await exerciseMutation.mutateAsync(newExercise)
+        setNewExercise({
+          title: "",
+          description: "",
+          duration: 5,
+          intensity_level: "medium",
+          exercise_order: exercises.length + 2,
+        })
+      }
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -75,6 +73,27 @@ export const ExerciseForm = ({ sequenceId, exercises, onExerciseAdded }: Exercis
         description: error.message,
       })
     }
+  }
+
+  const handleDelete = async (exerciseId: string) => {
+    if (confirm("Êtes-vous sûr de vouloir supprimer cet exercice ?")) {
+      await exerciseDeleteMutation.mutateAsync(exerciseId)
+    }
+  }
+
+  const handleEdit = (exercise: Exercise) => {
+    setEditingExercise(exercise)
+    setNewExercise({
+      title: "",
+      description: "",
+      duration: 5,
+      intensity_level: "medium",
+      exercise_order: exercises.length + 1,
+    })
+  }
+
+  const handleCancelEdit = () => {
+    setEditingExercise(null)
   }
 
   return (
@@ -99,10 +118,18 @@ export const ExerciseForm = ({ sequenceId, exercises, onExerciseAdded }: Exercis
               )}
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="icon">
+              <Button 
+                variant="outline" 
+                size="icon"
+                onClick={() => handleEdit(exercise)}
+              >
                 <Edit className="h-4 w-4" />
               </Button>
-              <Button variant="outline" size="icon">
+              <Button 
+                variant="outline" 
+                size="icon"
+                onClick={() => exercise.id && handleDelete(exercise.id)}
+              >
                 <Trash2 className="h-4 w-4" />
               </Button>
             </div>
@@ -111,15 +138,32 @@ export const ExerciseForm = ({ sequenceId, exercises, onExerciseAdded }: Exercis
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4 rounded-lg border p-4">
-        <h4 className="font-medium">Nouvel exercice</h4>
+        <div className="flex items-center justify-between">
+          <h4 className="font-medium">
+            {editingExercise ? "Modifier l'exercice" : "Nouvel exercice"}
+          </h4>
+          {editingExercise && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={handleCancelEdit}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
             <Label htmlFor="title">Titre</Label>
             <Input
               id="title"
-              value={newExercise.title}
+              value={editingExercise?.title || newExercise.title}
               onChange={(e) =>
-                setNewExercise({ ...newExercise, title: e.target.value })
+                editingExercise
+                  ? setEditingExercise({ ...editingExercise, title: e.target.value })
+                  : setNewExercise({ ...newExercise, title: e.target.value })
               }
               required
             />
@@ -130,34 +174,45 @@ export const ExerciseForm = ({ sequenceId, exercises, onExerciseAdded }: Exercis
               id="duration"
               type="number"
               min="1"
-              value={newExercise.duration}
+              value={editingExercise?.duration || newExercise.duration}
               onChange={(e) =>
-                setNewExercise({
-                  ...newExercise,
-                  duration: parseInt(e.target.value) || 0,
-                })
+                editingExercise
+                  ? setEditingExercise({
+                      ...editingExercise,
+                      duration: parseInt(e.target.value) || 0,
+                    })
+                  : setNewExercise({
+                      ...newExercise,
+                      duration: parseInt(e.target.value) || 0,
+                    })
               }
               required
             />
           </div>
         </div>
+
         <div className="space-y-2">
           <Label htmlFor="description">Description</Label>
           <textarea
             id="description"
-            value={newExercise.description}
+            value={editingExercise?.description || newExercise.description}
             onChange={(e) =>
-              setNewExercise({ ...newExercise, description: e.target.value })
+              editingExercise
+                ? setEditingExercise({ ...editingExercise, description: e.target.value })
+                : setNewExercise({ ...newExercise, description: e.target.value })
             }
             className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-y"
           />
         </div>
+
         <div className="space-y-2">
           <Label htmlFor="intensity_level">Niveau d'intensité</Label>
           <Select
-            value={newExercise.intensity_level}
+            value={editingExercise?.intensity_level || newExercise.intensity_level}
             onValueChange={(value) =>
-              setNewExercise({ ...newExercise, intensity_level: value })
+              editingExercise
+                ? setEditingExercise({ ...editingExercise, intensity_level: value })
+                : setNewExercise({ ...newExercise, intensity_level: value })
             }
           >
             <SelectTrigger>
@@ -170,10 +225,20 @@ export const ExerciseForm = ({ sequenceId, exercises, onExerciseAdded }: Exercis
             </SelectContent>
           </Select>
         </div>
+
         <div className="flex justify-end">
           <Button type="submit" className="gap-2">
-            <Plus className="h-4 w-4" />
-            Ajouter l'exercice
+            {editingExercise ? (
+              <>
+                <Edit className="h-4 w-4" />
+                Modifier l'exercice
+              </>
+            ) : (
+              <>
+                <Plus className="h-4 w-4" />
+                Ajouter l'exercice
+              </>
+            )}
           </Button>
         </div>
       </form>
