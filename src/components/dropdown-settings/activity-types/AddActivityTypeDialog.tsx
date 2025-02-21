@@ -21,14 +21,16 @@ export const AddActivityTypeDialog = ({
 }: AddActivityTypeDialogProps) => {
   const [value, setValue] = useState("")
   const [label, setLabel] = useState("")
-  const mutation = useActivityTypeMutation()
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    await mutation.mutateAsync({ value, label })
+  
+  const { handleAddType } = useActivityTypeMutation(() => {
     setValue("")
     setLabel("")
     onOpenChange(false)
+  })
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    await handleAddType()
   }
 
   return (
