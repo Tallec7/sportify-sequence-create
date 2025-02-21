@@ -106,64 +106,86 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="container py-8">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">Mes séances</h1>
-        <Button onClick={() => navigate("/editor")} className="gap-2">
-          <PlusCircle className="h-5 w-5" />
+    <div className="container py-8 animate-fade-in">
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-4xl font-bold tracking-tight text-foreground">Mes séances</h1>
+        <Button 
+          onClick={() => navigate("/editor")} 
+          className="shadow-lg hover:shadow-xl transition-shadow duration-200"
+        >
+          <PlusCircle className="mr-2" />
           Nouvelle séance
         </Button>
       </div>
       {loading ? (
-        <div className="text-center p-8">
-          <p className="text-muted-foreground">Chargement des séances...</p>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-muted-foreground animate-pulse">
+            Chargement des séances...
+          </div>
         </div>
       ) : sessions.length > 0 ? (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {sessions.map((session) => (
-            <Card key={session.id}>
+            <Card 
+              key={session.id}
+              className="group hover:shadow-lg transition-all duration-200 hover:scale-[1.02]"
+            >
               <CardHeader>
-                <CardTitle>{session.title}</CardTitle>
-                <CardDescription className="flex items-center gap-2">
-                  <Badge>{session.sport}</Badge>
-                  <Badge variant="outline">{session.level}</Badge>
-                  <Badge variant="secondary">{formatDuration(session.duration)}</Badge>
-                </CardDescription>
+                <div className="space-y-1">
+                  <CardTitle className="line-clamp-1">{session.title}</CardTitle>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge variant="default" className="bg-primary/10 text-primary hover:bg-primary/20">
+                      {session.sport}
+                    </Badge>
+                    <Badge variant="outline" className="border-primary/20">
+                      {session.level}
+                    </Badge>
+                    <Badge variant="secondary">
+                      {formatDuration(session.duration)}
+                    </Badge>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground line-clamp-2">
+                <p className="text-sm text-muted-foreground line-clamp-2 min-h-[2.5rem]">
                   {session.description || "Aucune description"}
                 </p>
-                <div className="mt-4 text-xs text-muted-foreground">
+                <p className="mt-4 text-xs text-muted-foreground">
                   {session.participants_min === session.participants_max ? (
                     `${session.participants_min} participants`
                   ) : (
                     `${session.participants_min}-${session.participants_max} participants`
                   )}
-                </div>
+                </p>
               </CardContent>
               <CardFooter className="flex justify-end gap-2">
                 <Button
-                  variant="secondary"
+                  variant="ghost"
                   size="sm"
                   onClick={() => navigate(`/session/${session.id}`)}
+                  className="opacity-0 group-hover:opacity-100 transition-opacity"
                 >
-                  <Eye className="h-4 w-4 mr-2" />
-                  Voir
+                  <Eye className="w-4 h-4" />
+                  <span className="sr-only">Voir</span>
                 </Button>
                 <Button
-                  variant="outline"
+                  variant="ghost"
                   size="sm"
                   onClick={() => navigate(`/editor/${session.id}`)}
+                  className="opacity-0 group-hover:opacity-100 transition-opacity"
                 >
-                  <Pencil className="h-4 w-4 mr-2" />
-                  Modifier
+                  <Pencil className="w-4 h-4" />
+                  <span className="sr-only">Modifier</span>
                 </Button>
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button variant="destructive" size="sm">
-                      <Trash2 className="h-4 w-4 mr-2" />
-                      Supprimer
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive hover:bg-destructive/10"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      <span className="sr-only">Supprimer</span>
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
@@ -175,7 +197,10 @@ const Dashboard = () => {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Annuler</AlertDialogCancel>
-                      <AlertDialogAction onClick={() => handleDelete(session.id)}>
+                      <AlertDialogAction
+                        onClick={() => handleDelete(session.id)}
+                        className="bg-destructive hover:bg-destructive/90"
+                      >
                         Supprimer
                       </AlertDialogAction>
                     </AlertDialogFooter>
@@ -186,8 +211,17 @@ const Dashboard = () => {
           ))}
         </div>
       ) : (
-        <div className="p-8 text-center text-muted-foreground">
-          Aucune séance pour le moment. Créez votre première séance !
+        <div className="flex flex-col items-center justify-center h-64 text-center space-y-4">
+          <p className="text-muted-foreground text-lg">
+            Aucune séance pour le moment.
+          </p>
+          <Button 
+            onClick={() => navigate("/editor")}
+            className="shadow-lg hover:shadow-xl transition-shadow duration-200"
+          >
+            <PlusCircle className="mr-2" />
+            Créer ma première séance
+          </Button>
         </div>
       )}
     </div>
