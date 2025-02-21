@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card"
 import { SessionDetailsForm } from "./forms/SessionDetailsForm"
 import { SessionBasicInfoForm } from "./forms/SessionBasicInfoForm"
+import { SessionParticipantsForm } from "./forms/SessionParticipantsForm"
 
 interface SessionFormProps {
   formData: SessionFormData
@@ -57,6 +58,10 @@ export const SessionForm = ({
           formData={formData}
           handleChange={handleInputChange}
           handleSelectChange={handleSelectChange}
+          handleNumberChange={handleNumberChange}
+        />
+        <SessionParticipantsForm
+          formData={formData}
           handleNumberChange={handleNumberChange}
         />
         <SessionDetailsForm
