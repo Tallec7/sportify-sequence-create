@@ -5,6 +5,9 @@ import { useToast } from "@/components/ui/use-toast"
 import { useErrorToast } from "@/hooks/use-error-toast"
 import { Sequence } from "@/types/sequence"
 import { SessionFormData } from "@/components/sessions/SessionForm"
+import { Database } from "@/integrations/supabase/types"
+
+type AgeCategory = Database["public"]["Enums"]["age_category_enum"]
 
 export const useSessionSaver = (id: string | undefined, userId: string | null) => {
   const navigate = useNavigate()
@@ -20,7 +23,8 @@ export const useSessionSaver = (id: string | undefined, userId: string | null) =
           .from('sessions')
           .update({
             ...formData,
-            user_id: userId
+            user_id: userId,
+            age_category: formData.age_category as AgeCategory
           })
           .eq('id', id)
 
@@ -51,7 +55,8 @@ export const useSessionSaver = (id: string | undefined, userId: string | null) =
           .from('sessions')
           .insert([{
             ...formData,
-            user_id: userId
+            user_id: userId,
+            age_category: formData.age_category as AgeCategory
           }])
           .select()
           .single()

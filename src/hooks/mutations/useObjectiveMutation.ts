@@ -3,6 +3,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/components/ui/use-toast"
 import { SessionObjective } from "../queries/useObjectivesQuery"
+import { Database } from "@/integrations/supabase/types"
+
+type ObjectiveType = Database["public"]["Enums"]["objective_type_enum"]
 
 export const useObjectiveMutation = (sessionId: string | undefined) => {
   const { toast } = useToast()
@@ -28,7 +31,8 @@ export const useObjectiveMutation = (sessionId: string | undefined) => {
         .insert([{
           ...objective,
           session_id: sessionId,
-          order_index: objective.order_index ?? nextOrderIndex
+          order_index: objective.order_index ?? nextOrderIndex,
+          objective_type: objective.objective_type as ObjectiveType
         }])
 
       if (error) throw error
@@ -50,3 +54,4 @@ export const useObjectiveMutation = (sessionId: string | undefined) => {
     }
   })
 }
+

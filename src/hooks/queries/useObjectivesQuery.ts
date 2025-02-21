@@ -1,6 +1,9 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
+import { Database } from "@/integrations/supabase/types"
+
+type ObjectiveType = Database["public"]["Enums"]["objective_type_enum"]
 
 export interface SessionObjective {
   id: string
@@ -8,7 +11,7 @@ export interface SessionObjective {
   type: string
   is_priority: boolean
   order_index: number
-  objective_type: string
+  objective_type: ObjectiveType
   session_id: string
 }
 

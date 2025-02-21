@@ -4,6 +4,9 @@ import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/components/ui/use-toast"
 import { useNavigate } from "react-router-dom"
 import { SessionFormData } from "@/components/sessions/SessionForm"
+import { Database } from "@/integrations/supabase/types"
+
+type AgeCategory = Database["public"]["Enums"]["age_category_enum"]
 
 export const useSessionMutation = (sessionId: string | undefined, userId: string | null) => {
   const { toast } = useToast()
@@ -17,7 +20,8 @@ export const useSessionMutation = (sessionId: string | undefined, userId: string
           .from('sessions')
           .update({
             ...formData,
-            user_id: userId
+            user_id: userId,
+            age_category: formData.age_category as AgeCategory
           })
           .eq('id', sessionId)
 
@@ -27,7 +31,8 @@ export const useSessionMutation = (sessionId: string | undefined, userId: string
           .from('sessions')
           .insert([{
             ...formData,
-            user_id: userId
+            user_id: userId,
+            age_category: formData.age_category as AgeCategory
           }])
 
         if (error) throw error
@@ -51,3 +56,4 @@ export const useSessionMutation = (sessionId: string | undefined, userId: string
     }
   })
 }
+
