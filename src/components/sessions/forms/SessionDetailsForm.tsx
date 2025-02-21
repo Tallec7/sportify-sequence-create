@@ -25,7 +25,7 @@ export const SessionDetailsForm = ({
     <div className="grid gap-6 md:grid-cols-2">
       <div className="space-y-2">
         <Label htmlFor="level" className="text-base">Niveau</Label>
-        <Select name="level" onValueChange={(value) => handleSelectChange("level", value)}>
+        <Select name="level" value={formData.level} onValueChange={(value) => handleSelectChange("level", value)}>
           <SelectTrigger className="h-12">
             <SelectValue placeholder="Sélectionnez un niveau" />
           </SelectTrigger>
@@ -39,22 +39,32 @@ export const SessionDetailsForm = ({
       </div>
       <div className="space-y-2">
         <Label htmlFor="age_category" className="text-base">Catégorie d'âge</Label>
-        <Select name="age_category" onValueChange={(value) => handleSelectChange("age_category", value)}>
+        <Select 
+          name="age_category" 
+          value={formData.age_category} 
+          onValueChange={(value) => handleSelectChange("age_category", value)}
+        >
           <SelectTrigger className="h-12">
             <SelectValue placeholder="Sélectionnez une catégorie" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="U9">U9</SelectItem>
+            <SelectItem value="U11">U11</SelectItem>
             <SelectItem value="U13">U13</SelectItem>
             <SelectItem value="U15">U15</SelectItem>
-            <SelectItem value="U18">U18</SelectItem>
-            <SelectItem value="senior">Senior</SelectItem>
-            <SelectItem value="pro">Pro</SelectItem>
+            <SelectItem value="U17">U17</SelectItem>
+            <SelectItem value="U19">U19</SelectItem>
+            <SelectItem value="Senior">Senior</SelectItem>
           </SelectContent>
         </Select>
       </div>
       <div className="space-y-2">
         <Label htmlFor="intensity_level" className="text-base">Intensité</Label>
-        <Select name="intensity_level" onValueChange={(value) => handleSelectChange("intensity_level", value)}>
+        <Select 
+          name="intensity_level" 
+          value={formData.intensity_level} 
+          onValueChange={(value) => handleSelectChange("intensity_level", value)}
+        >
           <SelectTrigger className="h-12">
             <SelectValue placeholder="Sélectionnez l'intensité" />
           </SelectTrigger>

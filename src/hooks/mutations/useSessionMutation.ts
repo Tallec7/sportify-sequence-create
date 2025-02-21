@@ -7,9 +7,44 @@ import { SessionFormData } from "@/components/sessions/SessionForm"
 import { Database } from "@/integrations/supabase/types"
 
 type AgeCategory = Database["public"]["Enums"]["age_category_enum"]
+type ValidationError = { field: string; message: string }
 
 const isValidAgeCategory = (category: string): category is AgeCategory => {
   return ['U9', 'U11', 'U13', 'U15', 'U17', 'U19', 'Senior'].includes(category)
+}
+
+const validateSessionData = (formData: SessionFormData): ValidationError[] => {
+  const errors: ValidationError[] = []
+
+  if (!formData.title?.trim()) {
+    errors.push({ field: 'title', message: 'Le titre est requis' })
+  }
+
+  if (!formData.sport?.trim()) {
+    errors.push({ field: 'sport', message: 'Le sport est requis' })
+  }
+
+  if (!formData.level?.trim()) {
+    errors.push({ field: 'level', message: 'Le niveau est requis' })
+  }
+
+  if (!formData.age_category || !isValidAgeCategory(formData.age_category)) {
+    errors.push({ field: 'age_category', message: 'Catégorie d\'âge invalide' })
+  }
+
+  if (formData.duration < 1) {
+    errors.push({ field: 'duration', message: 'La durée doit être supérieure à 0' })
+  }
+
+  if (formData.participants_min < 1) {
+    errors.push({ field: 'participants_min', message: 'Le nombre minimum de participants doit être supérieur à 0' })
+  }
+
+  if (formData.participants_max < formData.participants_min) {
+    errors.push({ field: 'participants_max', message: 'Le nombre maximum de participants doit être supérieur au minimum' })
+  }
+
+  return errors
 }
 
 export const useSessionMutation = (sessionId: string | undefined, userId: string | null) => {
@@ -19,8 +54,9 @@ export const useSessionMutation = (sessionId: string | undefined, userId: string
 
   return useMutation({
     mutationFn: async (formData: SessionFormData) => {
-      if (!formData.age_category || !isValidAgeCategory(formData.age_category)) {
-        throw new Error("Catégorie d'âge invalide")
+      const validationErrors = validateSessionData(formData)
+      if (validationErrors.length > 0) {
+        throw new Error(validationErrors.map(e => e.message).join('\n'))
       }
 
       if (sessionId) {
@@ -29,7 +65,6 @@ export const useSessionMutation = (sessionId: string | undefined, userId: string
           .update({
             ...formData,
             user_id: userId,
-            age_category: formData.age_category
           })
           .eq('id', sessionId)
 
@@ -40,7 +75,6 @@ export const useSessionMutation = (sessionId: string | undefined, userId: string
           .insert([{
             ...formData,
             user_id: userId,
-            age_category: formData.age_category
           }])
 
         if (error) throw error

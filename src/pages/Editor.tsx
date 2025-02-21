@@ -9,7 +9,7 @@ import { useSequencesQuery } from "@/hooks/queries/useSequencesQuery"
 import { useSessionMutation } from "@/hooks/mutations/useSessionMutation"
 import { useSequenceMutation } from "@/hooks/mutations/useSequenceMutation"
 import { useSequenceOrderMutation } from "@/hooks/mutations/useSequenceOrderMutation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { SessionFormData } from "@/components/sessions/SessionForm"
 import { Sequence } from "@/types/sequence"
 import { EditorHeader } from "@/components/sessions/EditorHeader"
@@ -24,17 +24,35 @@ const Editor = () => {
   
   // Local state
   const [formData, setFormData] = useState<SessionFormData>({
-    title: sessionData?.title || "",
-    description: sessionData?.description || "",
-    sport: sessionData?.sport || "",
-    level: sessionData?.level || "",
-    duration: sessionData?.duration || 60,
-    participants_min: sessionData?.participants_min || 1,
-    participants_max: sessionData?.participants_max || 10,
-    age_category: sessionData?.age_category || "U13",
-    intensity_level: sessionData?.intensity_level || "medium",
-    cycle_id: sessionData?.cycle_id || null
+    title: "",
+    description: "",
+    sport: "",
+    level: "",
+    duration: 60,
+    participants_min: 1,
+    participants_max: 10,
+    age_category: "U13",
+    intensity_level: "medium",
+    cycle_id: null
   })
+
+  // Update form data when session data is loaded
+  useEffect(() => {
+    if (sessionData) {
+      setFormData({
+        title: sessionData.title || "",
+        description: sessionData.description || "",
+        sport: sessionData.sport || "",
+        level: sessionData.level || "",
+        duration: sessionData.duration || 60,
+        participants_min: sessionData.participants_min || 1,
+        participants_max: sessionData.participants_max || 10,
+        age_category: sessionData.age_category || "U13",
+        intensity_level: sessionData.intensity_level || "medium",
+        cycle_id: sessionData.cycle_id || null
+      })
+    }
+  }, [sessionData])
 
   // Mutations
   const sessionMutation = useSessionMutation(id, userId)
