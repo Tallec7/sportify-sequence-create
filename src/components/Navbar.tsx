@@ -11,10 +11,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Settings, LogOut } from "lucide-react"
+import { Settings, LogOut, List } from "lucide-react"
 
 const Navbar = () => {
   const [user, setUser] = useState<User | null>(null)
+  const [hasAccess, setHasAccess] = useState(false)
   const navigate = useNavigate()
   const { toast } = useToast()
 
@@ -22,6 +23,7 @@ const Navbar = () => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
+      checkUserRole(session?.user?.id)
     })
 
     // Listen for auth changes
@@ -29,10 +31,26 @@ const Navbar = () => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null)
+      checkUserRole(session?.user?.id)
     })
 
     return () => subscription.unsubscribe()
   }, [])
+
+  const checkUserRole = async (userId: string | undefined) => {
+    if (!userId) {
+      setHasAccess(false)
+      return
+    }
+
+    const { data: roles } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId)
+
+    const userRoles = roles?.map(r => r.role) || []
+    setHasAccess(userRoles.some(role => ['admin', 'user_plus'].includes(role)))
+  }
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut()
@@ -81,6 +99,12 @@ const Navbar = () => {
                   <Settings className="mr-2 h-4 w-4" />
                   Paramètres
                 </DropdownMenuItem>
+                {hasAccess && (
+                  <DropdownMenuItem onClick={() => navigate('/dropdown-settings')}>
+                    <List className="mr-2 h-4 w-4" />
+                    Paramètres des listes
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut className="mr-2 h-4 w-4" />
                   Déconnexion
