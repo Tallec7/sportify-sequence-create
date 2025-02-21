@@ -1,7 +1,7 @@
 
 import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Plus, Edit, X } from "lucide-react"
+import { Plus, Edit, X, Target } from "lucide-react"
 import { Exercise } from "@/types/sequence"
 import { useExerciseMutation } from "@/hooks/mutations/useExerciseMutation"
 import { useExerciseDeleteMutation } from "@/hooks/mutations/useExerciseDeleteMutation"
@@ -12,6 +12,7 @@ import { ExerciseFormFields } from "./ExerciseFormFields"
 import { ExerciseFormProps } from "./types/exercise-form"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
   const { data: exercises = [] } = useExercisesQuery(sequenceId)
@@ -92,29 +93,47 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
     }
   }
 
+  const renderObjectivesByType = () => {
+    const objectivesByType = objectives.reduce((acc, obj) => {
+      if (!acc[obj.objective_type]) {
+        acc[obj.objective_type] = []
+      }
+      acc[obj.objective_type].push(obj)
+      return acc
+    }, {} as Record<string, typeof objectives>)
+
+    return Object.entries(objectivesByType).map(([type, objs]) => (
+      <div key={type} className="space-y-2">
+        <h5 className="text-sm font-medium text-muted-foreground">
+          {getObjectiveTypeLabel(type)}
+        </h5>
+        {objs.map((obj) => (
+          <div key={obj.id} className="flex items-center gap-2 bg-accent/50 rounded-lg p-2">
+            {obj.is_priority && (
+              <Target className="h-4 w-4 text-primary shrink-0" />
+            )}
+            <span className="text-sm">{obj.description}</span>
+          </div>
+        ))}
+      </div>
+    ))
+  }
+
   return (
     <div className="space-y-6">
       {objectives.length > 0 && (
-        <div className="rounded-lg border p-4">
-          <h4 className="font-medium mb-2">Objectifs de la séquence</h4>
-          <ScrollArea className="h-[100px]">
-            <div className="space-y-2">
-              {objectives.map((objective) => (
-                <div key={objective.id} className="flex items-center gap-2">
-                  {objective.is_priority && (
-                    <Badge variant="secondary" className="shrink-0">
-                      Prioritaire
-                    </Badge>
-                  )}
-                  <span className="text-sm">{objective.description}</span>
-                  <Badge variant="outline" className="ml-auto shrink-0">
-                    {getObjectiveTypeLabel(objective.objective_type)}
-                  </Badge>
-                </div>
-              ))}
-            </div>
-          </ScrollArea>
-        </div>
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg">Objectifs de la séquence</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ScrollArea className="h-[200px] pr-4">
+              <div className="space-y-4">
+                {renderObjectivesByType()}
+              </div>
+            </ScrollArea>
+          </CardContent>
+        </Card>
       )}
 
       <div className="space-y-4">
@@ -128,44 +147,50 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
         ))}
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4 rounded-lg border p-4">
-        <div className="flex items-center justify-between">
-          <h4 className="font-medium">
-            {editingExercise ? "Modifier l'exercice" : "Nouvel exercice"}
-          </h4>
-          {editingExercise && (
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={handleCancelEdit}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
-
-        <ExerciseFormFields
-          exercise={editingExercise || newExercise}
-          onChange={editingExercise ? setEditingExercise : setNewExercise}
-        />
-
-        <div className="flex justify-end">
-          <Button type="submit" className="gap-2">
-            {editingExercise ? (
-              <>
-                <Edit className="h-4 w-4" />
-                Modifier l'exercice
-              </>
-            ) : (
-              <>
-                <Plus className="h-4 w-4" />
-                Ajouter l'exercice
-              </>
+      <Card>
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-lg">
+              {editingExercise ? "Modifier l'exercice" : "Nouvel exercice"}
+            </CardTitle>
+            {editingExercise && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={handleCancelEdit}
+              >
+                <X className="h-4 w-4" />
+              </Button>
             )}
-          </Button>
-        </div>
-      </form>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <ExerciseFormFields
+              exercise={editingExercise || newExercise}
+              onChange={editingExercise ? setEditingExercise : setNewExercise}
+            />
+
+            <div className="flex justify-end">
+              <Button type="submit" className="gap-2">
+                {editingExercise ? (
+                  <>
+                    <Edit className="h-4 w-4" />
+                    Modifier l'exercice
+                  </>
+                ) : (
+                  <>
+                    <Plus className="h-4 w-4" />
+                    Ajouter l'exercice
+                  </>
+                )}
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   )
 }
+
