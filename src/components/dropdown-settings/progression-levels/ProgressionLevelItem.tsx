@@ -1,44 +1,137 @@
 
 import { useState } from "react"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { EditProgressionLevelDialog } from "./EditProgressionLevelDialog"
-import { useProgressionLevelDeleteMutation } from "@/hooks/mutations/useProgressionLevelDeleteMutation"
+import { Input } from "@/components/ui/input"
+import { Edit2, Save, X, Trash2 } from "lucide-react"
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
-interface ProgressionLevelItemProps {
+interface ProgressionLevelProps {
   level: {
     id: string
     value: string
     label: string
   }
+  isEditing: boolean
+  editedValue: string
+  editedLabel: string
+  onEditValueChange: (value: string) => void
+  onEditLabelChange: (value: string) => void
+  onStartEdit: () => void
+  onCancelEdit: () => void
+  onSaveEdit: () => void
+  onDelete: () => void
 }
 
-export const ProgressionLevelItem = ({ level }: ProgressionLevelItemProps) => {
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const deleteMutation = useProgressionLevelDeleteMutation()
-
-  const handleDelete = async () => {
-    if (confirm("Êtes-vous sûr de vouloir supprimer ce niveau de progression ?")) {
-      await deleteMutation.mutateAsync(level.id)
-    }
-  }
+export const ProgressionLevelItem = ({
+  level,
+  isEditing,
+  editedValue,
+  editedLabel,
+  onEditValueChange,
+  onEditLabelChange,
+  onStartEdit,
+  onCancelEdit,
+  onSaveEdit,
+  onDelete,
+}: ProgressionLevelProps) => {
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
 
   return (
-    <div className="flex items-center justify-between group">
-      <Badge variant="secondary">{level.label}</Badge>
-      <div className="space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-        <Button variant="outline" size="sm" onClick={() => setIsEditDialogOpen(true)}>
-          Modifier
-        </Button>
-        <Button variant="destructive" size="sm" onClick={handleDelete}>
-          Supprimer
-        </Button>
+    <div className="flex items-center justify-between p-4 rounded-lg border bg-card hover:bg-accent/5 transition-colors">
+      {isEditing ? (
+        <div className="flex-1 flex gap-3">
+          <Input
+            value={editedValue}
+            onChange={(e) => onEditValueChange(e.target.value)}
+            placeholder="Code unique"
+            className="max-w-[200px]"
+          />
+          <Input
+            value={editedLabel}
+            onChange={(e) => onEditLabelChange(e.target.value)}
+            placeholder="Nom affiché"
+          />
+        </div>
+      ) : (
+        <div className="flex items-center gap-2">
+          <span className="font-medium">{level.label}</span>
+          <span className="text-sm text-muted-foreground">({level.value})</span>
+        </div>
+      )}
+      
+      <div className="flex items-center gap-2">
+        {isEditing ? (
+          <>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={onSaveEdit}
+              className="hover:bg-primary/10"
+            >
+              <Save className="h-4 w-4" />
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={onCancelEdit}
+              className="hover:bg-destructive/10"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={onStartEdit}
+              className="hover:bg-primary/10"
+            >
+              <Edit2 className="h-4 w-4" />
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setIsDeleteDialogOpen(true)}
+              className="hover:bg-destructive/10"
+            >
+              <Trash2 className="h-4 w-4 text-destructive" />
+            </Button>
+          </>
+        )}
       </div>
-      <EditProgressionLevelDialog
-        open={isEditDialogOpen}
-        onOpenChange={setIsEditDialogOpen}
-        level={level}
-      />
+
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Cette action ne peut pas être annulée. Le niveau de progression sera définitivement supprimé.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={() => {
+                onDelete();
+                setIsDeleteDialogOpen(false);
+              }}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Supprimer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

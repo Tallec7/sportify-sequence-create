@@ -1,8 +1,11 @@
 
 import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Form, FormField, FormItem, FormLabel, FormControl } from "@/components/ui/form"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useProgressionLevelMutation } from "@/hooks/mutations/useProgressionLevelMutation"
@@ -12,25 +15,20 @@ interface AddProgressionLevelDialogProps {
   onOpenChange: (open: boolean) => void
 }
 
-export const AddProgressionLevelDialog = ({ open, onOpenChange }: AddProgressionLevelDialogProps) => {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const form = useForm({
-    defaultValues: {
-      value: "",
-      label: "",
-    },
-  })
+export const AddProgressionLevelDialog = ({
+  open,
+  onOpenChange,
+}: AddProgressionLevelDialogProps) => {
+  const [value, setValue] = useState("")
+  const [label, setLabel] = useState("")
   const mutation = useProgressionLevelMutation()
 
-  const onSubmit = async (values: { value: string; label: string }) => {
-    setIsSubmitting(true)
-    try {
-      await mutation.mutateAsync(values)
-      form.reset()
-      onOpenChange(false)
-    } finally {
-      setIsSubmitting(false)
-    }
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    await mutation.mutateAsync({ value, label })
+    setValue("")
+    setLabel("")
+    onOpenChange(false)
   }
 
   return (
@@ -39,46 +37,28 @@ export const AddProgressionLevelDialog = ({ open, onOpenChange }: AddProgression
         <DialogHeader>
           <DialogTitle>Ajouter un niveau de progression</DialogTitle>
         </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="value"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Valeur</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="niveau_1" />
-                  </FormControl>
-                </FormItem>
-              )}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Input
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              placeholder="Code unique"
             />
-            <FormField
-              control={form.control}
-              name="label"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Libellé</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Niveau 1" />
-                  </FormControl>
-                </FormItem>
-              )}
+          </div>
+          <div>
+            <Input
+              value={label}
+              onChange={(e) => setLabel(e.target.value)}
+              placeholder="Nom affiché"
             />
-            <div className="flex justify-end space-x-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-              >
-                Annuler
-              </Button>
-              <Button type="submit" disabled={isSubmitting}>
-                Ajouter
-              </Button>
-            </div>
-          </form>
-        </Form>
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              Annuler
+            </Button>
+            <Button type="submit">Ajouter</Button>
+          </div>
+        </form>
       </DialogContent>
     </Dialog>
   )
