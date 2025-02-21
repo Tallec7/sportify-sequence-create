@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
-import { PlusCircle, Pencil, Trash2 } from "lucide-react"
+import { PlusCircle, Eye, Pencil, Trash2 } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
 import {
   Card,
@@ -144,6 +144,14 @@ const Dashboard = () => {
               </CardContent>
               <CardFooter className="flex justify-end gap-2">
                 <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => navigate(`/session/${session.id}`)}
+                >
+                  <Eye className="h-4 w-4 mr-2" />
+                  Voir
+                </Button>
+                <Button
                   variant="outline"
                   size="sm"
                   onClick={() => navigate(`/editor/${session.id}`)}
@@ -187,4 +195,3 @@ const Dashboard = () => {
 }
 
 export default Dashboard
-

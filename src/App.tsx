@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar"
 import Dashboard from "@/pages/Dashboard"
 import Editor from "@/pages/Editor"
 import Settings from "@/pages/Settings"
+import ViewSession from "@/pages/ViewSession"
 
 const Layout = () => {
   return (
@@ -39,6 +40,14 @@ const router = createBrowserRouter([
         element: <Editor />,
       },
       {
+        path: "/editor/:id",
+        element: <Editor />,
+      },
+      {
+        path: "/session/:id",
+        element: <ViewSession />,
+      },
+      {
         path: "/settings",
         element: <Settings />,
       },
@@ -60,4 +69,3 @@ function App() {
 }
 
 export default App
-
