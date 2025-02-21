@@ -1,10 +1,10 @@
 
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Plus } from "lucide-react"
 
 interface AddActivityTypeDialogProps {
+  isOpen: boolean
   newValue: string
   newLabel: string
   onNewValueChange: (value: string) => void
@@ -14,6 +14,7 @@ interface AddActivityTypeDialogProps {
 }
 
 export const AddActivityTypeDialog = ({
+  isOpen,
   newValue,
   newLabel,
   onNewValueChange,
@@ -22,13 +23,7 @@ export const AddActivityTypeDialog = ({
   onAdd,
 }: AddActivityTypeDialogProps) => {
   return (
-    <Dialog onOpenChange={(open) => !open && onCancel()}>
-      <DialogTrigger asChild>
-        <Button size="sm" variant="outline">
-          <Plus className="h-4 w-4 mr-2" />
-          Ajouter
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onCancel()}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Ajouter un type d'activité</DialogTitle>
@@ -61,3 +56,4 @@ export const AddActivityTypeDialog = ({
     </Dialog>
   )
 }
+
