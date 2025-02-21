@@ -44,6 +44,44 @@ export type Database = {
           },
         ]
       }
+      exercise_success_criteria: {
+        Row: {
+          created_at: string | null
+          description: string
+          exercise_id: string | null
+          id: string
+          target_value: number | null
+          unit: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description: string
+          exercise_id?: string | null
+          id?: string
+          target_value?: number | null
+          unit?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string
+          exercise_id?: string | null
+          id?: string
+          target_value?: number | null
+          unit?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exercise_success_criteria_exercise_id_fkey"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "exercises"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       exercises: {
         Row: {
           activity_type: Database["public"]["Enums"]["activity_type_enum"]
@@ -57,9 +95,14 @@ export type Database = {
           id: string
           intensity_level: string | null
           opposition_type: string | null
+          performance_metrics: Json | null
           player_instructions: string | null
+          progression_level: number | null
           sequence_id: string | null
           setup_instructions: string | null
+          tactical_concepts:
+            | Database["public"]["Enums"]["tactical_concept_enum"][]
+            | null
           tactical_objectives: string[] | null
           title: string
           updated_at: string | null
@@ -78,9 +121,14 @@ export type Database = {
           id?: string
           intensity_level?: string | null
           opposition_type?: string | null
+          performance_metrics?: Json | null
           player_instructions?: string | null
+          progression_level?: number | null
           sequence_id?: string | null
           setup_instructions?: string | null
+          tactical_concepts?:
+            | Database["public"]["Enums"]["tactical_concept_enum"][]
+            | null
           tactical_objectives?: string[] | null
           title: string
           updated_at?: string | null
@@ -99,9 +147,14 @@ export type Database = {
           id?: string
           intensity_level?: string | null
           opposition_type?: string | null
+          performance_metrics?: Json | null
           player_instructions?: string | null
+          progression_level?: number | null
           sequence_id?: string | null
           setup_instructions?: string | null
+          tactical_concepts?:
+            | Database["public"]["Enums"]["tactical_concept_enum"][]
+            | null
           tactical_objectives?: string[] | null
           title?: string
           updated_at?: string | null
@@ -436,6 +489,47 @@ export type Database = {
           },
         ]
       }
+      technical_progressions: {
+        Row: {
+          created_at: string | null
+          current_level: number | null
+          exercise_id: string | null
+          id: string
+          progression_notes: string | null
+          skill_name: string
+          target_level: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          current_level?: number | null
+          exercise_id?: string | null
+          id?: string
+          progression_notes?: string | null
+          skill_name: string
+          target_level?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          current_level?: number | null
+          exercise_id?: string | null
+          id?: string
+          progression_notes?: string | null
+          skill_name?: string
+          target_level?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "technical_progressions_exercise_id_fkey"
+            columns: ["exercise_id"]
+            isOneToOne: false
+            referencedRelation: "exercises"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       training_cycles: {
         Row: {
           created_at: string | null
@@ -491,6 +585,13 @@ export type Database = {
         | "apprentissage"
         | "developpement"
         | "perfectionnement"
+      tactical_concept_enum:
+        | "montee_de_balle"
+        | "repli_defensif"
+        | "contre_attaque"
+        | "attaque_placee"
+        | "defense_alignee"
+        | "defense_etagee"
     }
     CompositeTypes: {
       [_ in never]: never

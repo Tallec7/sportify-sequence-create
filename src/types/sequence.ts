@@ -16,6 +16,44 @@ export interface Exercise {
   tactical_objectives?: string[]
   diagram_url?: string
   video_url?: string
+  tactical_concepts?: TacticalConcept[]
+  performance_metrics?: PerformanceMetrics
+  progression_level?: number
+  success_criteria?: ExerciseSuccessCriteria[]
+  technical_progressions?: TechnicalProgression[]
+}
+
+export type TacticalConcept = 
+  | 'montee_de_balle'
+  | 'repli_defensif'
+  | 'contre_attaque'
+  | 'attaque_placee'
+  | 'defense_alignee'
+  | 'defense_etagee'
+
+export interface PerformanceMetrics {
+  [key: string]: number | string | boolean
+}
+
+export interface ExerciseSuccessCriteria {
+  id: string
+  exercise_id: string
+  description: string
+  target_value: number
+  unit?: string
+  created_at?: string
+  updated_at?: string
+}
+
+export interface TechnicalProgression {
+  id: string
+  exercise_id: string
+  skill_name: string
+  current_level: number
+  target_level: number
+  progression_notes?: string
+  created_at?: string
+  updated_at?: string
 }
 
 export interface SequenceObjective {
@@ -40,3 +78,4 @@ export interface Sequence {
   exercises?: Exercise[]
   objectives?: SequenceObjective[]
 }
+

@@ -30,6 +30,11 @@ export const useExerciseMutation = (sequenceId: string | undefined) => {
         opposition_type: exercise.opposition_type,
         decision_making_focus: exercise.decision_making_focus,
         tactical_objectives: exercise.tactical_objectives,
+        diagram_url: exercise.diagram_url,
+        video_url: exercise.video_url,
+        tactical_concepts: exercise.tactical_concepts || [],
+        performance_metrics: exercise.performance_metrics || {},
+        progression_level: exercise.progression_level || 1,
       }
 
       if (id) {
@@ -72,3 +77,4 @@ export const useExerciseMutation = (sequenceId: string | undefined) => {
     }
   })
 }
+
