@@ -12,10 +12,12 @@ export const useSequenceOrderMutation = (sessionId: string | undefined) => {
     mutationFn: async (sequences: Sequence[]) => {
       if (!sessionId) throw new Error("Session ID is required")
 
-      const updatePromises = sequences.map((sequence) =>
+      console.log("Updating sequence order:", sequences.map(s => ({ id: s.id, order: s.sequence_order })))
+
+      const updatePromises = sequences.map((sequence, index) =>
         supabase
           .from("session_sequences")
-          .update({ sequence_order: sequence.sequence_order })
+          .update({ sequence_order: index + 1 })
           .eq("id", sequence.id)
       )
 
@@ -38,4 +40,3 @@ export const useSequenceOrderMutation = (sessionId: string | undefined) => {
     }
   })
 }
-
