@@ -7,6 +7,7 @@ import { ProgressionLevelItem } from "./ProgressionLevelItem"
 
 export const ProgressionLevelsList = () => {
   const { data: progressionLevels = [] } = useProgressionLevelsQuery()
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
 
   return (
     <div className="space-y-4">
@@ -17,7 +18,10 @@ export const ProgressionLevelsList = () => {
             Gérez les niveaux de progression disponibles
           </p>
         </div>
-        <AddProgressionLevelDialog />
+        <AddProgressionLevelDialog
+          open={isAddDialogOpen}
+          onOpenChange={setIsAddDialogOpen}
+        />
       </div>
 
       <div className="grid gap-3">
@@ -27,3 +31,4 @@ export const ProgressionLevelsList = () => {
       </div>
     </div>
   )
+}

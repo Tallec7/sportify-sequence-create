@@ -31,3 +31,4 @@ export const AgeCategoriesList = () => {
       </div>
     </div>
   )
+}
