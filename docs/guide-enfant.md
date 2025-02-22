@@ -1,82 +1,126 @@
 
-# Guide du Code KAP pour les Enfants 🚀
+# Guide du Développement KAP 🚀
 
-Salut ! Ce guide va t'aider à comprendre comment fonctionne le code de KAP et comment tu peux le modifier. C'est comme un jeu de construction, où chaque pièce a son rôle !
+Ce guide détaille l'architecture et le développement du projet KAP, facilitant la prise en main par de nouveaux développeurs.
 
-## 🎮 Les Parties Principales du Site
+## 🏗️ Architecture du Projet
 
-### 1. Les Pages (comme les pièces d'une maison)
-- `src/pages/` : C'est ici que tu trouves toutes les pages du site
-  - `Index.tsx` : La page d'accueil
-  - `Dashboard.tsx` : Le tableau de bord
-  - `Editor.tsx` : Là où on crée les séances
-
-### 2. Les Petites Pièces (comme des LEGO)
-- `src/components/` : Les petites pièces qu'on utilise partout
-  - `Navbar.tsx` : La barre en haut du site
-  - `Button.tsx` : Les boutons
-  - `Form.tsx` : Les formulaires
-
-## 🎨 Comment Changer des Choses ?
-
-### Pour changer les couleurs :
-1. Va dans les fichiers où il y a `className=`
-2. Change les couleurs comme `bg-blue-500` en `bg-red-500`
-
-### Pour ajouter un nouveau bouton :
-1. Va dans la page où tu veux l'ajouter
-2. Ajoute ce code :
-```tsx
-<Button>Mon nouveau bouton</Button>
+### Structure des Dossiers
+```
+src/
+├── components/    # Composants réutilisables
+├── pages/        # Pages de l'application
+├── hooks/        # Hooks personnalisés
+├── utils/        # Fonctions utilitaires
+├── types/        # Types TypeScript
+└── integrations/ # Intégrations externes (Supabase)
 ```
 
-### Pour ajouter une nouvelle page :
-1. Crée un nouveau fichier dans `src/pages/`
-2. Copie ce modèle :
-```tsx
-const MaNouvellePage = () => {
-  return (
-    <div>
-      Ma nouvelle page !
-    </div>
-  );
-};
+### Composants Principaux
 
-export default MaNouvellePage;
+#### 1. Structure des Pages
+- `Index.tsx` : Page d'accueil
+- `Dashboard.tsx` : Tableau de bord utilisateur
+- `Editor.tsx` : Éditeur de séances
+- `Auth.tsx` : Authentification
+- `Settings.tsx` : Paramètres
+
+#### 2. Composants Clés
+- `SessionForm` : Création/édition de séances
+- `SequenceForm` : Gestion des séquences
+- `ExerciseForm` : Configuration des exercices
+
+## 🔧 Développement
+
+### Configuration de l'Environnement
+1. Installation des dépendances :
+```bash
+npm install
 ```
 
-## 🔧 Les Modifications Courantes
-
-### Pour ajouter un type d'activité :
-1. Va dans `src/components/dropdown-settings/activity-types/`
-2. Trouve la liste des activités
-3. Ajoute ton nouveau type
-
-### Pour changer le texte :
-1. Cherche le texte que tu veux changer
-2. Change-le directement dans le fichier
-
-### Pour ajouter une image :
-1. Mets ton image dans le dossier `public/`
-2. Utilise-la comme ça :
-```tsx
-<img src="/mon-image.png" alt="Ma super image" />
+2. Configuration de Supabase :
+- Créer un fichier `.env` à la racine
+- Ajouter les variables Supabase :
+```
+VITE_SUPABASE_URL=your_url
+VITE_SUPABASE_ANON_KEY=your_key
 ```
 
-## 🎯 Astuces
+### Gestion des Données
 
-- Toujours sauvegarder tes fichiers
-- Regarde dans la console s'il y a des erreurs (F12)
-- Teste bien tes changements avant de les partager
-- N'hésite pas à demander de l'aide !
+#### Base de Données (Supabase)
+- Tables principales : sessions, sequences, exercises
+- Relations : One-to-Many entre sessions et sequences
+- Politiques RLS pour la sécurité des données
 
-## 🌟 Pour Aller Plus Loin
+#### État de l'Application
+- TanStack Query pour la gestion d'état
+- Hooks personnalisés pour la logique métier
+- Context React pour l'état global
 
-Tu veux ajouter quelque chose de spécial ? Voici où chercher :
+### Extension du Projet
 
-- Nouvelle fonctionnalité pour les séances : `src/components/sessions/`
-- Nouveau paramètre : `src/components/dropdown-settings/`
-- Nouvelle page : `src/pages/`
-- Nouveau style : `tailwind.config.ts`
+#### 1. Ajout de Nouvelles Fonctionnalités
+1. Créer les composants nécessaires dans `src/components/`
+2. Ajouter les types dans `src/types/`
+3. Implémenter la logique dans les hooks
+4. Mettre à jour les routes si nécessaire
 
-N'oublie pas : le code c'est comme un jeu de construction, prends ton temps et amuse-toi bien ! 🎮
+#### 2. Modification des Types d'Activités
+1. Éditer `src/types/sequence.ts`
+2. Mettre à jour les formulaires correspondants
+3. Adapter la validation des données
+
+#### 3. Ajout de Nouveaux Paramètres
+1. Créer/modifier les tables Supabase
+2. Ajouter les types TypeScript
+3. Implémenter les composants d'interface
+4. Mettre à jour la logique métier
+
+## 🧪 Tests
+
+### Tests Unitaires
+- Utilisation de Vitest
+- Tests des composants avec @testing-library/react
+- Coverage minimal recommandé : 80%
+
+### Tests d'Intégration
+- Tests de flux utilisateur complets
+- Vérification des intégrations Supabase
+- Tests des formulaires principaux
+
+## 📚 Ressources
+
+### Documentation Technique
+- [Technical Specifications](./technical-specifications.md)
+- [Architecture Overview](./architecture/overview.md)
+- [API Design](./architecture/api-design.md)
+
+### Standards
+- TypeScript strict
+- ESLint pour le style de code
+- Prettier pour le formatage
+- Commits conventionnels
+
+## 🚀 Déploiement
+
+### Process de Build
+1. Vérification des types : `npm run type-check`
+2. Tests : `npm run test`
+3. Build : `npm run build`
+4. Preview : `npm run preview`
+
+### Variables d'Environnement
+- Configurer les variables Supabase
+- Vérifier les politiques RLS
+- Mettre à jour les tokens si nécessaire
+
+## 🤝 Contribution
+
+### Process de Développement
+1. Créer une branche feature
+2. Développer et tester localement
+3. Soumettre une PR
+4. Code review
+5. Merge après approbation
+
