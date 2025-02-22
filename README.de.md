@@ -3,18 +3,18 @@
 
 ## Über das Projekt
 
-KAP est une application web qui permet de créer et de gérer des séances d'entraînement. La plateforme permet aux entraîneurs de créer, valider et partager des séances d'entraînement professionnelles avec leur équipe et la communauté.
+KAP ist eine Webanwendung, die es Trainern ermöglicht, Trainingseinheiten zu erstellen und zu verwalten. Die Plattform ermöglicht das Erstellen, Validieren und Teilen von professionellen Trainingseinheiten mit ihrem Team und der Community.
 
 ## Hauptfunktionen
 
-- Création rapide de séances d'entraînement
-- Validation par des experts
-- Partage facile des séances d'entraînement
-- Apprentissage et échange communautaire
-- Gestion des types d'activités
-- Gestion des catégories d'âge
-- Gestion des niveaux de progression
-- Interface cohérente et intuitive
+- Schnelle Erstellung von Trainingseinheiten
+- Validierung durch Experten
+- Einfaches Teilen von Trainingseinheiten
+- Community-Lernen
+- Verwaltung von Aktivitätstypen
+- Verwaltung von Alterskategorien
+- Verwaltung von Fortschrittsstufen
+- Konsistente und intuitive Benutzeroberfläche
 
 ## Technologie-Stack
 
@@ -22,32 +22,35 @@ KAP est une application web qui permet de créer et de gérer des séances d'ent
 - Tailwind CSS
 - Shadcn/ui
 - Framer Motion
-
-## Gestion des paramètres
-
-L'application propose une interface unifiée pour gérer :
-- Les types d'activités
-- Les catégories d'âge
-- Les niveaux de progression
-- Les paramètres de validation
+- Supabase
 
 ## Installation
 
 ```bash
-# Cloner le dépôt
+# Repository klonen
 git clone <repository-url>
 
-# Se déplacer dans le répertoire du projet
+# In das Projektverzeichnis wechseln
 cd kap
 
-# Installer les dépendances
+# Abhängigkeiten installieren
 npm install
 
-# Démarrer le serveur de développement
+# Entwicklungsserver starten
 npm run dev
 ```
 
-## Licence
+## Projektstruktur
 
-Tous droits réservés.
+```
+src/
+├── components/     # Wiederverwendbare Komponenten
+├── pages/         # Anwendungsseiten
+├── hooks/         # Benutzerdefinierte Hooks
+├── utils/         # Hilfsfunktionen
+└── types/         # TypeScript-Typen
+```
 
+## Lizenz
+
+Alle Rechte vorbehalten.

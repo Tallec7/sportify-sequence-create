@@ -5,80 +5,73 @@
 
 ### 1.1 Frontend
 - React avec TypeScript
-- Tailwind CSS
-- Gestion d'état avec TanStack Query
-- Bibliothèque de composants avec shadcn/ui
-- Composants réutilisables
+- Tailwind CSS pour le style
+- TanStack Query pour la gestion d'état
+- Composants shadcn/ui
 - Architecture modulaire
+- Framer Motion pour les animations
 
-### 1.2 Backend
-- Intégration Supabase
-- Design API RESTful
-- Support WebSocket
-- Gestion du cache
-- Sécurité avancée
+### 1.2 Backend (Supabase)
+- Base de données PostgreSQL
+- Authentication et autorisation
+- Stockage de fichiers
+- Fonctions temps réel
+- API RESTful
+- Sécurité intégrée
+
+### 1.3 Gestion des Données
+- Cache optimisé
 - Validation des données
-
-### 1.3 Base de Données
-- PostgreSQL avec Supabase
-- Modélisation des données
-- Stratégie d'indexation
-- Optimisation des requêtes
-- Gestion des relations
+- Gestion des erreurs
+- Synchronisation en temps réel
 - Performance optimisée
 
-## 2. Exigences d'Intégration
+## 2. Composants Principaux
 
-### 2.1 Services Externes
-- Fournisseurs d'authentification
-- Services d'analytique
-- Solutions de stockage
-- Processeurs de paiement
-- APIs externes
-- Services d'IA
+### 2.1 Éditeur de Séance
+- Interface intuitive
+- Gestion des séquences
+- Validation en temps réel
+- Sauvegarde automatique
+- Prévisualisation
 
-### 2.2 APIs
-- Points d'entrée RESTful
-- Support GraphQL
-- Connexions WebSocket
-- Limitation de débit
-- Validation des données
-- Documentation OpenAPI
+### 2.2 Gestion des Paramètres
+- Types d'activités
+- Catégories d'âge
+- Niveaux de progression
+- Interface unifiée
+- Validation des entrées
 
-### 2.3 Outils Tiers
-- Monitoring de performance
-- Suivi des erreurs
-- Intégration analytique
-- Support client
-- Alertes système
-- Analyse prédictive
+### 2.3 Système de Partage
+- Partage de séances
+- Contrôle d'accès
+- Collaboration en temps réel
+- Commentaires et retours
+- Versions et historique
 
 ## 3. Standards de Développement
 
-### 3.1 Qualité du Code
-- Mode strict TypeScript
-- Configuration ESLint
-- Exigences de test
-- Standards de documentation
-- Revue de code
-- Clean code
-
-### 3.2 Stratégie de Test
+### 3.1 Code
+- TypeScript strict
+- ESLint configuré
 - Tests unitaires
-- Tests d'intégration
-- Tests E2E
-- Tests de performance
-- Tests de charge
-- Tests de sécurité
+- Documentation inline
+- Reviews de code
 
-### 3.3 Déploiement
-- Pipeline CI/CD
-- Configuration d'environnement
-- Configuration monitoring
-- Stratégie de backup
-- Rollback automatique
-- Déploiement bleu/vert
+### 3.2 UI/UX
+- Design responsive
+- Accessibilité WCAG
+- Thème cohérent
+- Feedback utilisateur
+- Performance optimisée
+
+### 3.3 Sécurité
+- Authentification sécurisée
+- Protection des données
+- Validation des entrées
+- Gestion des sessions
+- Logs d'audit
 
 Voir aussi :
-- [Exigences Fonctionnelles](./functional-requirements.md)
-- [Exigences Non-Fonctionnelles](./non-functional-requirements.md)
+- [Guide pour Enfants](./guide-enfant.md)
+- [Architecture Overview](./architecture/overview.md)
