@@ -11,6 +11,10 @@ KAP est une application web qui permet de créer et de gérer des séances d'ent
 - Validation par des experts
 - Partage facile des séances d'entraînement
 - Apprentissage et échange communautaire
+- Gestion des types d'activités
+- Gestion des catégories d'âge
+- Gestion des niveaux de progression
+- Interface cohérente et intuitive
 
 ## Technologie-Stack
 
@@ -18,6 +22,14 @@ KAP est une application web qui permet de créer et de gérer des séances d'ent
 - Tailwind CSS
 - Shadcn/ui
 - Framer Motion
+
+## Gestion des paramètres
+
+L'application propose une interface unifiée pour gérer :
+- Les types d'activités
+- Les catégories d'âge
+- Les niveaux de progression
+- Les paramètres de validation
 
 ## Installation
 
@@ -38,3 +50,4 @@ npm run dev
 ## Licence
 
 Tous droits réservés.
+
