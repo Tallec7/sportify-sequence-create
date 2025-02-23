@@ -1,4 +1,3 @@
-
 export type AgeCategoryType = "U9" | "U11" | "U13" | "U15" | "U17" | "U19" | "Senior"
 
 export interface Level {
@@ -73,6 +72,12 @@ export type SessionObjective = {
   order_index: number
   objective_type: ObjectiveType
   session_id?: string
+}
+
+export type TacticalConceptOption = {
+  id: string
+  value: TacticalConcept
+  label: string
 }
 
 export interface SessionFormData {

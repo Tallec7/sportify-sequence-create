@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { SessionFormData } from "@/types/settings"
+import { type SessionFormData } from "@/types/settings"
 
 interface SequenceFormProps {
   sequences: Sequence[]
@@ -26,6 +26,7 @@ export const SequenceForm = ({
   formData
 }: SequenceFormProps) => {
   const [showAddForm, setShowAddForm] = useState(false)
+  const [selectedSequenceId, setSelectedSequenceId] = useState<string | null>(null)
 
   const sessionContext = {
     sport: formData.sport,
@@ -45,12 +46,30 @@ export const SequenceForm = ({
       <CardContent className="space-y-6">
         <SequenceList
           sequences={sequences}
+          selectedSequenceId={selectedSequenceId}
+          setSelectedSequenceId={setSelectedSequenceId}
           onReorder={onReorderSequences}
+          totalDuration={sequences.reduce((acc, seq) => acc + seq.duration, 0)}
           sessionContext={sessionContext}
         />
         {showAddForm ? (
           <AddSequenceForm
-            onAdd={onAddSequence}
+            newSequence={{
+              id: '',
+              title: "",
+              description: "",
+              duration: 30,
+              sequence_type: "main",
+              intensity_level: "medium",
+              sequence_order: sequences.length + 1,
+              exercises: [],
+              objective: ""
+            }}
+            setNewSequence={() => {}}
+            onSubmit={async (sequence) => {
+              onAddSequence(sequence)
+              setShowAddForm(false)
+            }}
             onCancel={() => setShowAddForm(false)}
             sequences={sequences}
             sessionContext={sessionContext}

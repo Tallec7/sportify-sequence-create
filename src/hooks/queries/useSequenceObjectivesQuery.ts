@@ -1,23 +1,26 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
-import { SequenceObjective } from "@/types/sequence"
+import type { SequenceObjective } from "@/types/sequence"
 
 export const useSequenceObjectivesQuery = (sequenceId: string | undefined) => {
   return useQuery({
     queryKey: ["sequence-objectives", sequenceId],
     queryFn: async () => {
-      if (!sequenceId) throw new Error("Sequence ID is required")
+      if (!sequenceId) return []
 
       const { data, error } = await supabase
         .from("sequence_objectives")
         .select("*")
         .eq("sequence_id", sequenceId)
-        .order("order_index", { ascending: true })
+        .order("order_index")
 
       if (error) throw error
 
-      return data as SequenceObjective[]
+      return data.map(obj => ({
+        ...obj,
+        type: obj.objective_type // Map objective_type to type
+      })) as SequenceObjective[]
     },
     enabled: !!sequenceId
   })

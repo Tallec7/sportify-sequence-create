@@ -1,6 +1,6 @@
 
 import { SessionHeaderForm } from "./forms/SessionHeaderForm"
-import { SessionFormData } from "./SessionForm"
+import { type SessionFormData } from "@/types/settings"
 
 interface EditorHeaderProps {
   isLoading: boolean
@@ -31,4 +31,3 @@ export const EditorHeader = ({
     />
   )
 }
-
