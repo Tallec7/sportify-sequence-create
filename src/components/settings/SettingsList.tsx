@@ -7,9 +7,9 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { SettingsGroup } from "./SettingsGroup"
-import { IntensityLevelsList } from "@/components/dropdown-settings/intensity-levels/IntensityLevelsList"
-import { LevelsList } from "@/components/dropdown-settings/levels/LevelsList"
-import { SequenceTypesList } from "@/components/dropdown-settings/sequence-types/SequenceTypesList"
+import { IntensityLevelsList } from "@/components/dropdown-settings/IntensityLevelsList"
+import { LevelsList } from "@/components/dropdown-settings/LevelsList"
+import { SequenceTypesList } from "@/components/dropdown-settings/SequenceTypesList"
 import { ProgressionLevelsList } from "@/components/dropdown-settings/progression-levels/ProgressionLevelsList"
 import { Badge } from "@/components/ui/badge"
 
@@ -86,3 +86,4 @@ export const SettingsList = () => {
     </Accordion>
   )
 }
+
