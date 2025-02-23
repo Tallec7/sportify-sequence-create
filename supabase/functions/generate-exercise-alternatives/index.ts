@@ -8,13 +8,39 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    // Validate authorization header
+    const authHeader = req.headers.get('authorization')
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Missing authorization header' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
     const { exercise, sessionContext } = await req.json();
     
+    // Validate required fields
+    if (!exercise || !sessionContext) {
+      return new Response(
+        JSON.stringify({ error: 'Exercise and session context are required' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    // Validate session context fields
+    if (!sessionContext.sport || !sessionContext.level) {
+      return new Response(
+        JSON.stringify({ error: 'Sport and level are required in session context' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
     const systemPrompt = `Tu es un expert en création d'exercices d'entraînement. Tu dois proposer 2-3 alternatives à l'exercice fourni en respectant les mêmes objectifs et le contexte de la séance. IMPORTANT : Ta réponse doit contenir UNIQUEMENT du JSON valide avec le format suivant, sans aucun texte avant ou après.
 
 {
@@ -40,7 +66,7 @@ serve(async (req) => {
 
     const userPrompt = `Propose des alternatives pour cet exercice: ${exercise.title}
 Description: ${exercise.description}
-Objectif: ${exercise.objective}
+Objectif: ${exercise.objective || "Non spécifié"}
 Type d'activité: ${exercise.activity_type}
 Durée: ${exercise.duration} minutes
 
@@ -62,11 +88,13 @@ Intensité globale: ${sessionContext.intensity_level}`;
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        temperature: 0.8
+        temperature: 0.8,
+        max_tokens: 2000
       }),
     });
 
     if (!response.ok) {
+      console.error('OpenAI Error:', await response.text());
       throw new Error(`OpenAI API a répondu avec le statut : ${response.status}`);
     }
 
@@ -87,9 +115,12 @@ Intensité globale: ${sessionContext.intensity_level}`;
 
   } catch (error) {
     console.error('Erreur dans la fonction generate-exercise-alternatives:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({ error: error.message }), 
+      { 
+        status: 500, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
+    );
   }
 });
