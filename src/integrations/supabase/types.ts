@@ -217,6 +217,13 @@ export type Database = {
             referencedRelation: "session_sequences"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "fk_exercises_intensity_level"
+            columns: ["intensity_level"]
+            isOneToOne: false
+            referencedRelation: "intensity_levels"
+            referencedColumns: ["value"]
+          },
         ]
       }
       favorites: {
@@ -531,6 +538,20 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "fk_sequences_intensity_level"
+            columns: ["intensity_level"]
+            isOneToOne: false
+            referencedRelation: "intensity_levels"
+            referencedColumns: ["value"]
+          },
+          {
+            foreignKeyName: "fk_sequences_sequence_type"
+            columns: ["sequence_type"]
+            isOneToOne: false
+            referencedRelation: "sequence_types"
+            referencedColumns: ["value"]
+          },
+          {
             foreignKeyName: "session_sequences_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: false
@@ -624,6 +645,13 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_sessions_intensity_level"
+            columns: ["intensity_level"]
+            isOneToOne: false
+            referencedRelation: "intensity_levels"
+            referencedColumns: ["value"]
+          },
           {
             foreignKeyName: "sessions_cycle_id_fkey"
             columns: ["cycle_id"]
