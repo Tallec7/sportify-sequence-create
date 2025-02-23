@@ -16,10 +16,10 @@ interface SessionExpertFormProps {
 }
 
 export const SessionExpertForm = ({ onGenerate, isLoading }: SessionExpertFormProps) => {
-  const sports = useSportsQuery()
-  const levels = useLevelsQuery()
-  const intensityLevels = useIntensityLevelsQuery()
-  const ageCategories = useAgeCategoriesQuery()
+  const { data: sports = [] } = useSportsQuery()
+  const { data: levels = [] } = useLevelsQuery()
+  const { data: intensityLevels = [] } = useIntensityLevelsQuery()
+  const { data: ageCategories = [] } = useAgeCategoriesQuery()
   
   const [answers, setAnswers] = useState({
     sport: "",
@@ -158,3 +158,4 @@ export const SessionExpertForm = ({ onGenerate, isLoading }: SessionExpertFormPr
     </form>
   )
 }
+
