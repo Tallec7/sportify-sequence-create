@@ -373,7 +373,7 @@ export type Database = {
           details?: Json | null
           error_type: string
           id?: string
-          mode: string
+          mode?: string
           resolved_at?: string | null
           timestamp?: string
           training_type: string
