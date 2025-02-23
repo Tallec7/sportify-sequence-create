@@ -20,8 +20,15 @@ export const useExerciseAlternativesMutation = () => {
       exercise: Exercise, 
       sessionContext: ExerciseAlternativesContext
     }) => {
-      // Get anon key from Supabase instance
-      const { supabaseAccessToken } = await supabase.auth.getSession()
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
+      
+      if (sessionError) {
+        throw new Error('Erreur d\'authentification')
+      }
+
+      if (!session) {
+        throw new Error('Session non trouvée')
+      }
       
       if (!sessionContext.sport || !sessionContext.level) {
         throw new Error('Le sport et le niveau sont requis')
@@ -33,7 +40,7 @@ export const useExerciseAlternativesMutation = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${supabaseAccessToken}`,
+            'Authorization': `Bearer ${session.access_token}`,
           },
           body: JSON.stringify({ exercise, sessionContext }),
         }
