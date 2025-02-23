@@ -1,4 +1,3 @@
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -7,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { PromptTemplateDialog } from "./PromptTemplateDialog"
 import type { Sport } from "@/hooks/queries/useSportsQuery"
 
-interface Template {
+interface PromptTemplate {
   id: string
   prompt_text: string
   training_type: string
@@ -16,6 +15,8 @@ interface Template {
   sport_id: string | null
   sports: { label: string } | null
 }
+
+interface Template extends PromptTemplate {}
 
 interface PromptTemplatesListProps {
   templates: Template[]

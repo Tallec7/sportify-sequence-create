@@ -3,7 +3,7 @@ import { z } from "zod"
 import type { Sport } from "@/types/settings"
 
 export type PromptTemplate = {
-  id?: string
+  id: string // Changed from optional to required
   sport_id: string | null
   training_type: string
   prompt_text: string

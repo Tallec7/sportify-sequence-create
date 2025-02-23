@@ -29,7 +29,7 @@ export const usePromptTemplate = ({ template, onOpenChange }: UsePromptTemplateP
 
   const mutation = useMutation({
     mutationFn: async (values: PromptTemplateFormValues) => {
-      if (template) {
+      if (template?.id) {
         const { error } = await supabase
           .from("prompt_templates")
           .update({ ...values, updated_at: new Date().toISOString() })

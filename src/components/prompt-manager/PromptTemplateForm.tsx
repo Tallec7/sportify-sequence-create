@@ -1,12 +1,12 @@
 
+import { UseFormReturn } from "react-hook-form"
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
-import { UseFormReturn } from "react-hook-form"
-import type { Sport } from "@/hooks/queries/useSportsQuery"
+import type { Sport } from "@/types/settings"
 import type { PromptTemplateFormValues } from "./types"
 
 interface PromptTemplateFormProps {
@@ -18,7 +18,7 @@ interface PromptTemplateFormProps {
 
 export const PromptTemplateForm = ({ form, sports, onCancel, isEditing }: PromptTemplateFormProps) => {
   return (
-    <form onSubmit={form.handleSubmit(form.handleSubmit)} className="space-y-4">
+    <form onSubmit={form.handleSubmit((values) => form.handleSubmit(values))} className="space-y-4">
       <FormField
         control={form.control}
         name="sport_id"
