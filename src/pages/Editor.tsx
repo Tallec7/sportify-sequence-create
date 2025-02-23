@@ -109,9 +109,10 @@ const Editor = () => {
             />
             {id && (
               <SequenceForm
-                onSubmit={handleAddSequence}
-                onReorderSequences={handleReorderSequences}
                 sequences={sequences}
+                onAddSequence={handleAddSequence}
+                onReorderSequences={handleReorderSequences}
+                formData={formData}
               />
             )}
           </>
