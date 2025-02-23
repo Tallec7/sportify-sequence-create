@@ -9,14 +9,33 @@ interface SettingsSectionProps {
 
 export const SettingsSection = ({ title, description, children }: SettingsSectionProps) => {
   return (
-    <div className="space-y-6">
+    <section 
+      className="space-y-6"
+      role="region"
+      aria-labelledby={title ? "settings-section-title" : undefined}
+      aria-describedby={description ? "settings-section-description" : undefined}
+    >
       {(title || description) && (
         <div className="space-y-1">
-          {title && <h3 className="text-lg font-medium">{title}</h3>}
-          {description && <p className="text-sm text-muted-foreground">{description}</p>}
+          {title && (
+            <h3 
+              id="settings-section-title" 
+              className="text-lg font-medium text-foreground"
+            >
+              {title}
+            </h3>
+          )}
+          {description && (
+            <p 
+              id="settings-section-description"
+              className="text-sm text-muted-foreground"
+            >
+              {description}
+            </p>
+          )}
         </div>
       )}
       {children}
-    </div>
+    </section>
   )
 }
