@@ -4,8 +4,11 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
-import { AlertCircle } from "lucide-react"
+import { Shield, TestTube } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
+import { toast } from "@/components/ui/use-toast"
 import { PromptTemplateDialog } from "./PromptTemplateDialog"
 import type { Sport } from "@/types/settings"
 import type { PromptTemplate } from "./types"
@@ -16,9 +19,17 @@ interface PromptTemplatesListProps {
   isLoading: boolean
 }
 
+type SortField = 'mode' | 'updated_at' | 'sport'
+type SortOrder = 'asc' | 'desc'
+
 export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemplatesListProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [selectedTemplate, setSelectedTemplate] = useState<PromptTemplate | null>(null)
+  const [filterSport, setFilterSport] = useState<string>('all')
+  const [filterMode, setFilterMode] = useState<string>('all')
+  const [search, setSearch] = useState('')
+  const [sortField, setSortField] = useState<SortField>('updated_at')
+  const [sortOrder, setSortOrder] = useState<SortOrder>('desc')
 
   const handleEdit = (template: PromptTemplate) => {
     setSelectedTemplate(template)
@@ -30,13 +41,104 @@ export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemp
     setIsDialogOpen(true)
   }
 
+  const handleTest = async (template: PromptTemplate) => {
+    try {
+      toast({
+        title: "Testing prompt...",
+        description: `Sending test request for ${template.training_type}`
+      })
+      
+      const { error } = await supabase.functions.invoke('generate-session', {
+        body: { 
+          mode: template.mode,
+          prompt: template.prompt_text,
+          test: true
+        }
+      })
+
+      if (error) throw error
+
+      toast({
+        title: "Test successful",
+        description: "The prompt was tested successfully"
+      })
+    } catch (error) {
+      console.error('Test error:', error)
+      toast({
+        variant: "destructive",
+        title: "Test failed",
+        description: error.message || "An error occurred while testing the prompt"
+      })
+    }
+  }
+
+  const filteredAndSortedTemplates = templates
+    .filter(template => {
+      if (filterSport !== 'all' && template.sport_id !== filterSport) return false
+      if (filterMode !== 'all' && template.mode !== filterMode) return false
+      if (search && !template.training_type.toLowerCase().includes(search.toLowerCase())) return false
+      return true
+    })
+    .sort((a, b) => {
+      if (sortField === 'updated_at') {
+        return sortOrder === 'desc' 
+          ? new Date(b.updated_at || '').getTime() - new Date(a.updated_at || '').getTime()
+          : new Date(a.updated_at || '').getTime() - new Date(b.updated_at || '').getTime()
+      }
+      if (sortField === 'mode') {
+        return sortOrder === 'desc'
+          ? b.mode.localeCompare(a.mode)
+          : a.mode.localeCompare(b.mode)
+      }
+      if (sortField === 'sport') {
+        const aSport = a.sports?.label || ''
+        const bSport = b.sports?.label || ''
+        return sortOrder === 'desc'
+          ? bSport.localeCompare(aSport)
+          : aSport.localeCompare(bSport)
+      }
+      return 0
+    })
+
   if (isLoading) {
     return <Skeleton className="h-48 w-full" />
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-4 flex-1">
+          <Input
+            placeholder="Search prompts..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="max-w-xs"
+          />
+          <Select value={filterSport} onValueChange={setFilterSport}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Filter by sport" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Sports</SelectItem>
+              {sports.map((sport) => (
+                <SelectItem key={sport.id} value={sport.id}>
+                  {sport.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={filterMode} onValueChange={setFilterMode}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Filter by mode" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Modes</SelectItem>
+              <SelectItem value="express">Express</SelectItem>
+              <SelectItem value="expert">Expert</SelectItem>
+              <SelectItem value="creativity">Creativity</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <Button onClick={handleCreate}>Create Template</Button>
       </div>
 
@@ -44,17 +146,23 @@ export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemp
         <TableHeader>
           <TableRow>
             <TableHead>Sport</TableHead>
-            <TableHead>Mode</TableHead>
+            <TableHead className="cursor-pointer" onClick={() => {
+              setSortField('mode')
+              setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
+            }}>Mode {sortField === 'mode' && (sortOrder === 'asc' ? '↑' : '↓')}</TableHead>
             <TableHead>Training Type</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Validation</TableHead>
-            <TableHead className="w-36">Type</TableHead>
-            <TableHead className="w-24">Actions</TableHead>
+            <TableHead>Type</TableHead>
+            <TableHead className="w-[200px]">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {templates.map((template) => (
-            <TableRow key={template.id}>
+          {filteredAndSortedTemplates.map((template) => (
+            <TableRow 
+              key={template.id}
+              className={template.is_default ? "bg-red-50" : undefined}
+            >
               <TableCell>{template.sports?.label || "All Sports"}</TableCell>
               <TableCell>
                 <Badge variant="secondary" className="capitalize">
@@ -77,22 +185,41 @@ export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemp
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger>
-                        <Badge variant="outline" className="gap-2">
-                          <AlertCircle className="h-4 w-4" />
-                          System Default
+                        <Badge 
+                          variant="outline" 
+                          className="gap-2 bg-red-50"
+                        >
+                          <Shield className="h-4 w-4" />
+                          Protected
                         </Badge>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>This is a critical system prompt. Edit with caution.</p>
+                        <p>This is a critical system prompt that cannot be deleted.</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 )}
               </TableCell>
               <TableCell>
-                <Button variant="outline" size="sm" onClick={() => handleEdit(template)}>
-                  Edit
-                </Button>
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => handleEdit(template)}
+                    className="w-16"
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleTest(template)}
+                    className="w-16"
+                  >
+                    <TestTube className="h-4 w-4 mr-1" />
+                    Test
+                  </Button>
+                </div>
               </TableCell>
             </TableRow>
           ))}

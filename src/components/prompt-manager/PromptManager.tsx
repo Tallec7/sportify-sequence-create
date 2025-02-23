@@ -7,9 +7,10 @@ import { useSportsQuery } from "@/hooks/queries/useSportsQuery"
 import { useAuthCheck } from "@/hooks/useAuthCheck"
 import { usePromptTemplatesQuery } from "@/hooks/queries/usePromptTemplatesQuery"
 import { PromptManagerLoading } from "./PromptManagerLoading"
+import { supabase } from "@/integrations/supabase/client"
 
 export const PromptManager = () => {
-  useAuthCheck() // Ensure user is authenticated
+  const { userId } = useAuthCheck() // Ensure user is authenticated
 
   // Fetch sports for filtering
   const { data: sports = [] } = useSportsQuery()

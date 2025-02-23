@@ -10,6 +10,7 @@ import { AlertCircle } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import type { Sport } from "@/types/settings"
 import type { PromptTemplateFormValues } from "./types"
+import { useState, useEffect } from "react"
 
 interface PromptTemplateFormProps {
   form: UseFormReturn<PromptTemplateFormValues>
@@ -21,11 +22,23 @@ interface PromptTemplateFormProps {
 
 export const PromptTemplateForm = ({ form, sports, onCancel, isEditing, onSubmit }: PromptTemplateFormProps) => {
   const isDefault = form.watch("is_default")
+  const [hasValidationErrors, setHasValidationErrors] = useState(false)
+
+  // Real-time validation
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      // Check for required fields
+      const requiredFields = ['training_type', 'prompt_text', 'mode']
+      const hasErrors = requiredFields.some(field => !value[field as keyof PromptTemplateFormValues])
+      setHasValidationErrors(hasErrors)
+    })
+    return () => subscription.unsubscribe()
+  }, [form.watch])
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
       {isDefault && (
-        <Alert>
+        <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
             This is a critical system prompt used for core functionality. 
@@ -162,7 +175,12 @@ export const PromptTemplateForm = ({ form, sports, onCancel, isEditing, onSubmit
         <Button type="button" variant="outline" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit">{isEditing ? "Update" : "Create"}</Button>
+        <Button 
+          type="submit" 
+          disabled={hasValidationErrors}
+        >
+          {isEditing ? "Update" : "Create"}
+        </Button>
       </div>
     </form>
   )
