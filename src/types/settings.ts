@@ -40,6 +40,15 @@ export interface AgeCategory {
 
 export type AgeCategoryType = "U9" | "U11" | "U13" | "U15" | "U17" | "U19" | "Senior"
 
+// Define tactical concept enum type to match database
+export type TacticalConceptEnum = 
+  | "montee_de_balle"
+  | "repli_defensif"
+  | "contre_attaque"
+  | "attaque_placee"
+  | "defense_alignee"
+  | "defense_etagee"
+
 export type SessionFormData = {
   title: string
   description: string
@@ -52,7 +61,7 @@ export type SessionFormData = {
   intensity_level: string
   cycle_id: string | null
   objective: string
-  tactical_concepts?: string[]
+  tactical_concepts?: TacticalConceptEnum[]
   decision_making_focus?: string[]
   performance_metrics?: string[]
   expert_validated?: boolean

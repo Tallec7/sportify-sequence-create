@@ -1,11 +1,10 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
-import { SessionFormData } from "@/types/settings"
+import { SessionFormData, TacticalConceptEnum } from "@/types/settings"
 import { Database } from "@/integrations/supabase/types"
 
 type SessionResponse = Database["public"]["Tables"]["sessions"]["Row"]
-type TacticalConceptEnum = Database["public"]["Enums"]["tactical_concept_enum"]
 type Json = Database["public"]["Tables"]["sessions"]["Row"]["tactical_concepts"][number]
 
 // Helper function to safely convert Json array to tactical concepts enum array
@@ -70,4 +69,3 @@ export const useSessionQuery = (id: string | undefined) => {
     enabled: !!id,
   })
 }
-
