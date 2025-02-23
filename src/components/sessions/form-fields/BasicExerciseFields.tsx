@@ -10,6 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useIntensityLevelsQuery } from "@/hooks/queries/useIntensityLevelsQuery"
 
 interface BasicExerciseFieldsProps {
   exercise: Exercise
@@ -17,6 +18,8 @@ interface BasicExerciseFieldsProps {
 }
 
 export const BasicExerciseFields = ({ exercise, onChange }: BasicExerciseFieldsProps) => {
+  const { data: intensityLevels = [] } = useIntensityLevelsQuery()
+
   return (
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-2">
@@ -61,43 +64,25 @@ export const BasicExerciseFields = ({ exercise, onChange }: BasicExerciseFieldsP
         />
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="activity_type">Type d'activité</Label>
-          <Select
-            value={exercise.activity_type}
-            onValueChange={(value: 'exercise' | 'situation') =>
-              onChange({ ...exercise, activity_type: value })
-            }
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Sélectionner un type d'activité" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="exercise">Exercice</SelectItem>
-              <SelectItem value="situation">Situation</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="intensity_level">Niveau d'intensité</Label>
-          <Select
-            value={exercise.intensity_level}
-            onValueChange={(value) =>
-              onChange({ ...exercise, intensity_level: value })
-            }
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Sélectionner une intensité" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="low">Faible</SelectItem>
-              <SelectItem value="medium">Moyenne</SelectItem>
-              <SelectItem value="high">Élevée</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+      <div className="space-y-2">
+        <Label htmlFor="intensity_level">Niveau d'intensité</Label>
+        <Select
+          value={exercise.intensity_level || ''}
+          onValueChange={(value) =>
+            onChange({ ...exercise, intensity_level: value })
+          }
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Sélectionner une intensité" />
+          </SelectTrigger>
+          <SelectContent>
+            {intensityLevels.map((level) => (
+              <SelectItem key={level.id} value={level.value}>
+                {level.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
