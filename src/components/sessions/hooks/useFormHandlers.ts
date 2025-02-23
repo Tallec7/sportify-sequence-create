@@ -1,10 +1,10 @@
 
-import { SessionFormData } from "@/hooks/mutations/useSessionMutation"
+import { SessionFormData } from "@/types/settings"
 
-export const useFormHandlers = (setFormData: (data: SessionFormData) => void) => {
+export const useFormHandlers = (setFormData: (data: SessionFormData | ((prev: SessionFormData) => SessionFormData)) => void) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
-    setFormData((prev) => ({
+    setFormData((prev: SessionFormData) => ({
       ...prev,
       [name]: value,
     }))
@@ -12,14 +12,14 @@ export const useFormHandlers = (setFormData: (data: SessionFormData) => void) =>
 
   const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    setFormData((prev) => ({
+    setFormData((prev: SessionFormData) => ({
       ...prev,
       [name]: parseInt(value),
     }))
   }
 
   const handleSelectChange = (name: string, value: string) => {
-    setFormData((prev) => ({
+    setFormData((prev: SessionFormData) => ({
       ...prev,
       [name]: value,
     }))
@@ -31,3 +31,4 @@ export const useFormHandlers = (setFormData: (data: SessionFormData) => void) =>
     handleSelectChange,
   }
 }
+

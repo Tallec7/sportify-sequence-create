@@ -33,7 +33,12 @@ const Editor = () => {
     age_category: "U13",
     intensity_level: "medium",
     cycle_id: null,
-    objective: ""
+    objective: "",
+    tactical_concepts: [],
+    decision_making_focus: [],
+    performance_metrics: [],
+    expert_validated: false,
+    validation_feedback: ""
   })
 
   // Update form data when session data is loaded
@@ -50,7 +55,12 @@ const Editor = () => {
         age_category: sessionData.age_category || "U13",
         intensity_level: sessionData.intensity_level || "medium",
         cycle_id: sessionData.cycle_id || null,
-        objective: sessionData.objective || ""
+        objective: sessionData.objective || "",
+        tactical_concepts: sessionData.tactical_concepts || [],
+        decision_making_focus: sessionData.decision_making_focus || [],
+        performance_metrics: sessionData.performance_metrics || [],
+        expert_validated: sessionData.expert_validated || false,
+        validation_feedback: sessionData.validation_feedback || ""
       })
     }
   }, [sessionData])
