@@ -42,6 +42,12 @@ export const SessionPreview = ({
     onEdit(updatedSession)
   }
 
+  // Make sure that we don't try to render undefined or null values
+  const displayValue = (value: string | number | undefined | null) => {
+    if (value === undefined || value === null) return ''
+    return value
+  }
+
   return (
     <div className="space-y-6">
       <Card>
@@ -58,7 +64,7 @@ export const SessionPreview = ({
               <Input
                 id="title"
                 name="title"
-                value={session.title || ''}
+                value={displayValue(session.title)}
                 onChange={handleChange}
               />
             </div>
@@ -68,7 +74,7 @@ export const SessionPreview = ({
               <Textarea
                 id="description"
                 name="description"
-                value={session.description || ''}
+                value={displayValue(session.description)}
                 onChange={handleChange}
               />
             </div>
@@ -78,7 +84,7 @@ export const SessionPreview = ({
                 <Label>Sport</Label>
                 <Input
                   name="sport"
-                  value={session.sport || ''}
+                  value={displayValue(session.sport)}
                   onChange={handleChange}
                   readOnly
                 />
@@ -88,7 +94,7 @@ export const SessionPreview = ({
                 <Label>Niveau</Label>
                 <Input
                   name="level"
-                  value={session.level || ''}
+                  value={displayValue(session.level)}
                   onChange={handleChange}
                   readOnly
                 />
@@ -101,7 +107,7 @@ export const SessionPreview = ({
                 <Input
                   type="number"
                   name="duration"
-                  value={session.duration || 0}
+                  value={displayValue(session.duration)}
                   onChange={handleChange}
                 />
               </div>
@@ -110,14 +116,14 @@ export const SessionPreview = ({
                 <Label>Intensité</Label>
                 <Input
                   name="intensity_level"
-                  value={session.intensity_level || ''}
+                  value={displayValue(session.intensity_level)}
                   onChange={handleChange}
                 />
               </div>
             </div>
           </div>
 
-          {session.sequences && session.sequences.length > 0 && (
+          {Array.isArray(session.sequences) && session.sequences.length > 0 && (
             <ViewSessionSequences sequences={session.sequences} />
           )}
 
