@@ -32,6 +32,16 @@ export const usePromptTemplate = ({ template, onOpenChange }: UsePromptTemplateP
     mutationFn: async (values: PromptTemplateFormValues) => {
       const timestamp = new Date().toISOString()
       
+      // Purger le cache via un edge function dédié
+      try {
+        await supabase.functions.invoke('clear-prompt-cache', {
+          body: { template_type: values.training_type }
+        })
+      } catch (error) {
+        console.error('Failed to clear prompt cache:', error)
+        // On continue même si la purge du cache échoue
+      }
+      
       if (template?.id) {
         const { error } = await supabase
           .from("prompt_templates")
@@ -85,3 +95,4 @@ export const usePromptTemplate = ({ template, onOpenChange }: UsePromptTemplateP
     onSubmit: handleSubmit
   }
 }
+

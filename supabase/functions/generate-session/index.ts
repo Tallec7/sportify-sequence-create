@@ -2,6 +2,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.1';
+import { getPromptFromCache } from '../prompt-cache.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -27,40 +28,25 @@ serve(async (req) => {
 
     const { mode, answers } = await req.json();
     
-    // Détermine le type de template en fonction du mode
     const templateType = `session_generation_${mode}`;
+    
+    // Tentative de récupération du prompt depuis le cache
+    let systemPrompt = await getPromptFromCache(supabase, templateType);
 
-    // Récupère le template approprié
-    const { data: templateData, error: templateError } = await supabase
-      .from('prompt_templates')
-      .select('prompt_text')
-      .eq('training_type', templateType)
-      .eq('is_active', true)
-      .order('is_default', { ascending: false })
-      .limit(1)
-      .single();
-
-    if (templateError) {
-      console.error('Error fetching prompt template:', templateError);
+    // Si pas en cache ou erreur, utiliser le fallback
+    if (!systemPrompt) {
+      console.warn(`Using fallback prompt for mode: ${mode}`);
+      systemPrompt = fallbackPrompts[mode];
       
-      // Notifier l'admin du problème via une insertion dans une table de logs
+      // Notifier l'admin via une insertion dans prompt_history
       await supabase
         .from('prompt_history')
         .insert({
           template_id: null,
           prompt_text: `Failed to fetch template for ${templateType}. Using fallback.`,
-          test_results: { error: templateError.message }
+          test_results: { error: 'Cache miss and database fetch failed' }
         });
-      
-      // Utiliser le fallback approprié
-      const systemPrompt = fallbackPrompts[mode];
-      if (!systemPrompt) {
-        throw new Error('No fallback prompt available for this mode');
-      }
-      console.log("Using fallback prompt for mode:", mode);
     }
-
-    const systemPrompt = templateData ? templateData.prompt_text : fallbackPrompts[mode];
 
     let userPrompt = "";
     switch (mode) {
@@ -84,7 +70,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'gpt-4',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
@@ -127,3 +113,4 @@ serve(async (req) => {
     });
   }
 });
+
