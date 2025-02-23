@@ -10,7 +10,7 @@ export const useSessionQuery = (sessionId: string | undefined) => {
   return useQuery({
     queryKey: ["session", sessionId],
     queryFn: async () => {
-      // Si pas d'ID, on retourne une session vide
+      // If no ID, return an empty session
       if (!sessionId) {
         return {
           title: "",
@@ -26,6 +26,9 @@ export const useSessionQuery = (sessionId: string | undefined) => {
           tactical_concepts: [],
           decision_making_focus: [],
           performance_metrics: [],
+          cycle_id: null,
+          expert_validated: false,
+          validation_feedback: "",
           session_sequences: []
         }
       }
@@ -60,7 +63,7 @@ export const useSessionQuery = (sessionId: string | undefined) => {
         throw error 
       }
 
-      // Si aucune session trouvée, on retourne une session vide
+      // If no session found, return an empty session
       if (!data) {
         return {
           title: "",
@@ -68,7 +71,7 @@ export const useSessionQuery = (sessionId: string | undefined) => {
           sport: "",
           level: "",
           duration: 60,
-          participants_min: 1, 
+          participants_min: 1,
           participants_max: 10,
           age_category: "U13",
           intensity_level: "medium",
@@ -76,6 +79,9 @@ export const useSessionQuery = (sessionId: string | undefined) => {
           tactical_concepts: [],
           decision_making_focus: [],
           performance_metrics: [],
+          cycle_id: null,
+          expert_validated: false,
+          validation_feedback: "",
           session_sequences: []
         }
       }
@@ -97,7 +103,10 @@ export const useSessionQuery = (sessionId: string | undefined) => {
 
       return {
         ...data,
-        objective, // Add objective property
+        objective,
+        cycle_id: data.cycle_id || null,
+        expert_validated: data.expert_validated || false,
+        validation_feedback: data.validation_feedback || "",
         tactical_concepts: validTacticalConcepts,
         decision_making_focus: Array.isArray(data.decision_making_focus) ? data.decision_making_focus : [],
         performance_metrics,
@@ -107,7 +116,6 @@ export const useSessionQuery = (sessionId: string | undefined) => {
         })) || []
       }
     },
-    enabled: true // La query s'exécute même si sessionId est undefined
+    enabled: true // Query executes even if sessionId is undefined
   })
 }
-
