@@ -34,14 +34,12 @@ export const SessionPreview = ({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     const newValue = e.target.type === 'number' ? Number(value) : value
-    setSession(prev => ({
-      ...prev,
-      [name]: newValue
-    }))
-    onEdit({
+    const updatedSession = {
       ...session,
       [name]: newValue
-    })
+    }
+    setSession(updatedSession)
+    onEdit(updatedSession)
   }
 
   return (
@@ -60,7 +58,7 @@ export const SessionPreview = ({
               <Input
                 id="title"
                 name="title"
-                value={session.title}
+                value={session.title || ''}
                 onChange={handleChange}
               />
             </div>
@@ -70,7 +68,7 @@ export const SessionPreview = ({
               <Textarea
                 id="description"
                 name="description"
-                value={session.description}
+                value={session.description || ''}
                 onChange={handleChange}
               />
             </div>
@@ -80,7 +78,7 @@ export const SessionPreview = ({
                 <Label>Sport</Label>
                 <Input
                   name="sport"
-                  value={session.sport}
+                  value={session.sport || ''}
                   onChange={handleChange}
                   readOnly
                 />
@@ -90,7 +88,7 @@ export const SessionPreview = ({
                 <Label>Niveau</Label>
                 <Input
                   name="level"
-                  value={session.level}
+                  value={session.level || ''}
                   onChange={handleChange}
                   readOnly
                 />
@@ -103,7 +101,7 @@ export const SessionPreview = ({
                 <Input
                   type="number"
                   name="duration"
-                  value={session.duration}
+                  value={session.duration || 0}
                   onChange={handleChange}
                 />
               </div>
@@ -112,14 +110,14 @@ export const SessionPreview = ({
                 <Label>Intensité</Label>
                 <Input
                   name="intensity_level"
-                  value={session.intensity_level}
+                  value={session.intensity_level || ''}
                   onChange={handleChange}
                 />
               </div>
             </div>
           </div>
 
-          {session.sequences && (
+          {session.sequences && session.sequences.length > 0 && (
             <ViewSessionSequences sequences={session.sequences} />
           )}
 
