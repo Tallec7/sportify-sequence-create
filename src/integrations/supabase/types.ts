@@ -909,6 +909,7 @@ export type Database = {
           id: string
           intensity_level: string | null
           level: string
+          objective: string | null
           participants_max: number
           participants_min: number
           performance_metrics: Json | null
@@ -935,6 +936,7 @@ export type Database = {
           id?: string
           intensity_level?: string | null
           level: string
+          objective?: string | null
           participants_max: number
           participants_min: number
           performance_metrics?: Json | null
@@ -961,6 +963,7 @@ export type Database = {
           id?: string
           intensity_level?: string | null
           level?: string
+          objective?: string | null
           participants_max?: number
           participants_min?: number
           performance_metrics?: Json | null
