@@ -708,11 +708,16 @@ export type Database = {
           participants_min: number
           performance_metrics: Json | null
           sport: string
+          status: Database["public"]["Enums"]["session_status_enum"] | null
+          submitted_at: string | null
           tactical_concepts:
             | Database["public"]["Enums"]["tactical_concept_enum"][]
             | null
           title: string
           user_id: string | null
+          validated_at: string | null
+          validated_by: string | null
+          validation_feedback: string | null
         }
         Insert: {
           age_category: Database["public"]["Enums"]["age_category_enum"]
@@ -729,11 +734,16 @@ export type Database = {
           participants_min: number
           performance_metrics?: Json | null
           sport: string
+          status?: Database["public"]["Enums"]["session_status_enum"] | null
+          submitted_at?: string | null
           tactical_concepts?:
             | Database["public"]["Enums"]["tactical_concept_enum"][]
             | null
           title: string
           user_id?: string | null
+          validated_at?: string | null
+          validated_by?: string | null
+          validation_feedback?: string | null
         }
         Update: {
           age_category?: Database["public"]["Enums"]["age_category_enum"]
@@ -750,11 +760,16 @@ export type Database = {
           participants_min?: number
           performance_metrics?: Json | null
           sport?: string
+          status?: Database["public"]["Enums"]["session_status_enum"] | null
+          submitted_at?: string | null
           tactical_concepts?:
             | Database["public"]["Enums"]["tactical_concept_enum"][]
             | null
           title?: string
           user_id?: string | null
+          validated_at?: string | null
+          validated_by?: string | null
+          validation_feedback?: string | null
         }
         Relationships: [
           {
@@ -957,6 +972,7 @@ export type Database = {
         | "apprentissage"
         | "developpement"
         | "perfectionnement"
+      session_status_enum: "draft" | "pending" | "validated" | "rejected"
       tactical_concept_enum:
         | "montee_de_balle"
         | "repli_defensif"
