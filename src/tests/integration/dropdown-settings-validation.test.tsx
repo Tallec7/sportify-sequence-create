@@ -76,9 +76,9 @@ describe("Dynamic Values Validation", () => {
       title: "",
       description: "",
       duration: 0,
-      sequence_type: "warmup",
+      sequence_type: "warmup" as "warmup" | "main" | "cooldown",
       intensity_level: "medium",
-      sequence_order: 1  // Add required field
+      sequence_order: 1
     }
 
     renderWithProviders(
@@ -108,3 +108,4 @@ describe("Dynamic Values Validation", () => {
     expect(supabase.from).toHaveBeenCalledWith("activity_types")
   })
 })
+
