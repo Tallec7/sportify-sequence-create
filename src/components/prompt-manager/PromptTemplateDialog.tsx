@@ -79,7 +79,7 @@ export const PromptTemplateDialog = ({
         // Create new template
         const { error } = await supabase
           .from("prompt_templates")
-          .insert([values as PromptTemplate]) // Cast to ensure type alignment
+          .insert([values as PromptTemplate])
 
         if (error) throw error
       }
@@ -121,8 +121,8 @@ export const PromptTemplateDialog = ({
                 <FormItem>
                   <FormLabel>Sport (optional)</FormLabel>
                   <Select
-                    value={field.value || ""}
-                    onValueChange={field.onChange}
+                    value={field.value || "null"}
+                    onValueChange={(value) => field.onChange(value === "null" ? null : value)}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -130,7 +130,7 @@ export const PromptTemplateDialog = ({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="">All Sports</SelectItem>
+                      <SelectItem value="null">All Sports</SelectItem>
                       {sports.map((sport) => (
                         <SelectItem key={sport.id} value={sport.id}>
                           {sport.label}
