@@ -107,6 +107,36 @@ export type Database = {
           },
         ]
       }
+      error_alerts: {
+        Row: {
+          error_type: Database["public"]["Enums"]["error_type"]
+          first_occurrence: string | null
+          id: string
+          is_resolved: boolean | null
+          last_occurrence: string | null
+          occurrence_count: number | null
+          page_name: string
+        }
+        Insert: {
+          error_type: Database["public"]["Enums"]["error_type"]
+          first_occurrence?: string | null
+          id?: string
+          is_resolved?: boolean | null
+          last_occurrence?: string | null
+          occurrence_count?: number | null
+          page_name: string
+        }
+        Update: {
+          error_type?: Database["public"]["Enums"]["error_type"]
+          first_occurrence?: string | null
+          id?: string
+          is_resolved?: boolean | null
+          last_occurrence?: string | null
+          occurrence_count?: number | null
+          page_name?: string
+        }
+        Relationships: []
+      }
       favorites: {
         Row: {
           created_at: string | null
@@ -976,6 +1006,39 @@ export type Database = {
         }
         Relationships: []
       }
+      system_errors: {
+        Row: {
+          created_at: string | null
+          details: Json | null
+          error_message: string
+          error_type: Database["public"]["Enums"]["error_type"]
+          id: string
+          page_name: string
+          stack_trace: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          details?: Json | null
+          error_message: string
+          error_type: Database["public"]["Enums"]["error_type"]
+          id?: string
+          page_name: string
+          stack_trace?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          details?: Json | null
+          error_message?: string
+          error_type?: Database["public"]["Enums"]["error_type"]
+          id?: string
+          page_name?: string
+          stack_trace?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       tactical_concepts: {
         Row: {
           created_at: string
@@ -1132,6 +1195,13 @@ export type Database = {
       activity_type_enum: "exercise" | "situation"
       age_category_enum: "U9" | "U11" | "U13" | "U15" | "U17" | "U19" | "Senior"
       app_role: "admin" | "user_plus" | "user"
+      error_type:
+        | "404"
+        | "500"
+        | "validation_error"
+        | "sql_error"
+        | "api_error"
+        | "other"
       objective_type_enum:
         | "apprentissage"
         | "developpement"

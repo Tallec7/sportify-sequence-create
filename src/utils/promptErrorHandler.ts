@@ -1,6 +1,36 @@
 
 import { supabase } from "@/integrations/supabase/client"
 
+export type ErrorType = "404" | "500" | "validation_error" | "sql_error" | "api_error" | "other"
+
+interface SystemError {
+  page_name: string
+  error_type: ErrorType
+  error_message: string
+  stack_trace?: string
+  details?: Record<string, any>
+}
+
+export const logSystemError = async (error: SystemError) => {
+  try {
+    const { error: dbError } = await supabase
+      .from("system_errors")
+      .insert({
+        page_name: error.page_name,
+        error_type: error.error_type,
+        error_message: error.error_message,
+        stack_trace: error.stack_trace,
+        details: error.details || {}
+      })
+
+    if (dbError) {
+      console.error("Failed to log system error:", dbError)
+    }
+  } catch (e) {
+    console.error("Error logging system error:", e)
+  }
+}
+
 export type PromptErrorType = "template_not_found" | "parsing_error" | "validation_error" | "generation_error"
 
 interface PromptError {
