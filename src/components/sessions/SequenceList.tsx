@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button"
 import { Sequence } from "@/types/sequence"
 import { ExerciseForm } from "./ExerciseForm"
@@ -95,9 +94,9 @@ export const SequenceList = ({
               </div>
               {selectedSequenceId === sequence.id && sequence.id && (
                 <ExerciseForm
-                  sequenceId={sequence.id}
                   onSave={(exercise) => {/* handle save */}}
                   onCancel={() => {/* handle cancel */}}
+                  sequenceId={sequence.id}
                   sessionData={{
                     title: "",
                     description: "",

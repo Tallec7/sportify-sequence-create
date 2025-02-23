@@ -1,3 +1,4 @@
+
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -5,7 +6,6 @@ import { Edit, Trash2, Activity, List, ChevronRight, Trophy, ChartBar, Sparkles 
 import { ExerciseListItemProps } from "./types/exercise-form"
 import { Exercise, TacticalConcept } from "@/types/sequence"
 import { ExerciseAlternatives } from "./ExerciseAlternatives"
-import { SessionFormData } from "@/types/settings"
 
 export const ExerciseListItem = ({ exercise, onEdit, onDelete, sessionData }: ExerciseListItemProps) => {
   const [showAlternatives, setShowAlternatives] = useState(false)
