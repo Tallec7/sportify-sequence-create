@@ -2,7 +2,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/components/ui/use-toast"
-import { TacticalConceptOption } from "@/types/tactical-concepts"
+import { TacticalConceptOption } from "@/types/settings"
 
 export const useTacticalConceptsQuery = (sportValue: string) => {
   const { toast } = useToast()
@@ -20,7 +20,7 @@ export const useTacticalConceptsQuery = (sportValue: string) => {
         if (sportData) {
           const { data, error } = await supabase
             .from('tactical_concepts')
-            .select('id, value, label')
+            .select('value, label')
             .eq('sport_id', sportData.id)
             .order('label')
 

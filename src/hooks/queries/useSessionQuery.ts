@@ -3,26 +3,21 @@ import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { SessionFormData, TacticalConceptEnum } from "@/types/settings"
 import { Database } from "@/integrations/supabase/types"
+import { useTacticalConceptsQuery } from "./useTacticalConceptsQuery"
 
 type SessionResponse = Database["public"]["Tables"]["sessions"]["Row"]
 type Json = Database["public"]["Tables"]["sessions"]["Row"]["tactical_concepts"][number]
 
 // Helper function to safely convert Json array to tactical concepts enum array
-const convertJsonToTacticalConcepts = (arr: Json[] | null): TacticalConceptEnum[] => {
+const convertJsonToTacticalConcepts = (
+  arr: Json[] | null, 
+  validConcepts: string[]
+): TacticalConceptEnum[] => {
   if (!Array.isArray(arr)) return []
   
-  const validConcepts = [
-    "montee_de_balle",
-    "repli_defensif",
-    "contre_attaque",
-    "attaque_placee",
-    "defense_alignee",
-    "defense_etagee"
-  ] as const
-
   return arr.filter((item): item is TacticalConceptEnum => 
-    typeof item === 'string' && validConcepts.includes(item as TacticalConceptEnum)
-  )
+    typeof item === 'string' && validConcepts.includes(item)
+  ) as TacticalConceptEnum[]
 }
 
 // Helper function to safely convert Json array to string array
@@ -32,6 +27,9 @@ const convertJsonArrayToStringArray = (arr: Json[] | null): string[] => {
 }
 
 export const useSessionQuery = (id: string | undefined) => {
+  // Fetch tactical concepts dynamically
+  const { data: tacticalConceptsData } = useTacticalConceptsQuery("handball") // Default sport, should be dynamic based on session
+
   return useQuery({
     queryKey: ["session", id],
     queryFn: async () => {
@@ -46,8 +44,13 @@ export const useSessionQuery = (id: string | undefined) => {
       if (sessionError) throw sessionError
       if (!sessionData) throw new Error("Session not found")
 
+      const validConcepts = tacticalConceptsData?.map(concept => concept.value) || []
+
       // Process the tactical concepts array first
-      const tacticalConcepts = convertJsonToTacticalConcepts(sessionData.tactical_concepts)
+      const tacticalConcepts = convertJsonToTacticalConcepts(
+        sessionData.tactical_concepts,
+        validConcepts
+      )
 
       // Create the processed data object
       const processedData: SessionFormData = {

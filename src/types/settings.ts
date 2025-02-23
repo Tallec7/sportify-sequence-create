@@ -26,10 +26,10 @@ export interface SequenceType {
 }
 
 export interface TacticalConceptOption {
-  id: string
+  id?: string
   value: string
   label: string
-  sport_id: string
+  sport_id?: string
 }
 
 export interface AgeCategory {
@@ -41,13 +41,7 @@ export interface AgeCategory {
 export type AgeCategoryType = "U9" | "U11" | "U13" | "U15" | "U17" | "U19" | "Senior"
 
 // Define tactical concept enum type to match database
-export type TacticalConceptEnum = 
-  | "montee_de_balle"
-  | "repli_defensif"
-  | "contre_attaque"
-  | "attaque_placee"
-  | "defense_alignee"
-  | "defense_etagee"
+export type TacticalConceptEnum = string
 
 export type SessionFormData = {
   title: string
@@ -70,4 +64,3 @@ export type SessionFormData = {
   updated_at?: string
   user_id?: string
 }
-
