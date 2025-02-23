@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { SessionBasicInfoForm } from '../SessionBasicInfoForm'
@@ -15,7 +14,8 @@ describe('SessionBasicInfoForm Component', () => {
     participants_max: 10,
     age_category: "U13",
     intensity_level: "medium",
-    cycle_id: null
+    cycle_id: null,
+    objective: "Test objective"
   }
 
   const mockHandlers = {

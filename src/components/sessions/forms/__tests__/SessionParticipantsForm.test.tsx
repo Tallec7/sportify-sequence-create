@@ -15,7 +15,8 @@ describe('SessionParticipantsForm Component', () => {
     participants_max: 10,
     age_category: "U13",
     intensity_level: "medium",
-    cycle_id: null
+    cycle_id: null,
+    objective: "Test objective"
   }
 
   const mockHandleNumberChange = vi.fn()

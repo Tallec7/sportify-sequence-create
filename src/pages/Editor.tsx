@@ -1,4 +1,3 @@
-
 import { useParams } from "react-router-dom"
 import { SessionForm } from "@/components/sessions/SessionForm"
 import { SequenceForm } from "@/components/sessions/SequenceForm"
@@ -33,7 +32,8 @@ const Editor = () => {
     participants_max: 10,
     age_category: "U13",
     intensity_level: "medium",
-    cycle_id: null
+    cycle_id: null,
+    objective: ""
   })
 
   // Update form data when session data is loaded
@@ -49,7 +49,8 @@ const Editor = () => {
         participants_max: sessionData.participants_max || 10,
         age_category: sessionData.age_category || "U13",
         intensity_level: sessionData.intensity_level || "medium",
-        cycle_id: sessionData.cycle_id || null
+        cycle_id: sessionData.cycle_id || null,
+        objective: sessionData.objective || ""
       })
     }
   }, [sessionData])

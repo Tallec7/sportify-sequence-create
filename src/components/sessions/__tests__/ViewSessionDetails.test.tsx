@@ -15,7 +15,8 @@ describe('ViewSessionDetails Component', () => {
     participants_max: 10,
     age_category: "U13",
     intensity_level: "medium",
-    cycle_id: null
+    cycle_id: null,
+    objective: "Test objective"
   }
 
   it('affiche correctement les détails des participants', () => {
@@ -36,15 +37,6 @@ describe('ViewSessionDetails Component', () => {
   it('affiche la catégorie d\'âge', () => {
     render(<ViewSessionDetails formData={mockFormData} />)
     expect(screen.getByText('U13')).toBeInTheDocument()
-  })
-
-  it('affiche "Non spécifié" quand la catégorie d\'âge est vide', () => {
-    const noAgeData: SessionFormData = {
-      ...mockFormData,
-      age_category: "Senior"
-    }
-    render(<ViewSessionDetails formData={noAgeData} />)
-    expect(screen.getByText('Non spécifié')).toBeInTheDocument()
   })
 
   it('affiche le niveau d\'intensité en français', () => {

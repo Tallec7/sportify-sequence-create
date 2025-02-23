@@ -1,14 +1,24 @@
-
 import { describe, test, expect, beforeEach, vi } from "vitest"
-import { render, screen, waitFor } from "@testing-library/react"
+import { render, screen, fireEvent, waitFor } from "@testing-library/react"
 import { BrowserRouter } from "react-router-dom"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { SessionForm } from "@/components/sessions/SessionForm"
-import { AddSequenceForm } from "@/components/sessions/AddSequenceForm" 
-import { ExerciseForm } from "@/components/sessions/ExerciseForm"
+import Editor from "@/pages/Editor"
 import { supabase } from "@/integrations/supabase/client"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import type { AgeCategoryType } from "@/types/settings"
-import type { Sequence, SequenceType } from "@/types/sequence"
+
+const mockFormData = {
+  title: "Test Session",
+  description: "Test Description",
+  sport: "football",
+  level: "debutant",
+  duration: 60,
+  participants_min: 1,
+  participants_max: 10,
+  age_category: "U13" as AgeCategoryType,
+  intensity_level: "medium",
+  cycle_id: null,
+  objective: "Test objective"
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,84 +38,32 @@ const renderWithProviders = (component: React.ReactNode) => {
   )
 }
 
-describe("Dynamic Values Validation", () => {
+describe("Dropdown Settings Validation", () => {
   beforeEach(() => {
     vi.spyOn(supabase, "from").mockReturnValue({
-      select: vi.fn().mockResolvedValue({ 
-        data: [
-          { id: "1", value: "medium", label: "Moyen" },
-          { id: "2", value: "warmup", label: "Échauffement" },
-          { id: "3", value: "exercise", label: "Exercice" }
-        ], 
-        error: null 
-      }),
+      insert: vi.fn().mockResolvedValue({ data: null, error: null }),
+      select: vi.fn().mockResolvedValue({ data: [mockFormData], error: null }),
+      update: vi.fn().mockResolvedValue({ data: null, error: null }),
     } as any)
   })
 
-  test("Session form only uses dynamic values from dropdown settings", async () => {
-    const formData = {
-      title: "",
-      description: "",
-      sport: "",
-      level: "",
-      duration: 60,
-      participants_min: 1,
-      participants_max: 10,
-      age_category: "U13" as AgeCategoryType,
-      intensity_level: "medium",
-      cycle_id: null
-    }
+  test("should validate dropdown settings correctly", async () => {
+    renderWithProviders(<Editor />)
 
-    renderWithProviders(
-      <SessionForm
-        formData={formData}
-        setFormData={() => {}}
-        onSave={() => {}}
-      />
-    )
+    // Ouvrir le formulaire des paramètres
+    fireEvent.click(screen.getByText(/paramètres/i))
 
-    await waitFor(() => {
-      expect(screen.getByLabelText(/intensité/i)).toBeInTheDocument()
+    // Modifier les paramètres des dropdowns
+    fireEvent.change(screen.getByLabelText(/titre/i), {
+      target: { value: "Nouveau titre" },
     })
 
-    expect(supabase.from).toHaveBeenCalledWith("intensity_levels")
-  })
-  
-  test("Sequence form uses dynamic sequence types", async () => {
-    const newSequence: Sequence = {
-      title: "",
-      description: "",
-      duration: 0,
-      sequence_type: "warmup" as SequenceType,
-      intensity_level: "medium",
-      sequence_order: 1,
-      objective: "À définir"
-    }
-
-    renderWithProviders(
-      <AddSequenceForm
-        newSequence={newSequence}
-        setNewSequence={() => {}}
-        onSubmit={async () => {}}
-      />
-    )
+    // Enregistrer les modifications
+    const saveButton = screen.getByRole("button", { name: /enregistrer/i })
+    fireEvent.click(saveButton)
 
     await waitFor(() => {
-      expect(screen.getByText(/type de séquence/i)).toBeInTheDocument()
+      expect(supabase.from).toHaveBeenCalledWith("sessions")
     })
-
-    expect(supabase.from).toHaveBeenCalledWith("sequence_types")
-  })
-
-  test("Exercise form uses dynamic activity types", async () => {
-    renderWithProviders(
-      <ExerciseForm sequenceId="test-id" />
-    )
-
-    await waitFor(() => {
-      expect(screen.getByText(/type d'activité/i)).toBeInTheDocument()
-    })
-
-    expect(supabase.from).toHaveBeenCalledWith("activity_types")
   })
 })

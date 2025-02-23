@@ -15,7 +15,7 @@ const ViewSession = () => {
   const { handleDelete } = useSessionDelete()
 
   const { 
-    data: formData,
+    data: sessionData,
     isLoading: isLoadingSession,
     error: sessionError
   } = useSessionQuery(id)
@@ -38,8 +38,13 @@ const ViewSession = () => {
     return null
   }
 
-  if (isLoadingSession || isLoadingSequences || !formData) {
+  if (isLoadingSession || isLoadingSequences || !sessionData) {
     return <ViewSessionSkeleton />
+  }
+
+  const formData = {
+    ...sessionData,
+    objective: sessionData.objective || ""
   }
 
   return (
