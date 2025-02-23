@@ -397,6 +397,7 @@ export type Database = {
           created_at: string | null
           id: string
           is_active: boolean | null
+          is_default: boolean | null
           is_validated: boolean | null
           prompt_text: string
           sport_id: string | null
@@ -407,6 +408,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           is_active?: boolean | null
+          is_default?: boolean | null
           is_validated?: boolean | null
           prompt_text: string
           sport_id?: string | null
@@ -417,6 +419,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           is_active?: boolean | null
+          is_default?: boolean | null
           is_validated?: boolean | null
           prompt_text?: string
           sport_id?: string | null

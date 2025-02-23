@@ -1,6 +1,7 @@
 
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.1';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -13,73 +14,40 @@ serve(async (req) => {
   }
 
   try {
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+
     const { mode, answers } = await req.json();
     
-    // Construction du prompt système selon le mode
-    let systemPrompt = `Tu es un expert en création de séances d'entraînement. Tu dois générer une séance complète en JSON en respectant strictement le format suivant. IMPORTANT : Ta réponse ne doit contenir QUE du JSON valide, sans aucun texte avant ou après.
+    // Fetch the appropriate prompt template
+    const { data: templateData, error: templateError } = await supabase
+      .from('prompt_templates')
+      .select('prompt_text')
+      .eq('training_type', 'session_generation')
+      .eq('is_active', true)
+      .order('is_default', { ascending: false })
+      .limit(1)
+      .single();
 
-{
-  "title": "string",
-  "description": "string",
-  "sport": "string",
-  "level": "string",
-  "duration": "number",
-  "participants_min": "number",
-  "participants_max": "number",
-  "age_category": "U9" | "U11" | "U13" | "U15" | "U17" | "U19" | "Senior",
-  "intensity_level": "low" | "medium" | "high",
-  "sequences": [
-    {
-      "title": "string",
-      "description": "string",
-      "duration": "number",
-      "sequence_type": "warmup" | "main" | "cooldown",
-      "intensity_level": "low" | "medium" | "high",
-      "sequence_order": "number",
-      "exercises": [
-        {
-          "title": "string",
-          "description": "string",
-          "duration": "number",
-          "activity_type": "exercise" | "situation",
-          "intensity_level": "low" | "medium" | "high",
-          "exercise_order": "number",
-          "player_instructions": "string?",
-          "setup_instructions": "string?",
-          "coach_instructions": "string?",
-          "opposition_type": "string?",
-          "decision_making_focus": "string[]?",
-          "tactical_objectives": "string[]?",
-          "tactical_concepts": "string[]?",
-          "variations": "string[]?",
-          "performance_metrics": "{}?"
-        }
-      ],
-      "objectives": [
-        {
-          "description": "string",
-          "objective_type": "apprentissage" | "developpement" | "perfectionnement",
-          "is_priority": "boolean",
-          "order_index": "number"
-        }
-      ]
+    if (templateError) {
+      console.error('Error fetching prompt template:', templateError);
+      throw new Error('Failed to fetch prompt template');
     }
-  ]
-}`;
+
+    const systemPrompt = templateData.prompt_text;
 
     let userPrompt = "";
 
     switch (mode) {
       case "express":
-        systemPrompt += " Génère une séance simple et efficace basée sur les informations essentielles.";
         userPrompt = `Crée une séance d'entraînement pour ${answers.sport}, niveau ${answers.level}, avec ${answers.participants} participants, durée ${answers.duration} minutes.`;
         break;
       case "expert":
-        systemPrompt += " Crée une séance optimisée et détaillée en tenant compte de tous les paramètres.";
         userPrompt = `Crée une séance détaillée pour ${answers.sport}, niveau ${answers.level}, ${answers.participants} participants, durée ${answers.duration} minutes. Objectifs: ${answers.objectives}. Intensité: ${answers.intensity}. Catégorie d'âge: ${answers.ageCategory}.`;
         break;
       case "creativity":
-        systemPrompt += " Innove avec des exercices originaux tout en respectant les objectifs pédagogiques.";
         userPrompt = `Crée une séance innovante pour ${answers.sport}, niveau ${answers.level}. Cherche des exercices créatifs et originaux en gardant l'aspect pédagogique. Durée: ${answers.duration} minutes. Style recherché: ${answers.style}`;
         break;
     }
@@ -111,7 +79,6 @@ serve(async (req) => {
     let sessionData;
     
     try {
-      // On s'assure que le contenu est bien du JSON valide
       sessionData = JSON.parse(data.choices[0].message.content);
     } catch (error) {
       console.error("Erreur lors du parsing JSON:", error);
@@ -119,7 +86,6 @@ serve(async (req) => {
       throw new Error('La réponse de l\'IA n\'est pas un JSON valide');
     }
     
-    // Validation de base de la structure JSON
     if (!sessionData.title || !sessionData.sport || !sessionData.sequences) {
       throw new Error('La structure JSON générée est invalide ou incomplète');
     }
