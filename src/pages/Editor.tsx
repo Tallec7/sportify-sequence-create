@@ -1,3 +1,4 @@
+
 import { useParams } from "react-router-dom"
 import { SessionForm } from "@/components/sessions/SessionForm"
 import { SequenceForm } from "@/components/sessions/SequenceForm"
@@ -12,6 +13,7 @@ import { useEffect, useState } from "react"
 import { SessionFormData } from "@/types/settings"
 import { Sequence } from "@/types/sequence"
 import { EditorHeader } from "@/components/sessions/EditorHeader"
+import { BreadcrumbNav } from "@/components/navigation/BreadcrumbNav"
 
 const Editor = () => {
   const { id } = useParams()
@@ -89,6 +91,8 @@ const Editor = () => {
         transition={{ duration: 0.5 }}
         className="container py-8 space-y-8"
       >
+        <BreadcrumbNav pageName={formData.title || "Nouvelle séance"} />
+        
         {isLoading ? (
           <div className="space-y-8">
             <div className="h-[400px] animate-pulse rounded-xl border bg-muted" />

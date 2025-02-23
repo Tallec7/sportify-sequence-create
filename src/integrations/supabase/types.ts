@@ -500,6 +500,47 @@ export type Database = {
           },
         ]
       }
+      prompt_retrieval_logs: {
+        Row: {
+          created_at: string | null
+          error_message: string | null
+          id: string
+          mode: string
+          sport_id: string | null
+          success: boolean
+          template_type: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          mode: string
+          sport_id?: string | null
+          success: boolean
+          template_type: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          error_message?: string | null
+          id?: string
+          mode?: string
+          sport_id?: string | null
+          success?: boolean
+          template_type?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prompt_retrieval_logs_sport_id_fkey"
+            columns: ["sport_id"]
+            isOneToOne: false
+            referencedRelation: "sports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       prompt_templates: {
         Row: {
           created_at: string | null
@@ -1151,6 +1192,24 @@ export type Database = {
         }
         Relationships: []
       }
+      user_preferences: {
+        Row: {
+          theme: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          theme?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          theme?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -1189,6 +1248,17 @@ export type Database = {
           required_role: Database["public"]["Enums"]["app_role"]
         }
         Returns: boolean
+      }
+      log_prompt_retrieval: {
+        Args: {
+          p_user_id: string
+          p_template_type: string
+          p_mode: string
+          p_sport_id: string
+          p_success: boolean
+          p_error_message?: string
+        }
+        Returns: undefined
       }
     }
     Enums: {

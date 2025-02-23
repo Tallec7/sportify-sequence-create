@@ -73,3 +73,25 @@ export const resolvePromptError = async (errorId: string) => {
     console.error("Error resolving prompt error:", e)
   }
 }
+
+export const logPromptRetrieval = async (
+  userId: string, 
+  templateType: string,
+  mode: string,
+  sportId: string | null,
+  success: boolean,
+  errorMessage?: string
+) => {
+  try {
+    await supabase.rpc('log_prompt_retrieval', {
+      p_user_id: userId,
+      p_template_type: templateType,
+      p_mode: mode,
+      p_sport_id: sportId,
+      p_success: success,
+      p_error_message: errorMessage
+    })
+  } catch (e) {
+    console.error("Error logging prompt retrieval:", e)
+  }
+}
