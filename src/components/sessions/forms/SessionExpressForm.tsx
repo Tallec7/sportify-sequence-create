@@ -13,8 +13,8 @@ interface SessionExpressFormProps {
 }
 
 export const SessionExpressForm = ({ onGenerate, isLoading }: SessionExpressFormProps) => {
-  const sports = useSportsQuery()
-  const levels = useLevelsQuery()
+  const { data: sports = [] } = useSportsQuery()
+  const { data: levels = [] } = useLevelsQuery()
   
   const [answers, setAnswers] = useState({
     sport: "",

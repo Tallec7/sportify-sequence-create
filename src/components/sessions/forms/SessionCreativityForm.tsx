@@ -14,8 +14,8 @@ interface SessionCreativityFormProps {
 }
 
 export const SessionCreativityForm = ({ onGenerate, isLoading }: SessionCreativityFormProps) => {
-  const sports = useSportsQuery()
-  const levels = useLevelsQuery()
+  const { data: sports = [] } = useSportsQuery()
+  const { data: levels = [] } = useLevelsQuery()
 
   const [answers, setAnswers] = useState({
     sport: "",
