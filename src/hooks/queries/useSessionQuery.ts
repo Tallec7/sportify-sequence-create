@@ -19,16 +19,16 @@ const convertJsonToTacticalConcepts = (arr: Json[] | null): TacticalConceptEnum[
     "defense_alignee",
     "defense_etagee"
   ] as const
-  
-  return arr.filter((item): item is TacticalConceptEnum => {
-    return typeof item === 'string' && validConcepts.includes(item as TacticalConceptEnum)
-  })
+
+  return arr.filter((item): item is TacticalConceptEnum => 
+    typeof item === 'string' && validConcepts.includes(item as TacticalConceptEnum)
+  )
 }
 
 // Helper function to safely convert Json array to string array
 const convertJsonArrayToStringArray = (arr: Json[] | null): string[] => {
   if (!Array.isArray(arr)) return []
-  return arr.map(item => String(item))
+  return arr.filter((item): item is string => typeof item === 'string')
 }
 
 export const useSessionQuery = (id: string | undefined) => {
@@ -46,7 +46,10 @@ export const useSessionQuery = (id: string | undefined) => {
       if (sessionError) throw sessionError
       if (!sessionData) throw new Error("Session not found")
 
-      // Ensure arrays are properly initialized and cast types correctly
+      // Process the tactical concepts array first
+      const tacticalConcepts = convertJsonToTacticalConcepts(sessionData.tactical_concepts)
+
+      // Create the processed data object
       const processedData: SessionFormData = {
         title: sessionData.title,
         description: sessionData.description || "",
@@ -58,8 +61,8 @@ export const useSessionQuery = (id: string | undefined) => {
         age_category: sessionData.age_category,
         intensity_level: sessionData.intensity_level || "medium",
         cycle_id: sessionData.cycle_id,
-        objective: "", // This will be added once we update the database schema
-        tactical_concepts: convertJsonToTacticalConcepts(sessionData.tactical_concepts),
+        objective: sessionData.objective || "",
+        tactical_concepts: tacticalConcepts,
         decision_making_focus: convertJsonArrayToStringArray(sessionData.decision_making_focus),
         performance_metrics: convertJsonArrayToStringArray(sessionData.performance_metrics),
         expert_validated: sessionData.expert_validated || false,
