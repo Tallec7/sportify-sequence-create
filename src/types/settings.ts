@@ -41,7 +41,7 @@ export interface AgeCategory {
 export type AgeCategoryType = "U9" | "U11" | "U13" | "U15" | "U17" | "U19" | "Senior"
 
 // Define tactical concept enum type to match database
-export type TacticalConceptEnum = string
+export type TacticalConceptEnum = Database["public"]["Enums"]["tactical_concept_enum"]
 
 export type SessionFormData = {
   title: string

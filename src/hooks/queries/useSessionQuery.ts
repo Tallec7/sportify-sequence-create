@@ -15,9 +15,23 @@ const convertJsonToTacticalConcepts = (
 ): TacticalConceptEnum[] => {
   if (!Array.isArray(arr)) return []
   
-  return arr.filter((item): item is TacticalConceptEnum => 
-    typeof item === 'string' && validConcepts.includes(item)
-  ) as TacticalConceptEnum[]
+  return arr.filter((item): item is TacticalConceptEnum => {
+    return typeof item === 'string' && 
+           validConcepts.includes(item) && 
+           isTacticalConceptEnum(item)
+  })
+}
+
+// Type guard for tactical concept enum
+const isTacticalConceptEnum = (value: string): value is TacticalConceptEnum => {
+  return [
+    'montee_de_balle',
+    'repli_defensif',
+    'contre_attaque',
+    'attaque_placee',
+    'defense_alignee',
+    'defense_etagee'
+  ].includes(value)
 }
 
 // Helper function to safely convert Json array to string array
