@@ -11,6 +11,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Sequence } from "@/types/sequence"
+import { useSequenceTypesQuery } from "@/hooks/queries/useSequenceTypesQuery"
+import { useIntensityLevelsQuery } from "@/hooks/queries/useIntensityLevelsQuery"
 
 interface AddSequenceFormProps {
   newSequence: Sequence
@@ -23,6 +25,9 @@ export const AddSequenceForm = ({
   setNewSequence,
   onSubmit,
 }: AddSequenceFormProps) => {
+  const { data: sequenceTypes = [] } = useSequenceTypesQuery()
+  const { data: intensityLevels = [] } = useIntensityLevelsQuery()
+
   return (
     <form onSubmit={onSubmit} className="mt-8 space-y-6">
       <div className="grid gap-6 md:grid-cols-2">
@@ -50,9 +55,11 @@ export const AddSequenceForm = ({
               <SelectValue placeholder="Sélectionner un type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="warmup">Échauffement</SelectItem>
-              <SelectItem value="main">Principal</SelectItem>
-              <SelectItem value="cooldown">Retour au calme</SelectItem>
+              {sequenceTypes.map((type) => (
+                <SelectItem key={type.id} value={type.value}>
+                  {type.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -84,9 +91,11 @@ export const AddSequenceForm = ({
               <SelectValue placeholder="Sélectionner une intensité" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="low">Faible</SelectItem>
-              <SelectItem value="medium">Moyenne</SelectItem>
-              <SelectItem value="high">Élevée</SelectItem>
+              {intensityLevels.map((level) => (
+                <SelectItem key={level.id} value={level.value}>
+                  {level.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
