@@ -2,7 +2,7 @@
 import { useState } from "react"
 import { AddSequenceForm } from "./AddSequenceForm"
 import { SequenceList } from "./SequenceList"
-import { Sequence, Exercise } from "@/types/sequence"
+import { Sequence } from "@/types/sequence"
 import {
   Card,
   CardContent,
@@ -27,13 +27,11 @@ export const SequenceForm = ({
 }: SequenceFormProps) => {
   const [showAddForm, setShowAddForm] = useState(false)
 
-  const handleExerciseAlternatives = (exercise: Exercise) => {
-    return {
-      sport: formData.sport,
-      level: formData.level,
-      age_category: formData.age_category,
-      intensity_level: formData.intensity_level
-    }
+  const sessionContext = {
+    sport: formData.sport,
+    level: formData.level,
+    age_category: formData.age_category,
+    intensity_level: formData.intensity_level
   }
 
   return (
@@ -48,14 +46,14 @@ export const SequenceForm = ({
         <SequenceList
           sequences={sequences}
           onReorder={onReorderSequences}
-          sessionContext={handleExerciseAlternatives({})}
+          sessionContext={sessionContext}
         />
         {showAddForm ? (
           <AddSequenceForm
             onAdd={onAddSequence}
             onCancel={() => setShowAddForm(false)}
             sequences={sequences}
-            sessionContext={handleExerciseAlternatives({})}
+            sessionContext={sessionContext}
           />
         ) : (
           <button

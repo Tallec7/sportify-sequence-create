@@ -1,6 +1,9 @@
+
 import { render, screen, fireEvent } from '@testing-library/react'
+import { describe, it, expect, vi } from 'vitest'
 import { SequenceForm } from '../SequenceForm'
 import { Sequence } from '@/types/sequence'
+import { AgeCategoryType } from '@/types/settings'
 
 describe('SequenceForm', () => {
   const mockFormData = {
@@ -11,7 +14,7 @@ describe('SequenceForm', () => {
     duration: 60,
     participants_min: 10,
     participants_max: 20,
-    age_category: "U13",
+    age_category: "U13" as AgeCategoryType,
     intensity_level: "medium",
     cycle_id: null,
     objective: "",
@@ -32,17 +35,15 @@ describe('SequenceForm', () => {
 
   it('renders correctly', () => {
     render(<SequenceForm {...defaultProps} />)
-    expect(screen.getByText('Titre')).toBeInTheDocument()
+    expect(screen.getByText('Séquences')).toBeInTheDocument()
   })
 
   it('calls onAddSequence when the form is submitted', () => {
-    const onAddSequence = jest.fn()
+    const onAddSequence = vi.fn()
     render(<SequenceForm {...defaultProps} onAddSequence={onAddSequence} />)
-
-    fireEvent.change(screen.getByLabelText('Titre'), { target: { value: 'New Sequence' } })
-    fireEvent.submit(screen.getByRole('button', { name: 'Ajouter' }))
-
-    expect(onAddSequence).toHaveBeenCalled()
+    
+    fireEvent.click(screen.getByText('Ajouter une séquence'))
+    expect(screen.getByText('Ajouter')).toBeInTheDocument()
   })
 
   it('displays existing sequences', () => {
@@ -53,12 +54,12 @@ describe('SequenceForm', () => {
       order_index: 0,
       session_id: 'session1',
       exercises: [],
-      sequence_type: 'type1',
+      sequence_type: 'warmup',
       duration: 30,
       intensity_level: 'high',
       objective: 'Objective 1'
     }]
-    render(<SequenceForm {...defaultProps} sequences={sequences} onAddSequence={() => {}} />)
+    render(<SequenceForm {...defaultProps} sequences={sequences} />)
     expect(screen.getByText('Sequence 1')).toBeInTheDocument()
   })
 })

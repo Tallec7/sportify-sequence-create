@@ -1,7 +1,7 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
-import { type AgeCategory } from "@/types/settings"
+import { type AgeCategory, type AgeCategoryType } from "@/types/settings"
 
 export const useAgeCategoriesQuery = () => {
   return useQuery<AgeCategory[]>({
@@ -17,7 +17,10 @@ export const useAgeCategoriesQuery = () => {
         throw error
       }
 
-      return data
+      return data.map(item => ({
+        ...item,
+        value: item.value as AgeCategoryType
+      }))
     }
   })
 }
