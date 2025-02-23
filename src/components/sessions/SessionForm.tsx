@@ -17,10 +17,10 @@ import { SessionAISelector, type AIMode } from "./forms/SessionAISelector"
 import { SessionExpressForm } from "./forms/SessionExpressForm"
 import { SessionExpertForm } from "./forms/SessionExpertForm"
 import { SessionCreativityForm } from "./forms/SessionCreativityForm"
-import { useToast } from "@/components/ui/use-toast"
-import { supabase } from "@/integrations/supabase/client"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+import { SessionObjectiveField } from "./forms/fields/SessionObjectiveField"
+import { useSessionGeneration } from "./hooks/useSessionGeneration"
+import { useFormHandlers } from "./hooks/useFormHandlers"
+import { validateFormData } from "./utils/formValidation"
 
 interface SessionFormProps {
   formData: SessionFormData
@@ -35,32 +35,19 @@ export const SessionForm = ({
 }: SessionFormProps) => {
   const [isAdvancedMode, setIsAdvancedMode] = useState(false)
   const [aiMode, setAIMode] = useState<AIMode>("manual")
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [generatedSession, setGeneratedSession] = useState<string | null>(null)
-  const { toast } = useToast()
+  
+  const {
+    isGenerating,
+    generatedSession,
+    handleGenerate,
+    setGeneratedSession
+  } = useSessionGeneration(formData, setFormData)
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: value,
-    })
-  }
-
-  const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData({
-      ...formData,
-      [name]: parseInt(value),
-    })
-  }
-
-  const handleSelectChange = (name: string, value: string) => {
-    setFormData({
-      ...formData,
-      [name]: value,
-    })
-  }
+  const {
+    handleInputChange,
+    handleNumberChange,
+    handleSelectChange,
+  } = useFormHandlers(setFormData)
 
   const handleModeChange = (advanced: boolean) => {
     setIsAdvancedMode(advanced)
@@ -78,82 +65,8 @@ export const SessionForm = ({
     }
   }
 
-  const validateFormData = () => {
-    if (!formData.title?.trim()) {
-      toast({
-        variant: "destructive",
-        title: "Erreur de validation",
-        description: "Le titre de la séance est requis",
-      })
-      return false
-    }
-
-    if (!formData.sport?.trim()) {
-      toast({
-        variant: "destructive",
-        title: "Erreur de validation",
-        description: "Le sport est requis",
-      })
-      return false
-    }
-
-    if (!formData.level?.trim()) {
-      toast({
-        variant: "destructive",
-        title: "Erreur de validation",
-        description: "Le niveau est requis",
-      })
-      return false
-    }
-
-    if (!formData.objective?.trim()) {
-      toast({
-        variant: "destructive",
-        title: "Erreur de validation",
-        description: "L'objectif de la séance est requis",
-      })
-      return false
-    }
-
-    return true
-  }
-
-  const handleGenerate = async (answers: any) => {
-    try {
-      setIsGenerating(true)
-      const { data, error } = await supabase.functions.invoke('generate-session', {
-        body: { mode: aiMode, answers }
-      })
-
-      if (error) throw error
-
-      setGeneratedSession(data.session)
-      
-      // Pré-remplir le formulaire avec les informations de base
-      setFormData({
-        ...formData,
-        sport: answers.sport,
-        level: answers.level,
-        duration: parseInt(answers.duration),
-        participants_min: parseInt(answers.participants || "1"),
-        participants_max: parseInt(answers.participants || "10"),
-        age_category: answers.ageCategory || "U13",
-      })
-      
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Une erreur est survenue lors de la génération",
-      })
-      console.error(error)
-    } finally {
-      setIsGenerating(false)
-    }
-  }
-
   const handleSave = () => {
-    if (!validateFormData()) {
+    if (!validateFormData(formData)) {
       return
     }
     onSave()
@@ -215,18 +128,10 @@ export const SessionForm = ({
           handleNumberChange={handleNumberChange}
         />
         
-        <div className="space-y-2">
-          <Label htmlFor="objective">Objectif de la séance</Label>
-          <Textarea
-            id="objective"
-            name="objective"
-            value={formData.objective}
-            onChange={handleInputChange}
-            className="min-h-[100px] resize-y"
-            placeholder="Définissez l'objectif principal de cette séance..."
-            required
-          />
-        </div>
+        <SessionObjectiveField
+          value={formData.objective}
+          onChange={handleInputChange}
+        />
         
         {(isAdvancedMode || aiMode === "expert") && (
           <SessionParticipantsForm
