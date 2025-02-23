@@ -5,7 +5,24 @@ import { SessionFormData } from "@/types/settings"
 import { Database } from "@/integrations/supabase/types"
 
 type SessionResponse = Database["public"]["Tables"]["sessions"]["Row"]
+type TacticalConceptEnum = Database["public"]["Enums"]["tactical_concept_enum"]
 type Json = Database["public"]["Tables"]["sessions"]["Row"]["tactical_concepts"][number]
+
+// Helper function to safely convert Json array to tactical concepts enum array
+const convertJsonToTacticalConcepts = (arr: Json[] | null): TacticalConceptEnum[] => {
+  if (!Array.isArray(arr)) return []
+  return arr.filter((item): item is TacticalConceptEnum => {
+    const validConcepts: TacticalConceptEnum[] = [
+      "montee_de_balle",
+      "repli_defensif",
+      "contre_attaque",
+      "attaque_placee",
+      "defense_alignee",
+      "defense_etagee"
+    ]
+    return validConcepts.includes(item as TacticalConceptEnum)
+  })
+}
 
 // Helper function to safely convert Json array to string array
 const convertJsonArrayToStringArray = (arr: Json[] | null): string[] => {
@@ -41,7 +58,7 @@ export const useSessionQuery = (id: string | undefined) => {
         intensity_level: sessionData.intensity_level || "medium",
         cycle_id: sessionData.cycle_id,
         objective: "", // This will be added once we update the database schema
-        tactical_concepts: convertJsonArrayToStringArray(sessionData.tactical_concepts),
+        tactical_concepts: convertJsonToTacticalConcepts(sessionData.tactical_concepts),
         decision_making_focus: convertJsonArrayToStringArray(sessionData.decision_making_focus),
         performance_metrics: convertJsonArrayToStringArray(sessionData.performance_metrics),
         expert_validated: sessionData.expert_validated || false,
@@ -53,3 +70,4 @@ export const useSessionQuery = (id: string | undefined) => {
     enabled: !!id,
   })
 }
+
