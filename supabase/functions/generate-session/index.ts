@@ -1,3 +1,4 @@
+
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.1';
@@ -20,12 +21,27 @@ serve(async (req) => {
   }
 
   try {
+    const requestBody = await req.json();
+    console.log('Requête reçue:', requestBody);
+
+    // Validation stricte du mode
+    if (!requestBody.mode) {
+      throw new Error("Le paramètre 'mode' est obligatoire pour la génération de séance");
+    }
+
+    const { mode, answers } = requestBody;
+    console.log('Mode reçu:', mode);
+
+    // Validation du type de mode
+    if (!['express', 'expert', 'creativity'].includes(mode)) {
+      throw new Error(`Mode invalide: ${mode}. Les modes acceptés sont: express, expert, creativity`);
+    }
+
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const { mode = 'express', answers } = await req.json();
     const templateType = `session_generation_${mode}`;
     const sportId = answers.sport || null;
     
@@ -62,6 +78,8 @@ serve(async (req) => {
       case "creativity":
         userPrompt = `Crée une séance innovante pour ${answers.sport}, niveau ${answers.level}. Cherche des exercices créatifs et originaux en gardant l'aspect pédagogique. Durée: ${answers.duration} minutes. Style recherché: ${answers.style}`;
         break;
+      default:
+        throw new Error(`Mode non géré: ${mode}`);
     }
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
