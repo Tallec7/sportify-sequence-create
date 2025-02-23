@@ -40,6 +40,7 @@ export const useExerciseMutation = (sequenceId: string | undefined) => {
         tactical_concepts: validTacticalConcepts,
         performance_metrics: exercise.performance_metrics || {},
         progression_level: exercise.progression_level || 1,
+        objective: exercise.objective || "À définir"  // Added objective field
       }
 
       if (id) {

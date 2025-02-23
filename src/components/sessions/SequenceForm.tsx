@@ -1,4 +1,3 @@
-
 import { useState } from "react"
 import { toast } from "@/components/ui/use-toast"
 import { supabase } from "@/integrations/supabase/client"
@@ -27,6 +26,7 @@ export const SequenceForm = ({
     sequence_type: "main",
     intensity_level: "medium",
     sequence_order: sequences.length + 1,
+    objective: "À définir"
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -76,6 +76,7 @@ export const SequenceForm = ({
         sequence_type: "main",
         intensity_level: "medium",
         sequence_order: sequences.length + 2,
+        objective: "À définir"
       })
     } catch (error: any) {
       console.error("Error in handleSubmit:", error)
@@ -121,4 +122,3 @@ export const SequenceForm = ({
     </div>
   )
 }
-

@@ -1,4 +1,3 @@
-
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { SequenceForm } from '../SequenceForm'
@@ -29,7 +28,8 @@ const mockSequences: Sequence[] = [
     duration: 15,
     sequence_type: 'warmup',
     intensity_level: 'low',
-    sequence_order: 1
+    sequence_order: 1,
+    objective: "Échauffement général"  // Added objective
   }
 ]
 

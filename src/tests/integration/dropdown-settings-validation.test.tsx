@@ -1,4 +1,3 @@
-
 import { describe, test, expect, beforeEach, vi } from "vitest"
 import { render, screen, waitFor } from "@testing-library/react"
 import { BrowserRouter } from "react-router-dom"
@@ -78,7 +77,8 @@ describe("Dynamic Values Validation", () => {
       duration: 0,
       sequence_type: "warmup" as SequenceType,
       intensity_level: "medium",
-      sequence_order: 1
+      sequence_order: 1,
+      objective: "À définir"
     }
 
     renderWithProviders(

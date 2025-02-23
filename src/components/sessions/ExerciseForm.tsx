@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from "react"
 import { Exercise } from "@/types/sequence"
 import { useExerciseMutation } from "@/hooks/mutations/useExerciseMutation"
@@ -37,7 +36,8 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
     duration: 5,
     intensity_level: "medium",
     exercise_order: exercises.length + 1,
-    activity_type: "exercise"
+    activity_type: "exercise",
+    objective: "À définir"
   })
 
   React.useEffect(() => {
@@ -66,7 +66,8 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
         duration: 5,
         intensity_level: "medium",
         exercise_order: exercises.length + 2,
-        activity_type: "exercise"
+        activity_type: "exercise",
+        objective: "À définir"
       })
     }
   }
@@ -86,7 +87,8 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
       duration: 5,
       intensity_level: "medium",
       exercise_order: exercises.length + 1,
-      activity_type: "exercise"
+      activity_type: "exercise",
+      objective: "À définir"
     })
   }
 
@@ -163,4 +165,3 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
     </div>
   )
 }
-
