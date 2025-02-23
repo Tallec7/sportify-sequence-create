@@ -15,7 +15,7 @@ import type { Sequence } from "@/types/sequence"
 
 interface SequenceFormProps {
   sequence?: Partial<Sequence>
-  onSubmit: (formData: FormData) => Promise<void>
+  onSubmit: (sequence: Sequence) => Promise<void>
 }
 
 export const SequenceForm = ({ sequence, onSubmit }: SequenceFormProps) => {
@@ -33,9 +33,22 @@ export const SequenceForm = ({ sequence, onSubmit }: SequenceFormProps) => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const form = e.currentTarget
-    const formData = new FormData(form)
-    await onSubmit(formData)
+    
+    // Create a Sequence object from the form data
+    const sequenceData: Sequence = {
+      id: sequence?.id || '',
+      title: formData.title,
+      description: formData.description,
+      sequence_type: formData.sequence_type as 'warmup' | 'main' | 'cooldown',
+      duration: formData.duration,
+      intensity_level: formData.intensity_level,
+      sequence_order: sequence?.sequence_order || 0,
+      exercises: sequence?.exercises || [],
+      objective: formData.objective,
+      session_id: sequence?.session_id || ''
+    }
+
+    await onSubmit(sequenceData)
   }
 
   return (
