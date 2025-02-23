@@ -6,6 +6,9 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import { useSportsQuery } from "@/hooks/queries/useSportsQuery"
 import { useLevelsQuery } from "@/hooks/queries/useLevelsQuery"
+import { SessionPreview } from "../SessionPreview"
+import { toast } from "@/components/ui/use-toast"
+import { supabase } from "@/integrations/supabase/client"
 
 interface SessionExpressFormProps {
   onGenerate: (answers: any) => void
@@ -15,7 +18,7 @@ interface SessionExpressFormProps {
 export const SessionExpressForm = ({ onGenerate, isLoading }: SessionExpressFormProps) => {
   const { data: sports = [] } = useSportsQuery()
   const { data: levels = [] } = useLevelsQuery()
-  
+  const [generatedSession, setGeneratedSession] = useState<any>(null)
   const [answers, setAnswers] = useState({
     sport: "",
     level: "",
@@ -23,9 +26,56 @@ export const SessionExpressForm = ({ onGenerate, isLoading }: SessionExpressForm
     duration: "60"
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    onGenerate(answers)
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-session', {
+        body: { mode: 'express', answers }
+      })
+
+      if (error) throw error
+
+      if (data.session) {
+        console.log("Session générée:", data.session)
+        setGeneratedSession(data.session)
+      }
+    } catch (error) {
+      console.error("Erreur lors de la génération:", error)
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la génération de la séance."
+      })
+    }
+  }
+
+  const handleEdit = (editedSession: any) => {
+    setGeneratedSession(editedSession)
+  }
+
+  const handleSave = async () => {
+    try {
+      onGenerate(generatedSession)
+    } catch (error) {
+      console.error("Erreur lors de l'enregistrement:", error)
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Une erreur est survenue lors de l'enregistrement de la séance."
+      })
+    }
+  }
+
+  if (generatedSession) {
+    return (
+      <SessionPreview
+        generatedSession={generatedSession}
+        onEdit={handleEdit}
+        onSave={handleSave}
+        onCancel={() => setGeneratedSession(null)}
+      />
+    )
   }
 
   return (

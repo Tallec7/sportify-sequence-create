@@ -15,8 +15,57 @@ serve(async (req) => {
   try {
     const { mode, answers } = await req.json();
     
-    // Construire le prompt selon le mode
-    let systemPrompt = "Tu es un expert en création de séances d'entraînement.";
+    // Construction du prompt système selon le mode
+    let systemPrompt = `Tu es un expert en création de séances d'entraînement. Tu dois générer une séance complète en JSON suivant strictement cette structure:
+{
+  "title": "string",
+  "description": "string",
+  "sport": "string",
+  "level": "string",
+  "duration": "number",
+  "participants_min": "number",
+  "participants_max": "number",
+  "age_category": "U9" | "U11" | "U13" | "U15" | "U17" | "U19" | "Senior",
+  "intensity_level": "low" | "medium" | "high",
+  "sequences": [
+    {
+      "title": "string",
+      "description": "string",
+      "duration": "number",
+      "sequence_type": "warmup" | "main" | "cooldown",
+      "intensity_level": "low" | "medium" | "high",
+      "sequence_order": "number",
+      "exercises": [
+        {
+          "title": "string",
+          "description": "string",
+          "duration": "number",
+          "activity_type": "exercise" | "situation",
+          "intensity_level": "low" | "medium" | "high",
+          "exercise_order": "number",
+          "player_instructions": "string?",
+          "setup_instructions": "string?",
+          "coach_instructions": "string?",
+          "opposition_type": "string?",
+          "decision_making_focus": "string[]?",
+          "tactical_objectives": "string[]?",
+          "tactical_concepts": "string[]?",
+          "variations": "string[]?",
+          "performance_metrics": "{}?"
+        }
+      ],
+      "objectives": [
+        {
+          "description": "string",
+          "objective_type": "apprentissage" | "developpement" | "perfectionnement",
+          "is_priority": "boolean",
+          "order_index": "number"
+        }
+      ]
+    }
+  ]
+}`;
+
     let userPrompt = "";
 
     switch (mode) {
@@ -34,7 +83,7 @@ serve(async (req) => {
         break;
     }
 
-    console.log("Sending request to OpenAI with:", { systemPrompt, userPrompt });
+    console.log("Envoi de la requête à OpenAI avec:", { systemPrompt, userPrompt });
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -48,26 +97,31 @@ serve(async (req) => {
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
+        response_format: { type: "json_object" }
       }),
     });
 
     if (!response.ok) {
       const error = await response.text();
-      throw new Error(`OpenAI API responded with status: ${response.status}. Error: ${error}`);
+      throw new Error(`OpenAI API a répondu avec le statut : ${response.status}. Erreur: ${error}`);
     }
 
     const data = await response.json();
+    const sessionData = JSON.parse(data.choices[0].message.content);
     
-    if (!data.choices?.[0]?.message?.content) {
-      throw new Error('Invalid response format from OpenAI');
+    // Validation de base de la structure JSON
+    if (!sessionData.title || !sessionData.sport || !sessionData.sequences) {
+      throw new Error('La structure JSON générée est invalide ou incomplète');
     }
 
-    return new Response(JSON.stringify({ session: data.choices[0].message.content }), {
+    console.log("Session générée avec succès:", sessionData);
+
+    return new Response(JSON.stringify({ session: sessionData }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
   } catch (error) {
-    console.error('Error in generate-session function:', error);
+    console.error('Erreur dans la fonction generate-session:', error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
