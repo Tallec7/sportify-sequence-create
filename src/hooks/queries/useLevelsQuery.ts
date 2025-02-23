@@ -12,7 +12,7 @@ export interface Level {
 export const useLevelsQuery = () => {
   const { toast } = useToast()
 
-  const { data: levels = [] } = useQuery({
+  return useQuery({
     queryKey: ['levels'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -33,7 +33,5 @@ export const useLevelsQuery = () => {
       return data || []
     }
   })
-
-  return levels
 }
 

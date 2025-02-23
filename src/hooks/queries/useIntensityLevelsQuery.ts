@@ -12,7 +12,7 @@ export interface IntensityLevel {
 export const useIntensityLevelsQuery = () => {
   const { toast } = useToast()
 
-  const { data: intensityLevels = [] } = useQuery({
+  return useQuery({
     queryKey: ['intensity_levels'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -33,7 +33,5 @@ export const useIntensityLevelsQuery = () => {
       return data || []
     }
   })
-
-  return intensityLevels
 }
 

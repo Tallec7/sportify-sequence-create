@@ -12,7 +12,7 @@ export interface Sport {
 export const useSportsQuery = () => {
   const { toast } = useToast()
 
-  const { data: sports = [] } = useQuery({
+  return useQuery({
     queryKey: ['sports'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -33,6 +33,5 @@ export const useSportsQuery = () => {
       return data || []
     }
   })
-
-  return sports
 }
+
