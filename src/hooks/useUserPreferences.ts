@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { useErrorToast } from "./use-error-toast"
+import { useToast } from "@/components/ui/use-toast"
 
 type Theme = "light" | "dark"
 
@@ -13,14 +14,16 @@ interface UserPreferences {
 export const useUserPreferences = (userId?: string) => {
   const queryClient = useQueryClient()
   const { showError } = useErrorToast()
+  const { toast } = useToast()
   const [theme, setTheme] = useState<Theme>(() => {
     if (typeof window !== "undefined") {
-      return (localStorage.getItem("theme") as Theme) || "light"
+      const storedTheme = localStorage.getItem("theme") as Theme
+      return storedTheme || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
     }
     return "light"
   })
 
-  const { data: preferences } = useQuery({
+  const { data: preferences, isLoading } = useQuery({
     queryKey: ["user-preferences", userId],
     queryFn: async () => {
       if (!userId) return null
@@ -57,6 +60,9 @@ export const useUserPreferences = (userId?: string) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-preferences", userId] })
+      toast({
+        description: "Thème mis à jour avec succès",
+      })
     },
     onError: (error) => {
       showError(error, "Erreur de sauvegarde des préférences")
@@ -78,11 +84,12 @@ export const useUserPreferences = (userId?: string) => {
   useEffect(() => {
     document.documentElement.classList.remove("light", "dark")
     document.documentElement.classList.add(theme)
+    localStorage.setItem("theme", theme)
   }, [theme])
 
   return {
     theme,
     toggleTheme,
-    isLoading: mutation.isPending
+    isLoading: isLoading || mutation.isPending
   }
 }
