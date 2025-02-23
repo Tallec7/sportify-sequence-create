@@ -52,11 +52,8 @@ export const useSessionQuery = (sessionId: string) => {
         ...data,
         tactical_concepts: validTacticalConcepts,
         decision_making_focus: Array.isArray(data.decision_making_focus) ? data.decision_making_focus : [],
-        performance_metrics: data.performance_metrics || {},
-        objective: data.objective || "",
-        sequences: data.session_sequences || []
+        performance_metrics: data.performance_metrics || {}
       }
     }
   })
 }
-

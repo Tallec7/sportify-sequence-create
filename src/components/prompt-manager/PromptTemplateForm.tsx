@@ -125,4 +125,3 @@ export const PromptTemplateForm = ({ form, sports, onCancel, isEditing }: Prompt
     </form>
   )
 }
-

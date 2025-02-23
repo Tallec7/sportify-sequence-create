@@ -19,8 +19,8 @@ export const usePromptTemplate = ({ template, onOpenChange }: UsePromptTemplateP
     resolver: zodResolver(promptTemplateFormSchema),
     defaultValues: {
       sport_id: template?.sport_id || null,
-      training_type: template?.training_type || "session_generation",
-      prompt_text: template?.prompt_text || "Créer une séance d'entraînement complète avec...",
+      training_type: template?.training_type || "",
+      prompt_text: template?.prompt_text || "",
       is_active: template?.is_active ?? true,
       is_validated: template?.is_validated ?? false,
       is_default: template?.is_default ?? !template
@@ -32,20 +32,14 @@ export const usePromptTemplate = ({ template, onOpenChange }: UsePromptTemplateP
       if (template?.id) {
         const { error } = await supabase
           .from("prompt_templates")
-          .update({
-            ...values,
-            updated_at: new Date().toISOString()
-          })
+          .update(values)
           .eq("id", template.id)
 
         if (error) throw error
       } else {
         const { error } = await supabase
           .from("prompt_templates")
-          .insert({
-            ...values,
-            created_at: new Date().toISOString()
-          })
+          .insert([{ ...values }])
 
         if (error) throw error
       }
@@ -67,13 +61,8 @@ export const usePromptTemplate = ({ template, onOpenChange }: UsePromptTemplateP
     }
   })
 
-  const handleSubmit = form.handleSubmit((values) => {
-    mutation.mutate(values)
-  })
-
   return {
     form,
-    onSubmit: handleSubmit
+    onSubmit: form.handleSubmit((values) => mutation.mutate(values))
   }
 }
-
