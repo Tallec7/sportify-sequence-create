@@ -12,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { useToast } from "@/components/ui/use-toast"
 
 interface ExerciseAlternativesProps {
   exercise: Exercise
@@ -31,8 +32,19 @@ export const ExerciseAlternatives = ({
 }: ExerciseAlternativesProps) => {
   const [alternatives, setAlternatives] = useState<Exercise[]>([])
   const alternativesMutation = useExerciseAlternativesMutation()
+  const { toast } = useToast()
 
   const handleGenerateAlternatives = async () => {
+    // Validate session context before making the request
+    if (!sessionContext?.sport || !sessionContext?.level) {
+      toast({
+        variant: "destructive",
+        title: "Erreur",
+        description: "Le sport et le niveau sont requis pour générer des alternatives",
+      })
+      return
+    }
+
     const result = await alternativesMutation.mutateAsync({
       exercise,
       sessionContext,

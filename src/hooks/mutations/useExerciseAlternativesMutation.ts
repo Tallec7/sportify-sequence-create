@@ -15,12 +15,16 @@ export const useExerciseAlternativesMutation = () => {
   const { toast } = useToast()
 
   return useMutation({
-    mutationFn: async ({ exercise, sessionContext }: { 
+    mutationFn: async ({ 
+      exercise, 
+      sessionContext 
+    }: { 
       exercise: Exercise, 
-      sessionContext: ExerciseAlternativesContext
+      sessionContext: ExerciseAlternativesContext 
     }) => {
       // Validate required fields
-      if (!sessionContext.sport || !sessionContext.level) {
+      if (!sessionContext?.sport || !sessionContext?.level) {
+        console.error('Missing required session context:', sessionContext)
         throw new Error('Le sport et le niveau sont requis pour générer des alternatives')
       }
 
