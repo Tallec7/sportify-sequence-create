@@ -3,7 +3,7 @@ import { TableCell, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Shield, TestTube } from "lucide-react"
+import { Shield, TestTube, Trash2 } from "lucide-react"
 import type { PromptTemplate } from "../types"
 import { PromptMode } from "./PromptMode"
 
@@ -11,9 +11,10 @@ interface PromptTableRowProps {
   template: PromptTemplate
   onEdit: (template: PromptTemplate) => void
   onTest: (template: PromptTemplate) => void
+  onDelete: (template: PromptTemplate) => void
 }
 
-export const PromptTableRow = ({ template, onEdit, onTest }: PromptTableRowProps) => {
+export const PromptTableRow = ({ template, onEdit, onTest, onDelete }: PromptTableRowProps) => {
   return (
     <TableRow className={template.is_default ? "bg-red-50" : undefined}>
       <TableCell>{template.sports?.label || "Tous les sports"}</TableCell>
@@ -67,9 +68,18 @@ export const PromptTableRow = ({ template, onEdit, onTest }: PromptTableRowProps
             <TestTube className="h-4 w-4 mr-1" />
             Test
           </Button>
+          {!template.is_default && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onDelete(template)}
+              className="w-16"
+            >
+              <Trash2 className="h-4 w-4 text-destructive" />
+            </Button>
+          )}
         </div>
       </TableCell>
     </TableRow>
   )
 }
-

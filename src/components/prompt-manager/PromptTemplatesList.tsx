@@ -8,6 +8,7 @@ import { PromptTemplateDialog } from "./PromptTemplateDialog"
 import { PromptFilters } from "./filters/PromptFilters"
 import { PromptTableHeader } from "./table/PromptTableHeader"
 import { PromptTableRow } from "./table/PromptTableRow"
+import { usePromptTemplateDeleteMutation } from "@/hooks/mutations/usePromptTemplateDeleteMutation"
 import { supabase } from "@/integrations/supabase/client"
 import type { Sport } from "@/types/settings"
 import type { PromptTemplate, SortField, SortOrder } from "./types"
@@ -26,6 +27,8 @@ export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemp
   const [search, setSearch] = useState('')
   const [sortField, setSortField] = useState<SortField>('updated_at')
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc')
+  
+  const deleteMutation = usePromptTemplateDeleteMutation()
 
   const handleEdit = (template: PromptTemplate) => {
     setSelectedTemplate(template)
@@ -35,6 +38,20 @@ export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemp
   const handleCreate = () => {
     setSelectedTemplate(null)
     setIsDialogOpen(true)
+  }
+
+  const handleDelete = (template: PromptTemplate) => {
+    // On ne peut pas supprimer les prompts protégés
+    if (template.is_default) {
+      toast({
+        variant: "destructive",
+        title: "Action non autorisée",
+        description: "Les prompts système protégés ne peuvent pas être supprimés"
+      })
+      return
+    }
+
+    deleteMutation.mutate(template)
   }
 
   const handleTest = async (template: PromptTemplate) => {
@@ -137,6 +154,7 @@ export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemp
               template={template}
               onEdit={handleEdit}
               onTest={handleTest}
+              onDelete={handleDelete}
             />
           ))}
         </TableBody>
@@ -151,4 +169,3 @@ export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemp
     </div>
   )
 }
-
