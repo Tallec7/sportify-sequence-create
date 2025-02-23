@@ -42,7 +42,7 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
     objective: "À définir"
   })
 
-  const { data: session } = useSessionQuery({})  // Pass empty object as argument
+  const { data: session } = useSessionQuery(undefined)  // Pass undefined since we don't have a session ID yet
   const sessionContext = session ? {
     sport: session.sport,
     level: session.level,
