@@ -108,4 +108,3 @@ describe("Dynamic Values Validation", () => {
     expect(supabase.from).toHaveBeenCalledWith("activity_types")
   })
 })
-
