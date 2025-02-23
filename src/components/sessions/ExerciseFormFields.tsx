@@ -9,7 +9,6 @@ import { SuccessCriteriaField } from "./form-fields/SuccessCriteriaField"
 import { TechnicalProgressionsField } from "./form-fields/TechnicalProgressionsField"
 import { Separator } from "@/components/ui/separator"
 import { Label } from "@/components/ui/label"
-import { ActivityTypeEnum } from "@/types/settings"
 import {
   Select,
   SelectContent,
@@ -22,20 +21,26 @@ import { useActivityTypesQuery } from "@/hooks/queries/useActivityTypesQuery"
 export const ExerciseFormFields = ({ exercise, onChange }: ExerciseFormFieldsProps) => {
   const { data: activityTypes = [] } = useActivityTypesQuery()
 
+  const handleActivityTypeChange = (value: string) => {
+    // Only allow 'exercise' or 'situation' as valid types
+    const validType = value === 'situation' ? 'situation' : 'exercise'
+    onChange({ ...exercise, activity_type: validType })
+  }
+
   return (
     <div className="space-y-6">
       <div className="space-y-2">
         <Label>Type d'activité</Label>
         <Select
           value={exercise.activity_type}
-          onValueChange={(value: ActivityTypeEnum) => onChange({ ...exercise, activity_type: value })}
+          onValueChange={handleActivityTypeChange}
         >
           <SelectTrigger>
             <SelectValue placeholder="Sélectionner un type" />
           </SelectTrigger>
           <SelectContent>
             {activityTypes.map((type) => (
-              <SelectItem key={type.id} value={type.value as ActivityTypeEnum}>
+              <SelectItem key={type.id} value={type.value}>
                 {type.label}
               </SelectItem>
             ))}

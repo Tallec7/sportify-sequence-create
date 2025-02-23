@@ -51,7 +51,7 @@ describe('SequenceForm', () => {
       id: '1',
       title: 'Sequence 1',
       description: 'Description 1',
-      order_index: 0,
+      sequence_order: 0,
       session_id: 'session1',
       exercises: [],
       sequence_type: 'warmup',

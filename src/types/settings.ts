@@ -53,13 +53,24 @@ export enum ActivityTypeEnum {
   DRILL = "drill",
   GAME = "game",
   SITUATION = "situation",
-  TRAINING = "training"
+  TRAINING = "training",
+  EXERCISE = "exercise"
 }
 
 export enum ObjectiveType {
   LEARNING = "apprentissage",
   DEVELOPMENT = "developpement",
   PERFECTION = "perfectionnement"
+}
+
+export type SessionObjective = {
+  id?: string
+  description: string
+  type: string
+  is_priority: boolean
+  order_index: number
+  objective_type: ObjectiveType
+  session_id?: string
 }
 
 export interface SessionFormData {
@@ -79,15 +90,7 @@ export interface SessionFormData {
   performance_metrics: string[]
   expert_validated: boolean
   validation_feedback: string
-  objectives: Array<{
-    id?: string
-    description: string
-    type: string
-    is_priority: boolean
-    order_index: number
-    objective_type: string
-    session_id?: string
-  }>
+  objectives: SessionObjective[]
 }
 
 export interface SessionObjectivesFormProps {
