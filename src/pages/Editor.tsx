@@ -1,3 +1,4 @@
+
 import { useParams } from "react-router-dom"
 import { SessionForm } from "@/components/sessions/SessionForm"
 import { SequenceForm } from "@/components/sessions/SequenceForm"
@@ -9,7 +10,7 @@ import { useSessionMutation } from "@/hooks/mutations/useSessionMutation"
 import { useSequenceMutation } from "@/hooks/mutations/useSequenceMutation"
 import { useSequenceOrderMutation } from "@/hooks/mutations/useSequenceOrderMutation"
 import { useEffect, useState } from "react"
-import { SessionFormData } from "@/components/sessions/SessionForm"
+import { SessionFormData } from "@/types/settings"
 import { Sequence } from "@/types/sequence"
 import { EditorHeader } from "@/components/sessions/EditorHeader"
 

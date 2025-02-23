@@ -77,7 +77,7 @@ export const useDropdownSettings = () => {
       if (sportData) {
         const { data, error } = await supabase
           .from('tactical_concepts')
-          .select('id, value, label')
+          .select('id, value, label, sport_id')
           .eq('sport_id', sportData.id)
           .order('label')
 

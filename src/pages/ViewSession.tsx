@@ -1,3 +1,4 @@
+
 import { useParams, useNavigate } from "react-router-dom"
 import { useSessionQuery } from "@/hooks/queries/useSessionQuery"
 import { useSequencesQuery } from "@/hooks/queries/useSequencesQuery"
@@ -46,7 +47,9 @@ const ViewSession = () => {
     objective: sessionData.objective || "",
     tactical_concepts: sessionData.tactical_concepts || [],
     decision_making_focus: sessionData.decision_making_focus || [],
-    performance_metrics: sessionData.performance_metrics || []
+    performance_metrics: sessionData.performance_metrics || [],
+    expert_validated: sessionData.expert_validated || false,
+    validation_feedback: sessionData.validation_feedback || ""
   }
 
   return (
@@ -65,7 +68,7 @@ const ViewSession = () => {
       <ViewSessionDetails formData={formData} />
       <ViewSessionSequences sequences={sequences} />
     </div>
-  );
-};
+  )
+}
 
-export default ViewSession;
+export default ViewSession
