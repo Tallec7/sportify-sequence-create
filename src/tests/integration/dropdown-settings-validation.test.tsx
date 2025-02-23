@@ -8,6 +8,7 @@ import { AddSequenceForm } from "@/components/sessions/AddSequenceForm"
 import { ExerciseForm } from "@/components/sessions/ExerciseForm"
 import { supabase } from "@/integrations/supabase/client"
 import type { AgeCategoryType } from "@/types/settings"
+import type { Sequence, SequenceType } from "@/types/sequence"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -67,16 +68,15 @@ describe("Dynamic Values Validation", () => {
       expect(screen.getByLabelText(/intensité/i)).toBeInTheDocument()
     })
 
-    // Vérifie que nous récupérons bien les valeurs depuis l'API
     expect(supabase.from).toHaveBeenCalledWith("intensity_levels")
   })
   
   test("Sequence form uses dynamic sequence types", async () => {
-    const newSequence = {
+    const newSequence: Sequence = {
       title: "",
       description: "",
       duration: 0,
-      sequence_type: "warmup" as "warmup" | "main" | "cooldown",
+      sequence_type: "warmup" as SequenceType,
       intensity_level: "medium",
       sequence_order: 1
     }

@@ -60,12 +60,14 @@ export interface SequenceObjective {
   created_at?: string
 }
 
+export type SequenceType = "warmup" | "main" | "cooldown"
+
 export interface Sequence {
   id?: string
   title: string
   description: string
   duration: number
-  sequence_type: "warmup" | "main" | "cooldown"
+  sequence_type: SequenceType
   intensity_level: string
   sequence_order: number
   session_id?: string
