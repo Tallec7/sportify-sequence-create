@@ -21,4 +21,3 @@ export interface ExerciseFormFieldsProps {
   exercise: Exercise
   onChange: (updatedExercise: Exercise) => void
 }
-
