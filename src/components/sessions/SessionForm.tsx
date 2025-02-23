@@ -1,3 +1,4 @@
+
 import { SessionFormData } from "@/types/settings"
 import { SessionBasicInfoForm } from "./forms/SessionBasicInfoForm"
 import { SessionDetailsForm } from "./forms/SessionDetailsForm"
@@ -47,7 +48,6 @@ export const SessionForm = ({ formData, setFormData }: SessionFormProps) => {
             formData={formData}
             handleChange={handleChange}
             handleSelectChange={handleSelectChange}
-            handleNumberChange={handleNumberChange}
           />
         </CardContent>
       </Card>

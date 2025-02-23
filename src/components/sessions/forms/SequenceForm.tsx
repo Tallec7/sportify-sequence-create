@@ -155,6 +155,5 @@ export const SequenceForm = ({ sequence, onSubmit }: SequenceFormProps) => {
         </button>
       </div>
     </form>
-  )
+  );
 }
-
