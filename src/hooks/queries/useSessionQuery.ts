@@ -52,8 +52,12 @@ export const useSessionQuery = (sessionId: string) => {
         ? data.performance_metrics.map(item => String(item))
         : []
 
+      // Get the objective from the first sequence or default to empty string
+      const objective = data.session_sequences?.[0]?.objective || ""
+
       return {
         ...data,
+        objective, // Add objective property
         tactical_concepts: validTacticalConcepts,
         decision_making_focus: Array.isArray(data.decision_making_focus) ? data.decision_making_focus : [],
         performance_metrics,
