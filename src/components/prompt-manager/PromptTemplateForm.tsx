@@ -6,6 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
+import { AlertCircle } from "lucide-react"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import type { Sport } from "@/types/settings"
 import type { PromptTemplateFormValues } from "./types"
 
@@ -18,8 +20,20 @@ interface PromptTemplateFormProps {
 }
 
 export const PromptTemplateForm = ({ form, sports, onCancel, isEditing, onSubmit }: PromptTemplateFormProps) => {
+  const isDefault = form.watch("is_default")
+
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      {isDefault && (
+        <Alert>
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            This is a critical system prompt used for core functionality. 
+            Changes will affect how sessions are generated.
+          </AlertDescription>
+        </Alert>
+      )}
+
       <FormField
         control={form.control}
         name="sport_id"
@@ -91,7 +105,11 @@ export const PromptTemplateForm = ({ form, sports, onCancel, isEditing, onSubmit
                 <FormLabel>Active</FormLabel>
               </div>
               <FormControl>
-                <Switch checked={field.value} onCheckedChange={field.onChange} />
+                <Switch 
+                  checked={field.value} 
+                  onCheckedChange={field.onChange}
+                  disabled={isDefault} // Prevent disabling system prompts
+                />
               </FormControl>
             </FormItem>
           )}
@@ -126,4 +144,3 @@ export const PromptTemplateForm = ({ form, sports, onCancel, isEditing, onSubmit
     </form>
   )
 }
-

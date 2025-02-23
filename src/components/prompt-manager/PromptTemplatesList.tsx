@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
+import { AlertCircle } from "lucide-react"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { PromptTemplateDialog } from "./PromptTemplateDialog"
 import type { Sport } from "@/types/settings"
 import type { PromptTemplate } from "./types"
@@ -45,6 +47,7 @@ export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemp
             <TableHead>Training Type</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Validation</TableHead>
+            <TableHead className="w-36">Type</TableHead>
             <TableHead className="w-24">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -62,6 +65,23 @@ export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemp
                 <Badge variant={template.is_validated ? "default" : "destructive"}>
                   {template.is_validated ? "Validated" : "Not Validated"}
                 </Badge>
+              </TableCell>
+              <TableCell>
+                {template.is_default && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Badge variant="outline" className="gap-2">
+                          <AlertCircle className="h-4 w-4" />
+                          System Default
+                        </Badge>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>This is a critical system prompt. Edit with caution.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
               </TableCell>
               <TableCell>
                 <Button variant="outline" size="sm" onClick={() => handleEdit(template)}>
