@@ -26,9 +26,11 @@ export const PromptTemplateDialog = ({
             sports={sports}
             onCancel={() => onOpenChange(false)}
             isEditing={!!template}
+            onSubmit={onSubmit}
           />
         </Form>
       </DialogContent>
     </Dialog>
   )
 }
+
