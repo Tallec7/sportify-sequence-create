@@ -165,3 +165,4 @@ export const usePromptTemplate = ({ template, onOpenChange }: UsePromptTemplateP
     onSubmit: handleSubmit
   }
 }
+

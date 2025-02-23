@@ -1,13 +1,15 @@
+
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
-import { Shield, TestTube } from "lucide-react"
+import { Shield, TestTube, CloudCog, Sparkles, Zap, ChevronsUpDown } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
+import { Separator } from "@/components/ui/separator"
 import { PromptTemplateDialog } from "./PromptTemplateDialog"
 import { supabase } from "@/integrations/supabase/client"
 import type { Sport } from "@/types/settings"
@@ -21,6 +23,32 @@ interface PromptTemplatesListProps {
 
 type SortField = 'mode' | 'updated_at' | 'sport'
 type SortOrder = 'asc' | 'desc'
+
+const getModeIcon = (mode: string) => {
+  switch (mode) {
+    case 'express':
+      return <Zap className="h-4 w-4" />
+    case 'expert':
+      return <CloudCog className="h-4 w-4" />
+    case 'creativity':
+      return <Sparkles className="h-4 w-4" />
+    default:
+      return null
+  }
+}
+
+const getModeDescription = (mode: string) => {
+  switch (mode) {
+    case 'express':
+      return "Mode rapide - Génération de séance simplifiée"
+    case 'expert':
+      return "Mode expert - Génération détaillée et optimisée"
+    case 'creativity':
+      return "Mode créatif - Génération innovante"
+    default:
+      return ""
+  }
+}
 
 export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemplatesListProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -44,8 +72,8 @@ export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemp
   const handleTest = async (template: PromptTemplate) => {
     try {
       toast({
-        title: "Testing prompt...",
-        description: `Sending test request for ${template.training_type}`
+        title: "Test du prompt en cours...",
+        description: `Envoi d'une requête test pour ${template.training_type}`
       })
       
       const { error } = await supabase.functions.invoke('generate-session', {
@@ -59,15 +87,15 @@ export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemp
       if (error) throw error
 
       toast({
-        title: "Test successful",
-        description: "The prompt was tested successfully"
+        title: "Test réussi",
+        description: "Le prompt a été testé avec succès"
       })
     } catch (error) {
-      console.error('Test error:', error)
+      console.error('Erreur de test:', error)
       toast({
         variant: "destructive",
-        title: "Test failed",
-        description: error.message || "An error occurred while testing the prompt"
+        title: "Échec du test",
+        description: error.message || "Une erreur s'est produite lors du test du prompt"
       })
     }
   }
@@ -109,17 +137,17 @@ export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemp
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-4 flex-1">
           <Input
-            placeholder="Search prompts..."
+            placeholder="Rechercher des prompts..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="max-w-xs"
           />
           <Select value={filterSport} onValueChange={setFilterSport}>
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filter by sport" />
+              <SelectValue placeholder="Filtrer par sport" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Sports</SelectItem>
+              <SelectItem value="all">Tous les sports</SelectItem>
               {sports.map((sport) => (
                 <SelectItem key={sport.id} value={sport.id}>
                   {sport.label}
@@ -129,29 +157,34 @@ export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemp
           </Select>
           <Select value={filterMode} onValueChange={setFilterMode}>
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filter by mode" />
+              <SelectValue placeholder="Filtrer par mode" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Modes</SelectItem>
+              <SelectItem value="all">Tous les modes</SelectItem>
               <SelectItem value="express">Express</SelectItem>
               <SelectItem value="expert">Expert</SelectItem>
-              <SelectItem value="creativity">Creativity</SelectItem>
+              <SelectItem value="creativity">Créativité</SelectItem>
             </SelectContent>
           </Select>
         </div>
-        <Button onClick={handleCreate}>Create Template</Button>
+        <Button onClick={handleCreate}>Créer un modèle</Button>
       </div>
 
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead>Sport</TableHead>
-            <TableHead className="cursor-pointer" onClick={() => {
-              setSortField('mode')
-              setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
-            }}>Mode {sortField === 'mode' && (sortOrder === 'asc' ? '↑' : '↓')}</TableHead>
-            <TableHead>Training Type</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead 
+              className="cursor-pointer" 
+              onClick={() => {
+                setSortField('mode')
+                setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
+              }}
+            >
+              Mode {sortField === 'mode' && <ChevronsUpDown className="h-4 w-4 inline ml-1" />}
+            </TableHead>
+            <TableHead>Type de séance</TableHead>
+            <TableHead>Statut</TableHead>
             <TableHead>Validation</TableHead>
             <TableHead>Type</TableHead>
             <TableHead className="w-[200px]">Actions</TableHead>
@@ -163,21 +196,34 @@ export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemp
               key={template.id}
               className={template.is_default ? "bg-red-50" : undefined}
             >
-              <TableCell>{template.sports?.label || "All Sports"}</TableCell>
+              <TableCell>{template.sports?.label || "Tous les sports"}</TableCell>
               <TableCell>
-                <Badge variant="secondary" className="capitalize">
-                  {template.mode}
-                </Badge>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Badge 
+                        variant="secondary" 
+                        className="gap-2 capitalize"
+                      >
+                        {getModeIcon(template.mode)}
+                        {template.mode}
+                      </Badge>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{getModeDescription(template.mode)}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </TableCell>
               <TableCell>{template.training_type}</TableCell>
               <TableCell>
                 <Badge variant={template.is_active ? "default" : "secondary"}>
-                  {template.is_active ? "Active" : "Inactive"}
+                  {template.is_active ? "Actif" : "Inactif"}
                 </Badge>
               </TableCell>
               <TableCell>
                 <Badge variant={template.is_validated ? "default" : "destructive"}>
-                  {template.is_validated ? "Validated" : "Not Validated"}
+                  {template.is_validated ? "Validé" : "Non validé"}
                 </Badge>
               </TableCell>
               <TableCell>
@@ -190,11 +236,11 @@ export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemp
                           className="gap-2 bg-red-50"
                         >
                           <Shield className="h-4 w-4" />
-                          Protected
+                          Protégé
                         </Badge>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>This is a critical system prompt that cannot be deleted.</p>
+                        <p>Ce prompt système est critique et ne peut pas être supprimé.</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>

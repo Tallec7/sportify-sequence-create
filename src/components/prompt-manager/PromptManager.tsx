@@ -26,16 +26,16 @@ export const PromptManager = () => {
     <div className="container mx-auto py-8">
       <Card>
         <CardHeader>
-          <CardTitle>Prompt Manager</CardTitle>
+          <CardTitle>Gestionnaire de prompts</CardTitle>
           <CardDescription>
-            Manage and customize OpenAI prompts for session generation
+            Gérez et personnalisez les prompts OpenAI pour la génération de séances
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="templates">
             <TabsList>
-              <TabsTrigger value="templates">Templates</TabsTrigger>
-              <TabsTrigger value="history">History</TabsTrigger>
+              <TabsTrigger value="templates">Modèles</TabsTrigger>
+              <TabsTrigger value="history">Historique</TabsTrigger>
             </TabsList>
             <TabsContent value="templates">
               <PromptTemplatesList templates={templates} sports={sports} isLoading={isLoading} />
@@ -49,3 +49,4 @@ export const PromptManager = () => {
     </div>
   )
 }
+
