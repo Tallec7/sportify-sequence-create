@@ -31,7 +31,8 @@ const formSchema = z.object({
   training_type: z.string().min(1, "Training type is required"),
   prompt_text: z.string().min(1, "Prompt text is required"),
   is_active: z.boolean(),
-  is_validated: z.boolean()
+  is_validated: z.boolean(),
+  is_default: z.boolean().optional()
 })
 
 type FormValues = z.infer<typeof formSchema>
@@ -43,6 +44,7 @@ interface PromptTemplateDialogProps {
     training_type: string
     is_active: boolean
     is_validated: boolean
+    is_default?: boolean
     sport_id: string | null
   } | null
   sports: Sport[]
@@ -63,10 +65,11 @@ export const PromptTemplateDialog = ({
     resolver: zodResolver(formSchema),
     defaultValues: template || {
       sport_id: null,
-      training_type: "",
-      prompt_text: "",
+      training_type: "session_generation",
+      prompt_text: "Créer une séance d'entraînement complète avec...",
       is_active: true,
-      is_validated: false
+      is_validated: false,
+      is_default: !template
     }
   })
 
@@ -76,7 +79,7 @@ export const PromptTemplateDialog = ({
         // Update existing template
         const { error } = await supabase
           .from("prompt_templates")
-          .update(values)
+          .update({ ...values, updated_at: new Date().toISOString() })
           .eq("id", template.id)
 
         if (error) throw error
@@ -84,7 +87,7 @@ export const PromptTemplateDialog = ({
         // Create new template
         const { error } = await supabase
           .from("prompt_templates")
-          .insert([values as PromptTemplate])
+          .insert([{ ...values, created_at: new Date().toISOString() }])
 
         if (error) throw error
       }

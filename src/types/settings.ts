@@ -41,7 +41,7 @@ export interface AgeCategory {
 export type AgeCategoryType = "U9" | "U11" | "U13" | "U15" | "U17" | "U19" | "Senior"
 
 // Define tactical concept enum type to match database
-export type TacticalConceptEnum = Database["public"]["Enums"]["tactical_concept_enum"]
+export type TacticalConceptEnum = "montee_de_balle" | "repli_defensif" | "contre_attaque" | "attaque_placee" | "defense_alignee" | "defense_etagee"
 
 export type SessionFormData = {
   title: string
@@ -64,3 +64,17 @@ export type SessionFormData = {
   updated_at?: string
   user_id?: string
 }
+
+// Ajout du type pour les prompts
+export type PromptTemplate = {
+  id: string
+  sport_id: string | null
+  training_type: string
+  prompt_text: string
+  is_active: boolean
+  is_validated: boolean
+  is_default?: boolean
+  created_at?: string
+  updated_at?: string
+}
+
