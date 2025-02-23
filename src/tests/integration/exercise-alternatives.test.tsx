@@ -5,7 +5,6 @@ import { BrowserRouter } from "react-router-dom"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ExerciseAlternatives } from "@/components/sessions/ExerciseAlternatives"
 import { Exercise } from "@/types/sequence"
-import { SessionFormData } from "@/types/settings"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -37,18 +36,11 @@ describe("Exercise Alternatives Generation", () => {
     objective: "Test objective"
   }
 
-  const mockSessionData: SessionFormData = {
-    title: "Test Session",
-    description: "Test description",
+  const mockSessionContext = {
     sport: "handball",
     level: "débutant",
-    duration: 60,
-    participants_min: 1,
-    participants_max: 10,
     age_category: "U13",
-    intensity_level: "medium",
-    cycle_id: null,
-    objective: "Test objective",
+    intensity_level: "medium"
   }
 
   beforeEach(() => {
@@ -75,7 +67,7 @@ describe("Exercise Alternatives Generation", () => {
     renderWithProviders(
       <ExerciseAlternatives
         exercise={mockExercise}
-        sessionData={mockSessionData}
+        sessionContext={mockSessionContext}
         onSelectAlternative={handleSelectAlternative}
       />
     )
@@ -98,7 +90,7 @@ describe("Exercise Alternatives Generation", () => {
     renderWithProviders(
       <ExerciseAlternatives
         exercise={mockExercise}
-        sessionData={mockSessionData}
+        sessionContext={mockSessionContext}
         onSelectAlternative={handleSelectAlternative}
       />
     )

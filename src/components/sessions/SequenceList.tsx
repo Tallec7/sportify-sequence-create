@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button"
 import { Sequence } from "@/types/sequence"
 import { ExerciseForm } from "./ExerciseForm"
@@ -93,24 +94,7 @@ export const SequenceList = ({
                 )}
               </div>
               {selectedSequenceId === sequence.id && sequence.id && (
-                <ExerciseForm
-                  onSave={(exercise) => {/* handle save */}}
-                  onCancel={() => {/* handle cancel */}}
-                  sequenceId={sequence.id}
-                  sessionData={{
-                    title: "",
-                    description: "",
-                    sport: "",
-                    level: "",
-                    duration: 0,
-                    participants_min: 0,
-                    participants_max: 0,
-                    age_category: "U13",
-                    intensity_level: "medium",
-                    cycle_id: null,
-                    objective: ""
-                  }}
-                />
+                <ExerciseForm sequenceId={sequence.id} />
               )}
             </Reorder.Item>
           ))}

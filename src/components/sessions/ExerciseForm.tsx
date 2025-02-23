@@ -1,103 +1,188 @@
-
-import { useState } from "react"
+import React, { useState, useCallback } from "react"
 import { Exercise } from "@/types/sequence"
-import { ExerciseAlternatives } from "@/components/sessions/ExerciseAlternatives"
-import { SessionFormData } from "@/types/settings"
+import { useExerciseMutation } from "@/hooks/mutations/useExerciseMutation"
+import { useExerciseDeleteMutation } from "@/hooks/mutations/useExerciseDeleteMutation"
+import { useExercisesQuery } from "@/hooks/queries/useExercisesQuery"
+import { useSequenceObjectivesQuery } from "@/hooks/queries/useSequenceObjectivesQuery"
+import { useSessionQuery } from "@/hooks/queries/useSessionQuery"
+import { ExerciseListItem } from "./ExerciseListItem"
+import { ExerciseFormCard } from "./ExerciseFormCard"
+import { ExerciseObjectivesList } from "./ExerciseObjectivesList"
+import { ExerciseFormProps } from "./types/exercise-form"
+import { Reorder, AnimatePresence } from "framer-motion"
+import { useExerciseOrderMutation } from "@/hooks/mutations/useExerciseOrderMutation"
+import { toast } from "@/components/ui/use-toast"
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Label } from "@/components/ui/label"
 
-interface ExerciseFormProps {
-  onSave: (exercise: Exercise) => void
-  sessionData: SessionFormData
-  onCancel: () => void
-  initialData?: Exercise
-}
+export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
+  const { data: exercises = [] } = useExercisesQuery(sequenceId)
+  const { data: objectives = [] } = useSequenceObjectivesQuery(sequenceId)
+  const exerciseMutation = useExerciseMutation(sequenceId)
+  const exerciseDeleteMutation = useExerciseDeleteMutation(sequenceId)
+  const exerciseOrderMutation = useExerciseOrderMutation(sequenceId)
+  const [localExercises, setLocalExercises] = useState(exercises)
 
-export const ExerciseForm = ({ 
-  onSave,
-  sessionData,
-  onCancel,
-  initialData
-}: ExerciseFormProps) => {
-  const [currentExercise, setCurrentExercise] = useState<Exercise>(initialData || {
-    id: "",
+  const [editingExercise, setEditingExercise] = useState<Exercise | null>(null)
+  const [activityFilter, setActivityFilter] = useState<string>("all")
+  const [newExercise, setNewExercise] = useState<Exercise>({
+    id: '',
     title: "",
     description: "",
-    duration: 0,
+    duration: 5,
     intensity_level: "medium",
-    exercise_order: 1,
+    exercise_order: exercises.length + 1,
     activity_type: "exercise",
     objective: ""
   })
-  const [showAlternatives, setShowAlternatives] = useState(false)
 
-  const handleSave = () => {
-    onSave(currentExercise)
+  const { data: session } = useSessionQuery(undefined)
+  const sessionContext = session ? {
+    sport: session.sport,
+    level: session.level,
+    age_category: session.age_category,
+    intensity_level: session.intensity_level ?? "medium"
+  } : undefined
+
+  React.useEffect(() => {
+    setLocalExercises(exercises)
+  }, [exercises])
+
+  const filteredExercises = localExercises.filter(exercise => {
+    if (activityFilter === "all") return true
+    return exercise.activity_type === activityFilter
+  })
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!editingExercise?.objective && !newExercise.objective) {
+      toast({
+        title: "Erreur",
+        description: "L'objectif est requis pour chaque phase",
+        variant: "destructive"
+      })
+      return
+    }
+
+    if (editingExercise) {
+      await exerciseMutation.mutateAsync({
+        ...editingExercise,
+        id: editingExercise.id
+      })
+      setEditingExercise(null)
+    } else {
+      await exerciseMutation.mutateAsync(newExercise)
+      setNewExercise({
+        id: '',
+        title: "",
+        description: "",
+        duration: 5,
+        intensity_level: "medium",
+        exercise_order: exercises.length + 2,
+        activity_type: "exercise",
+        objective: ""
+      })
+    }
   }
 
+  const handleDelete = async (exerciseId: string) => {
+    if (confirm("Êtes-vous sûr de vouloir supprimer cet exercice ?")) {
+      await exerciseDeleteMutation.mutateAsync(exerciseId)
+    }
+  }
+
+  const handleEdit = (exercise: Exercise) => {
+    setEditingExercise(exercise)
+    setNewExercise({
+      id: '',
+      title: "",
+      description: "",
+      duration: 5,
+      intensity_level: "medium",
+      exercise_order: exercises.length + 1,
+      activity_type: "exercise",
+      objective: ""
+    })
+  }
+
+  const handleCancelEdit = () => {
+    setEditingExercise(null)
+  }
+
+  const debouncedUpdateOrder = useCallback(
+    async (reorderedExercises: Exercise[]) => {
+      setLocalExercises(reorderedExercises)
+      exerciseOrderMutation.mutate(reorderedExercises)
+    },
+    [exerciseOrderMutation]
+  )
+
   return (
-    <div className="space-y-8">
-      <div className="grid gap-4 md:grid-cols-2">
-        <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700">Titre</label>
-          <input
-            id="title"
-            value={currentExercise.title}
-            onChange={(e) => setCurrentExercise({ ...currentExercise, title: e.target.value })}
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50"
-          />
+    <div className="space-y-6 dark:bg-gray-900">
+      <ExerciseObjectivesList objectives={objectives} />
+
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="space-y-1.5">
+            <Label>Filtrer par type d'activité</Label>
+            <Select
+              value={activityFilter}
+              onValueChange={setActivityFilter}
+            >
+              <SelectTrigger className="w-[200px] dark:border-gray-600">
+                <SelectValue placeholder="Tous les types" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Tous les types</SelectItem>
+                <SelectItem value="exercise">Phases d'exercice</SelectItem>
+                <SelectItem value="situation">Situations de jeu</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-        <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
-          <textarea
-            id="description"
-            value={currentExercise.description}
-            onChange={(e) => setCurrentExercise({ ...currentExercise, description: e.target.value })}
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50"
-          />
-        </div>
-        <div>
-          <label htmlFor="duration" className="block text-sm font-medium text-gray-700">Durée (minutes)</label>
-          <input
-            id="duration"
-            type="number"
-            value={currentExercise.duration}
-            onChange={(e) => setCurrentExercise({ ...currentExercise, duration: Number(e.target.value) })}
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50"
-          />
-        </div>
-        <div>
-          <label htmlFor="intensity_level" className="block text-sm font-medium text-gray-700">Niveau d'intensité</label>
-          <select
-            id="intensity_level"
-            value={currentExercise.intensity_level}
-            onChange={(e) => setCurrentExercise({ ...currentExercise, intensity_level: e.target.value as "low" | "medium" | "high" })}
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50"
-          >
-            <option value="low">Faible</option>
-            <option value="medium">Moyenne</option>
-            <option value="high">Élevée</option>
-          </select>
-        </div>
+
+        <Reorder.Group 
+          axis="y" 
+          values={filteredExercises} 
+          onReorder={debouncedUpdateOrder}
+        >
+          <AnimatePresence mode="popLayout">
+            {filteredExercises.map((exercise) => (
+              <Reorder.Item
+                key={exercise.id}
+                value={exercise}
+                className="touch-none cursor-move"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.2 }}
+              >
+                <ExerciseListItem
+                  exercise={exercise}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  sessionContext={sessionContext}
+                />
+              </Reorder.Item>
+            ))}
+          </AnimatePresence>
+        </Reorder.Group>
       </div>
-      
-      {showAlternatives && (
-        <ExerciseAlternatives
-          exercise={currentExercise}
-          sessionData={sessionData}
-          onSelectAlternative={(alternative) => {
-            setCurrentExercise({
-              ...alternative,
-              id: currentExercise.id,
-              exercise_order: currentExercise.exercise_order
-            })
-            setShowAlternatives(false)
-          }}
-        />
-      )}
-      
-      <div className="flex justify-end space-x-4">
-        <button onClick={onCancel} className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-red-600 border border-transparent rounded-md shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Annuler</button>
-        <button onClick={handleSave} className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Sauvegarder</button>
-      </div>
+
+      <ExerciseFormCard
+        editingExercise={editingExercise}
+        exercise={editingExercise || newExercise}
+        onSubmit={handleSubmit}
+        onChange={editingExercise ? setEditingExercise : setNewExercise}
+        onCancelEdit={handleCancelEdit}
+      />
     </div>
   )
 }

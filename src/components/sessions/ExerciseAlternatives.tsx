@@ -12,37 +12,27 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { SessionFormData } from "@/types/settings"
 
-export interface ExerciseAlternativesProps {
+interface ExerciseAlternativesProps {
   exercise: Exercise
-  sessionData: SessionFormData
+  sessionContext: {
+    sport: string
+    level: string
+    age_category: string
+    intensity_level: string
+  }
   onSelectAlternative: (alternative: Exercise) => void
 }
 
 export const ExerciseAlternatives = ({
   exercise,
-  sessionData,
+  sessionContext,
   onSelectAlternative,
 }: ExerciseAlternativesProps) => {
   const [alternatives, setAlternatives] = useState<Exercise[]>([])
   const alternativesMutation = useExerciseAlternativesMutation()
 
   const handleGenerateAlternatives = async () => {
-    if (!sessionData?.sport || !sessionData?.level) {
-      console.error("Session data missing required fields:", sessionData)
-      return
-    }
-
-    const sessionContext = {
-      sport: sessionData.sport,
-      level: sessionData.level,
-      age_category: sessionData.age_category,
-      intensity_level: sessionData.intensity_level
-    }
-
-    console.log("Generating alternatives with context:", sessionContext)
-
     const result = await alternativesMutation.mutateAsync({
       exercise,
       sessionContext,
@@ -56,7 +46,7 @@ export const ExerciseAlternatives = ({
         <h3 className="text-lg font-semibold">Alternatives</h3>
         <Button
           onClick={handleGenerateAlternatives}
-          disabled={alternativesMutation.isPending || !sessionData?.sport || !sessionData?.level}
+          disabled={alternativesMutation.isPending}
           variant="outline"
           className="gap-2"
         >

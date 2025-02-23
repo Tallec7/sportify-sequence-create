@@ -7,7 +7,7 @@ import { ExerciseListItemProps } from "./types/exercise-form"
 import { Exercise, TacticalConcept } from "@/types/sequence"
 import { ExerciseAlternatives } from "./ExerciseAlternatives"
 
-export const ExerciseListItem = ({ exercise, onEdit, onDelete, sessionData }: ExerciseListItemProps) => {
+export const ExerciseListItem = ({ exercise, onEdit, onDelete, sessionContext }: ExerciseListItemProps & { sessionContext?: { sport: string; level: string; age_category: string; intensity_level: string } }) => {
   const [showAlternatives, setShowAlternatives] = useState(false)
 
   const handleSelectAlternative = (alternative: Exercise) => {
@@ -149,7 +149,7 @@ export const ExerciseListItem = ({ exercise, onEdit, onDelete, sessionData }: Ex
             </div>
           )}
         </div>
-        {sessionData && (
+        {sessionContext && (
           <div className="flex gap-2">
             <Button 
               variant="outline" 
@@ -178,11 +178,11 @@ export const ExerciseListItem = ({ exercise, onEdit, onDelete, sessionData }: Ex
         </div>
       </div>
 
-      {showAlternatives && sessionData && (
+      {showAlternatives && sessionContext && (
         <div className="pl-4">
           <ExerciseAlternatives
             exercise={exercise}
-            sessionData={sessionData}
+            sessionContext={sessionContext}
             onSelectAlternative={handleSelectAlternative}
           />
         </div>
@@ -190,3 +190,4 @@ export const ExerciseListItem = ({ exercise, onEdit, onDelete, sessionData }: Ex
     </div>
   )
 }
+
