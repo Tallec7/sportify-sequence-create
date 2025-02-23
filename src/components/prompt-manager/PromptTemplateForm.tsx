@@ -65,6 +65,29 @@ export const PromptTemplateForm = ({ form, sports, onCancel, isEditing, onSubmit
 
       <FormField
         control={form.control}
+        name="mode"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Mode</FormLabel>
+            <Select onValueChange={field.onChange} value={field.value}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select generation mode" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value="express">Express</SelectItem>
+                <SelectItem value="expert">Expert</SelectItem>
+                <SelectItem value="creativity">Creativity</SelectItem>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
         name="training_type"
         render={({ field }) => (
           <FormItem>

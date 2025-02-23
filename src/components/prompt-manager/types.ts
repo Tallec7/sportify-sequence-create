@@ -6,6 +6,7 @@ export type PromptTemplate = {
   id: string
   sport_id: string | null
   training_type: string
+  mode: 'express' | 'expert' | 'creativity'
   prompt_text: string
   is_active: boolean
   is_validated: boolean
@@ -20,6 +21,7 @@ export type PromptTemplate = {
 export const promptTemplateFormSchema = z.object({
   sport_id: z.string().nullable(),
   training_type: z.string().min(1, "Training type is required"),
+  mode: z.enum(['express', 'expert', 'creativity']),
   prompt_text: z.string().min(1, "Prompt text is required"),
   is_active: z.boolean(),
   is_validated: z.boolean(),
@@ -34,4 +36,3 @@ export interface PromptTemplateDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
-

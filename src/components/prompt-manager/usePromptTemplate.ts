@@ -20,6 +20,7 @@ export const usePromptTemplate = ({ template, onOpenChange }: UsePromptTemplateP
     defaultValues: {
       sport_id: template?.sport_id || null,
       training_type: template?.training_type || "",
+      mode: template?.mode || "express",
       prompt_text: template?.prompt_text || "",
       is_active: template?.is_active ?? true,
       is_validated: template?.is_validated ?? false,
@@ -38,7 +39,8 @@ export const usePromptTemplate = ({ template, onOpenChange }: UsePromptTemplateP
             ...values,
             updated_at: timestamp,
             prompt_text: values.prompt_text,
-            training_type: values.training_type
+            training_type: values.training_type,
+            mode: values.mode
           })
           .eq("id", template.id)
 
@@ -50,7 +52,8 @@ export const usePromptTemplate = ({ template, onOpenChange }: UsePromptTemplateP
             ...values,
             created_at: timestamp,
             prompt_text: values.prompt_text,
-            training_type: values.training_type
+            training_type: values.training_type,
+            mode: values.mode
           })
 
         if (error) throw error
@@ -82,4 +85,3 @@ export const usePromptTemplate = ({ template, onOpenChange }: UsePromptTemplateP
     onSubmit: handleSubmit
   }
 }
-

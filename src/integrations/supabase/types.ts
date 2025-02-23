@@ -399,6 +399,7 @@ export type Database = {
           is_active: boolean | null
           is_default: boolean | null
           is_validated: boolean | null
+          mode: string | null
           prompt_text: string
           sport_id: string | null
           training_type: string
@@ -410,6 +411,7 @@ export type Database = {
           is_active?: boolean | null
           is_default?: boolean | null
           is_validated?: boolean | null
+          mode?: string | null
           prompt_text: string
           sport_id?: string | null
           training_type: string
@@ -421,6 +423,7 @@ export type Database = {
           is_active?: boolean | null
           is_default?: boolean | null
           is_validated?: boolean | null
+          mode?: string | null
           prompt_text?: string
           sport_id?: string | null
           training_type?: string
@@ -432,6 +435,41 @@ export type Database = {
             columns: ["sport_id"]
             isOneToOne: false
             referencedRelation: "sports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prompt_test_results: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          id: string
+          template_id: string | null
+          test_input: Json
+          test_output: Json
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          template_id?: string | null
+          test_input: Json
+          test_output: Json
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          template_id?: string | null
+          test_input?: Json
+          test_output?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prompt_test_results_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "prompt_templates"
             referencedColumns: ["id"]
           },
         ]

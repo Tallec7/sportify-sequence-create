@@ -44,6 +44,7 @@ export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemp
         <TableHeader>
           <TableRow>
             <TableHead>Sport</TableHead>
+            <TableHead>Mode</TableHead>
             <TableHead>Training Type</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Validation</TableHead>
@@ -55,6 +56,11 @@ export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemp
           {templates.map((template) => (
             <TableRow key={template.id}>
               <TableCell>{template.sports?.label || "All Sports"}</TableCell>
+              <TableCell>
+                <Badge variant="secondary" className="capitalize">
+                  {template.mode}
+                </Badge>
+              </TableCell>
               <TableCell>{template.training_type}</TableCell>
               <TableCell>
                 <Badge variant={template.is_active ? "default" : "secondary"}>
