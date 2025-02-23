@@ -1,3 +1,4 @@
+
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { AddSequenceForm } from '../AddSequenceForm'
@@ -17,7 +18,9 @@ describe('AddSequenceForm', () => {
   }
 
   const defaultProps = {
-    onAdd: () => {},
+    newSequence: mockSequence,
+    setNewSequence: () => {},
+    onSubmit: () => {},
     onCancel: () => {},
     sequences: []
   }

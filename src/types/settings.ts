@@ -1,3 +1,4 @@
+
 export type AgeCategoryType = "U9" | "U11" | "U13" | "U15" | "U17" | "U19" | "Senior"
 
 export interface Level {
@@ -36,11 +37,13 @@ export interface AgeCategory {
   label: string
 }
 
-export interface TacticalConceptOption {
-  value: string
-  label: string
-  sport_id?: string
-}
+export type TacticalConcept = 
+  | "montee_de_balle"
+  | "repli_defensif" 
+  | "contre_attaque"
+  | "attaque_placee"
+  | "defense_alignee"
+  | "defense_etagee"
 
 export enum TacticalConceptEnum {
   OFFENSIVE = "offensive",
@@ -84,7 +87,7 @@ export interface SessionFormData {
   intensity_level: string
   cycle_id: string | null
   objective: string
-  tactical_concepts: string[]
+  tactical_concepts: TacticalConcept[]
   decision_making_focus: string[]
   performance_metrics: string[]
   expert_validated: boolean
@@ -92,22 +95,13 @@ export interface SessionFormData {
   objectives: SessionObjective[]
 }
 
-export interface SessionObjectivesFormProps {
-  formData: SessionFormData
-  handleSelectChange: (name: string, value: string) => void
-  handleTextChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
-}
-
-export interface SessionBasicInfoFormProps {
-  formData: SessionFormData
-  handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
-  handleSelectChange: (name: string, value: string) => void
-  handleNumberChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-}
-
 export interface SequenceListProps {
   sequences: any[]
+  selectedSequenceId: string | null
+  setSelectedSequenceId: (id: string | null) => void
   onReorder: (sequences: any[]) => void
+  onDuplicate?: (sequenceId: string) => void
+  totalDuration: number
   sessionContext?: {
     sport: string
     level: string
@@ -117,7 +111,9 @@ export interface SequenceListProps {
 }
 
 export interface AddSequenceFormProps {
-  onAdd: (sequence: any) => void
+  newSequence: any
+  setNewSequence: (sequence: any) => void
+  onSubmit: (sequence: any) => void
   onCancel: () => void
   sequences: any[]
   sessionContext?: {

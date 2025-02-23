@@ -17,7 +17,8 @@ export const SuccessCriteriaField = ({ exercise, onChange }: SuccessCriteriaFiel
       id: crypto.randomUUID(),
       exercise_id: exercise.id,
       description: "",
-      target_value: 0
+      target_value: 0,
+      unit: "" // Add the required unit property
     }
 
     onChange({

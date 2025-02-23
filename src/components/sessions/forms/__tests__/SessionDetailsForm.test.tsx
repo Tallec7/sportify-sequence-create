@@ -2,7 +2,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { SessionDetailsForm } from '../SessionDetailsForm'
-import type { SessionFormData } from '@/hooks/mutations/useSessionMutation'
+import type { SessionFormData } from '@/types/settings'
 
 describe('SessionDetailsForm', () => {
   const mockHandleSelectChange = vi.fn()
@@ -19,7 +19,13 @@ describe('SessionDetailsForm', () => {
     age_category: "U13",
     intensity_level: 'medium',
     cycle_id: null,
-    objective: "Test objective"
+    objective: "Test objective",
+    tactical_concepts: [],
+    decision_making_focus: [],
+    performance_metrics: [],
+    expert_validated: false,
+    validation_feedback: "",
+    objectives: []
   }
 
   it('renders without crashing', () => {

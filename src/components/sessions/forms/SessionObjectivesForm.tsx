@@ -13,7 +13,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox"
 import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
-import { SessionFormData } from "@/types/settings"
+import { SessionFormData, ObjectiveType } from "@/types/settings"
 
 interface SessionObjectivesFormProps {
   formData: SessionFormData
@@ -26,15 +26,14 @@ export const SessionObjectivesForm = ({
   handleSelectChange,
   handleTextChange,
 }: SessionObjectivesFormProps) => {
-  // Initialize with empty array if objectives is undefined
   const objectives = formData.objectives || []
 
-  const [newObjective, setNewObjective] = useState<Omit<(typeof objectives)[number], "id">>({
+  const [newObjective, setNewObjective] = useState({
     description: "",
     type: "technique",
     is_priority: false,
     order_index: objectives.length,
-    objective_type: "apprentissage",
+    objective_type: ObjectiveType.LEARNING,
     session_id: ""
   })
 
@@ -47,7 +46,7 @@ export const SessionObjectivesForm = ({
       type: "technique",
       is_priority: false,
       order_index: updatedObjectives.length,
-      objective_type: "apprentissage",
+      objective_type: ObjectiveType.LEARNING,
       session_id: ""
     })
   }
@@ -115,7 +114,7 @@ export const SessionObjectivesForm = ({
               <Label htmlFor="objective_type">Catégorie</Label>
               <Select
                 value={newObjective.objective_type}
-                onValueChange={(value) =>
+                onValueChange={(value: ObjectiveType) =>
                   setNewObjective({ ...newObjective, objective_type: value })
                 }
               >
@@ -123,9 +122,9 @@ export const SessionObjectivesForm = ({
                   <SelectValue placeholder="Sélectionner une catégorie" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="apprentissage">Apprentissage</SelectItem>
-                  <SelectItem value="developpement">Développement</SelectItem>
-                  <SelectItem value="perfectionnement">Perfectionnement</SelectItem>
+                  <SelectItem value={ObjectiveType.LEARNING}>Apprentissage</SelectItem>
+                  <SelectItem value={ObjectiveType.DEVELOPMENT}>Développement</SelectItem>
+                  <SelectItem value={ObjectiveType.PERFECTION}>Perfectionnement</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -154,4 +153,3 @@ export const SessionObjectivesForm = ({
     </div>
   )
 }
-

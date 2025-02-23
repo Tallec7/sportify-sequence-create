@@ -1,7 +1,7 @@
 
 import { Exercise } from "@/types/sequence"
 import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
 import {
   Select,
   SelectContent,
@@ -9,90 +9,67 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Separator } from "@/components/ui/separator"
 
 interface SituationFieldsProps {
   exercise: Exercise
   onChange: (exercise: Exercise) => void
 }
 
+type OppositionType = "none" | "passive" | "active" | "match"
+
 export const SituationFields = ({ exercise, onChange }: SituationFieldsProps) => {
-  const handleDecisionMakingFocusChange = (focus: string) => {
-    const currentFocus = exercise.decision_making_focus || []
-    const updatedFocus = currentFocus.includes(focus)
-      ? currentFocus.filter(f => f !== focus)
-      : [...currentFocus, focus]
-    onChange({ ...exercise, decision_making_focus: updatedFocus })
-  }
-
-  const handleTacticalObjectivesChange = (objective: string) => {
-    const currentObjectives = exercise.tactical_objectives || []
-    const updatedObjectives = currentObjectives.includes(objective)
-      ? currentObjectives.filter(o => o !== objective)
-      : [...currentObjectives, objective]
-    onChange({ ...exercise, tactical_objectives: updatedObjectives })
-  }
-
-  if (exercise.activity_type !== 'situation') return null
-
   return (
-    <>
-      <Separator />
-      <div className="space-y-6">
-        <div className="space-y-2">
-          <Label htmlFor="opposition_type">Type d'opposition</Label>
-          <Select
-            value={exercise.opposition_type}
-            onValueChange={(value) =>
-              onChange({ ...exercise, opposition_type: value })
-            }
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Sélectionner un type d'opposition" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none">Sans opposition</SelectItem>
-              <SelectItem value="passive">Opposition passive</SelectItem>
-              <SelectItem value="active">Opposition active</SelectItem>
-              <SelectItem value="match">Situation de match</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-4">
-          <Label>Focus sur la prise de décision</Label>
-          <div className="flex flex-wrap gap-2">
-            {["Lecture du jeu", "Prise d'information", "Choix tactiques", "Timing"].map((focus) => (
-              <Button
-                key={focus}
-                type="button"
-                variant={exercise.decision_making_focus?.includes(focus) ? "default" : "outline"}
-                onClick={() => handleDecisionMakingFocusChange(focus)}
-                size="sm"
-              >
-                {focus}
-              </Button>
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <Label>Objectifs tactiques</Label>
-          <div className="flex flex-wrap gap-2">
-            {["Conservation", "Progression", "Finition", "Transition", "Organisation défensive"].map((objective) => (
-              <Button
-                key={objective}
-                type="button"
-                variant={exercise.tactical_objectives?.includes(objective) ? "default" : "outline"}
-                onClick={() => handleTacticalObjectivesChange(objective)}
-                size="sm"
-              >
-                {objective}
-              </Button>
-            ))}
-          </div>
-        </div>
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <Label>Opposition</Label>
+        <Select
+          value={exercise.opposition_type || "none"}
+          onValueChange={(value: OppositionType) =>
+            onChange({
+              ...exercise,
+              opposition_type: value
+            })
+          }
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Type d'opposition" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="none">Sans opposition</SelectItem>
+            <SelectItem value="passive">Opposition passive</SelectItem>
+            <SelectItem value="active">Opposition active</SelectItem>
+            <SelectItem value="match">Match</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
-    </>
+
+      <div className="space-y-2">
+        <Label>Instructions des joueurs</Label>
+        <Textarea
+          value={exercise.player_instructions || ""}
+          onChange={(e) =>
+            onChange({
+              ...exercise,
+              player_instructions: e.target.value
+            })
+          }
+          placeholder="Instructions spécifiques pour les joueurs..."
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label>Instructions du coach</Label>
+        <Textarea
+          value={exercise.coach_instructions || ""}
+          onChange={(e) =>
+            onChange({
+              ...exercise,
+              coach_instructions: e.target.value
+            })
+          }
+          placeholder="Instructions spécifiques pour le coach..."
+        />
+      </div>
+    </div>
   )
 }
