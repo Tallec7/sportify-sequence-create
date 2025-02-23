@@ -1,4 +1,3 @@
-
 import { useParams } from "react-router-dom"
 import { SessionForm } from "@/components/sessions/SessionForm"
 import { SequenceForm } from "@/components/sessions/SequenceForm"
@@ -46,22 +45,13 @@ const Editor = () => {
   useEffect(() => {
     if (sessionData) {
       setFormData({
-        title: sessionData.title || "",
-        description: sessionData.description || "",
-        sport: sessionData.sport || "",
-        level: sessionData.level || "",
-        duration: sessionData.duration || 90,
-        participants_min: sessionData.participants_min || 8,
-        participants_max: sessionData.participants_max || 15,
-        age_category: sessionData.age_category || "",
-        intensity_level: sessionData.intensity_level || "",
-        cycle_id: sessionData.cycle_id || null,
-        objective: sessionData.objective || "",
+        ...sessionData,
         tactical_concepts: sessionData.tactical_concepts || [],
         decision_making_focus: sessionData.decision_making_focus || [],
         performance_metrics: sessionData.performance_metrics || [],
-        expert_validated: sessionData.expert_validated || false,
-        validation_feedback: sessionData.validation_feedback || ""
+        objective: sessionData.objective || "",
+        validation_feedback: sessionData.validation_feedback || "",
+        expert_validated: sessionData.expert_validated || false
       })
     }
   }, [sessionData])
