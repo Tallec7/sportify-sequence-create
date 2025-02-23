@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { type SessionFormData } from "@/hooks/mutations/useSessionMutation"
+import { type SessionFormData } from "@/types/settings"
 import { useLevelsQuery } from "@/hooks/queries/useLevelsQuery"
 import { useIntensityLevelsQuery } from "@/hooks/queries/useIntensityLevelsQuery"
 import { useAgeCategoriesQuery } from "@/hooks/queries/useAgeCategoriesQuery"
