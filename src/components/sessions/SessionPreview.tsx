@@ -57,7 +57,7 @@ export const SessionPreview = ({
   // Make sure that we don't try to render undefined or null values
   const displayValue = (value: string | number | undefined | null) => {
     if (value === undefined || value === null) return ''
-    return value
+    return String(value) // Convert any value to string
   }
 
   return (
@@ -119,7 +119,7 @@ export const SessionPreview = ({
                 <Input
                   type="number"
                   name="duration"
-                  value={displayValue(session.duration)}
+                  value={session.duration}
                   onChange={handleChange}
                 />
               </div>
