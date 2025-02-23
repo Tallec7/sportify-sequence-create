@@ -5,6 +5,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
+import { useSportsQuery } from "@/hooks/queries/useSportsQuery"
+import { useLevelsQuery } from "@/hooks/queries/useLevelsQuery"
+import { useIntensityLevelsQuery } from "@/hooks/queries/useIntensityLevelsQuery"
+import { useAgeCategoriesQuery } from "@/hooks/queries/useAgeCategoriesQuery"
 
 interface SessionExpertFormProps {
   onGenerate: (answers: any) => void
@@ -12,14 +16,19 @@ interface SessionExpertFormProps {
 }
 
 export const SessionExpertForm = ({ onGenerate, isLoading }: SessionExpertFormProps) => {
+  const sports = useSportsQuery()
+  const levels = useLevelsQuery()
+  const intensityLevels = useIntensityLevelsQuery()
+  const { data: ageCategories = [] } = useAgeCategoriesQuery()
+
   const [answers, setAnswers] = useState({
     sport: "",
     level: "",
     participants: "10",
     duration: "60",
     objectives: "",
-    intensity: "medium",
-    ageCategory: "U13"
+    intensity: "",
+    ageCategory: ""
   })
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -40,9 +49,11 @@ export const SessionExpertForm = ({ onGenerate, isLoading }: SessionExpertFormPr
               <SelectValue placeholder="Choisir un sport" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="football">Football</SelectItem>
-              <SelectItem value="basketball">Basketball</SelectItem>
-              <SelectItem value="handball">Handball</SelectItem>
+              {sports.map((sport) => (
+                <SelectItem key={sport.id} value={sport.value}>
+                  {sport.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -57,9 +68,11 @@ export const SessionExpertForm = ({ onGenerate, isLoading }: SessionExpertFormPr
               <SelectValue placeholder="Choisir un niveau" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="débutant">Débutant</SelectItem>
-              <SelectItem value="intermédiaire">Intermédiaire</SelectItem>
-              <SelectItem value="avancé">Avancé</SelectItem>
+              {levels.map((level) => (
+                <SelectItem key={level.id} value={level.value}>
+                  {level.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -110,9 +123,11 @@ export const SessionExpertForm = ({ onGenerate, isLoading }: SessionExpertFormPr
               <SelectValue placeholder="Choisir l'intensité" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="low">Faible</SelectItem>
-              <SelectItem value="medium">Moyenne</SelectItem>
-              <SelectItem value="high">Élevée</SelectItem>
+              {intensityLevels.map((level) => (
+                <SelectItem key={level.id} value={level.value}>
+                  {level.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -127,11 +142,11 @@ export const SessionExpertForm = ({ onGenerate, isLoading }: SessionExpertFormPr
               <SelectValue placeholder="Choisir la catégorie" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="U9">U9</SelectItem>
-              <SelectItem value="U11">U11</SelectItem>
-              <SelectItem value="U13">U13</SelectItem>
-              <SelectItem value="U15">U15</SelectItem>
-              <SelectItem value="U17">U17</SelectItem>
+              {ageCategories.map((category) => (
+                <SelectItem key={category.id} value={category.value}>
+                  {category.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>

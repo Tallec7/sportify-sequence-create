@@ -22,7 +22,7 @@ serve(async (req) => {
     switch (mode) {
       case "express":
         systemPrompt += " Génère une séance simple et efficace basée sur les informations essentielles.";
-        userPrompt = `Crée une séance d'entraînement pour ${answers.sport} de niveau ${answers.level} avec ${answers.participants} participants, durée ${answers.duration} minutes.`;
+        userPrompt = `Crée une séance d'entraînement pour ${answers.sport}, niveau ${answers.level}, avec ${answers.participants} participants, durée ${answers.duration} minutes.`;
         break;
       case "expert":
         systemPrompt += " Crée une séance optimisée et détaillée en tenant compte de tous les paramètres.";
@@ -33,6 +33,8 @@ serve(async (req) => {
         userPrompt = `Crée une séance innovante pour ${answers.sport}, niveau ${answers.level}. Cherche des exercices créatifs et originaux en gardant l'aspect pédagogique. Durée: ${answers.duration} minutes. Style recherché: ${answers.style}`;
         break;
     }
+
+    console.log("Sending request to OpenAI with:", { systemPrompt, userPrompt });
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -49,12 +51,22 @@ serve(async (req) => {
       }),
     });
 
+    if (!response.ok) {
+      throw new Error(`OpenAI API responded with status: ${response.status}`);
+    }
+
     const data = await response.json();
+    
+    if (!data.choices?.[0]?.message?.content) {
+      throw new Error('Invalid response format from OpenAI');
+    }
+
     return new Response(JSON.stringify({ session: data.choices[0].message.content }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
   } catch (error) {
+    console.error('Error in generate-session function:', error);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
+import { useSportsQuery } from "@/hooks/queries/useSportsQuery"
+import { useLevelsQuery } from "@/hooks/queries/useLevelsQuery"
 
 interface SessionCreativityFormProps {
   onGenerate: (answers: any) => void
@@ -12,6 +14,9 @@ interface SessionCreativityFormProps {
 }
 
 export const SessionCreativityForm = ({ onGenerate, isLoading }: SessionCreativityFormProps) => {
+  const sports = useSportsQuery()
+  const levels = useLevelsQuery()
+
   const [answers, setAnswers] = useState({
     sport: "",
     level: "",
@@ -37,9 +42,11 @@ export const SessionCreativityForm = ({ onGenerate, isLoading }: SessionCreativi
               <SelectValue placeholder="Choisir un sport" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="football">Football</SelectItem>
-              <SelectItem value="basketball">Basketball</SelectItem>
-              <SelectItem value="handball">Handball</SelectItem>
+              {sports.map((sport) => (
+                <SelectItem key={sport.id} value={sport.value}>
+                  {sport.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -54,9 +61,11 @@ export const SessionCreativityForm = ({ onGenerate, isLoading }: SessionCreativi
               <SelectValue placeholder="Choisir un niveau" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="débutant">Débutant</SelectItem>
-              <SelectItem value="intermédiaire">Intermédiaire</SelectItem>
-              <SelectItem value="avancé">Avancé</SelectItem>
+              {levels.map((level) => (
+                <SelectItem key={level.id} value={level.value}>
+                  {level.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>

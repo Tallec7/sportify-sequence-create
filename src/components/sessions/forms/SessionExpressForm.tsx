@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
+import { useSportsQuery } from "@/hooks/queries/useSportsQuery"
+import { useLevelsQuery } from "@/hooks/queries/useLevelsQuery"
 
 interface SessionExpressFormProps {
   onGenerate: (answers: any) => void
@@ -11,6 +13,9 @@ interface SessionExpressFormProps {
 }
 
 export const SessionExpressForm = ({ onGenerate, isLoading }: SessionExpressFormProps) => {
+  const sports = useSportsQuery()
+  const levels = useLevelsQuery()
+  
   const [answers, setAnswers] = useState({
     sport: "",
     level: "",
@@ -35,9 +40,11 @@ export const SessionExpressForm = ({ onGenerate, isLoading }: SessionExpressForm
             <SelectValue placeholder="Choisir un sport" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="football">Football</SelectItem>
-            <SelectItem value="basketball">Basketball</SelectItem>
-            <SelectItem value="handball">Handball</SelectItem>
+            {sports.map((sport) => (
+              <SelectItem key={sport.id} value={sport.value}>
+                {sport.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
@@ -52,9 +59,11 @@ export const SessionExpressForm = ({ onGenerate, isLoading }: SessionExpressForm
             <SelectValue placeholder="Choisir un niveau" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="débutant">Débutant</SelectItem>
-            <SelectItem value="intermédiaire">Intermédiaire</SelectItem>
-            <SelectItem value="avancé">Avancé</SelectItem>
+            {levels.map((level) => (
+              <SelectItem key={level.id} value={level.value}>
+                {level.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
