@@ -35,6 +35,14 @@ export const SequenceForm = ({
     intensity_level: formData.intensity_level
   }
 
+  const handleAddSequence = async (sequence: Sequence) => {
+    await onAddSequence({
+      ...sequence,
+      session_id: sequence.id,
+    })
+    setShowAddForm(false)
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -63,13 +71,11 @@ export const SequenceForm = ({
               intensity_level: "medium",
               sequence_order: sequences.length + 1,
               exercises: [],
-              objective: ""
+              objective: "",
+              session_id: ""
             }}
             setNewSequence={() => {}}
-            onSubmit={async (sequence) => {
-              onAddSequence(sequence)
-              setShowAddForm(false)
-            }}
+            onSubmit={handleAddSequence}
             onCancel={() => setShowAddForm(false)}
             sequences={sequences}
             sessionContext={sessionContext}

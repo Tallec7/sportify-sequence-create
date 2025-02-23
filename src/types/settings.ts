@@ -1,3 +1,4 @@
+
 export type AgeCategoryType = "U9" | "U11" | "U13" | "U15" | "U17" | "U19" | "Senior"
 
 export interface Level {
@@ -78,26 +79,7 @@ export type TacticalConceptOption = {
   id: string
   value: TacticalConcept
   label: string
-}
-
-export interface SessionFormData {
-  title: string
-  description: string
-  sport: string
-  level: string
-  duration: number
-  participants_min: number
-  participants_max: number
-  age_category: AgeCategoryType
-  intensity_level: string
-  cycle_id: string | null
-  objective: string
-  tactical_concepts: TacticalConcept[]
-  decision_making_focus: string[]
-  performance_metrics: string[]
-  expert_validated: boolean
-  validation_feedback: string
-  objectives: SessionObjective[]
+  sport_id?: string
 }
 
 export interface SequenceListProps {
@@ -118,7 +100,7 @@ export interface SequenceListProps {
 export interface AddSequenceFormProps {
   newSequence: any
   setNewSequence: (sequence: any) => void
-  onSubmit: (sequence: any) => void
+  onSubmit: (sequence: any) => Promise<void>
   onCancel: () => void
   sequences: any[]
   sessionContext?: {
@@ -127,4 +109,24 @@ export interface AddSequenceFormProps {
     age_category: AgeCategoryType
     intensity_level: string
   }
+}
+
+export interface SessionFormData {
+  title: string
+  description: string
+  sport: string
+  level: string
+  duration: number
+  participants_min: number
+  participants_max: number
+  age_category: AgeCategoryType
+  intensity_level: string
+  cycle_id: string | null
+  objective: string
+  tactical_concepts: TacticalConcept[]
+  decision_making_focus: string[]
+  performance_metrics: string[]
+  expert_validated: boolean
+  validation_feedback: string
+  objectives: SessionObjective[]
 }

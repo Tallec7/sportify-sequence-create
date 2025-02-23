@@ -1,9 +1,6 @@
-
 import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
 import { supabase } from "@/integrations/supabase/client"
-import { useToast } from "@/components/ui/use-toast"
-import { Sport, TacticalConceptOption, Level, IntensityLevel, SequenceType } from "@/types/settings"
+import type { TacticalConceptOption, TacticalConcept } from "@/types/settings"
 
 export const useDropdownSettings = () => {
   const [selectedSport, setSelectedSport] = useState<string>("handball")

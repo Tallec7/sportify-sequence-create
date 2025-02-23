@@ -1,8 +1,8 @@
 
 import { render, screen, fireEvent } from "@testing-library/react"
 import { ViewSessionHeader } from "../ViewSessionHeader"
-import { vi, describe, it, expect, beforeEach } from 'vitest'
-import type { SessionFormData } from "@/hooks/mutations/useSessionMutation"
+import { vi, describe, it, expect } from 'vitest'
+import type { SessionFormData } from "@/types/settings"
 
 describe("ViewSessionHeader", () => {
   const mockFormData: SessionFormData = {
@@ -16,7 +16,13 @@ describe("ViewSessionHeader", () => {
     age_category: "Senior",
     intensity_level: "medium",
     cycle_id: null,
-    objective: "Test objective"
+    objective: "Test objective",
+    tactical_concepts: [],
+    decision_making_focus: [],
+    performance_metrics: [],
+    expert_validated: false,
+    validation_feedback: "",
+    objectives: []
   }
 
   const mockOnDelete = vi.fn()
