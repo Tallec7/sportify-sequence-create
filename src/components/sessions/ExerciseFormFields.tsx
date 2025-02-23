@@ -9,6 +9,7 @@ import { SuccessCriteriaField } from "./form-fields/SuccessCriteriaField"
 import { TechnicalProgressionsField } from "./form-fields/TechnicalProgressionsField"
 import { Separator } from "@/components/ui/separator"
 import { Label } from "@/components/ui/label"
+import { ActivityTypeEnum } from "@/types/settings"
 import {
   Select,
   SelectContent,
@@ -27,14 +28,14 @@ export const ExerciseFormFields = ({ exercise, onChange }: ExerciseFormFieldsPro
         <Label>Type d'activité</Label>
         <Select
           value={exercise.activity_type}
-          onValueChange={(value) => onChange({ ...exercise, activity_type: value })}
+          onValueChange={(value: ActivityTypeEnum) => onChange({ ...exercise, activity_type: value })}
         >
           <SelectTrigger>
             <SelectValue placeholder="Sélectionner un type" />
           </SelectTrigger>
           <SelectContent>
             {activityTypes.map((type) => (
-              <SelectItem key={type.id} value={type.value}>
+              <SelectItem key={type.id} value={type.value as ActivityTypeEnum}>
                 {type.label}
               </SelectItem>
             ))}

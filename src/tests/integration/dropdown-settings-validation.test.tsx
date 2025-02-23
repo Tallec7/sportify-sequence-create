@@ -1,5 +1,5 @@
 
-import { describe, test, expect, beforeEach } from "vitest"
+import { describe, test, expect, beforeEach, vi } from "vitest"
 import { render, screen, waitFor } from "@testing-library/react"
 import { BrowserRouter } from "react-router-dom"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
@@ -7,6 +7,7 @@ import { SessionForm } from "@/components/sessions/SessionForm"
 import { AddSequenceForm } from "@/components/sessions/AddSequenceForm" 
 import { ExerciseForm } from "@/components/sessions/ExerciseForm"
 import { supabase } from "@/integrations/supabase/client"
+import type { AgeCategoryType } from "@/types/settings"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -49,7 +50,7 @@ describe("Dynamic Values Validation", () => {
       duration: 60,
       participants_min: 1,
       participants_max: 10,
-      age_category: "U13",
+      age_category: "U13" as AgeCategoryType,
       intensity_level: "medium",
       cycle_id: null
     }
@@ -76,7 +77,8 @@ describe("Dynamic Values Validation", () => {
       description: "",
       duration: 0,
       sequence_type: "warmup",
-      intensity_level: "medium"
+      intensity_level: "medium",
+      sequence_order: 1  // Add required field
     }
 
     renderWithProviders(
