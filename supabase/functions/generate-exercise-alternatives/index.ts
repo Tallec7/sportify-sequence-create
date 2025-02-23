@@ -15,6 +15,21 @@ serve(async (req) => {
   try {
     const { exercise, sessionContext } = await req.json();
     
+    // Validate input
+    if (!exercise || !sessionContext) {
+      throw new Error('Missing required parameters');
+    }
+
+    if (!sessionContext.sport || !sessionContext.level) {
+      throw new Error('Sport and level are required in session context');
+    }
+
+    console.log('Generating alternatives for exercise:', {
+      exerciseTitle: exercise.title,
+      sport: sessionContext.sport,
+      level: sessionContext.level
+    });
+
     const systemPrompt = `Tu es un expert en création d'exercices d'entraînement. Tu dois proposer 2-3 alternatives à l'exercice fourni en respectant les mêmes objectifs et le contexte de la séance. IMPORTANT : Ta réponse doit contenir UNIQUEMENT du JSON valide avec le format suivant, sans aucun texte avant ou après.
 
 {
@@ -57,7 +72,7 @@ Intensité globale: ${sessionContext.intensity_level}`;
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4',
+        model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
@@ -67,7 +82,8 @@ Intensité globale: ${sessionContext.intensity_level}`;
     });
 
     if (!response.ok) {
-      throw new Error(`OpenAI API a répondu avec le statut : ${response.status}`);
+      console.error('OpenAI API error:', await response.text());
+      throw new Error(`OpenAI API error: ${response.status}`);
     }
 
     const data = await response.json();
@@ -76,9 +92,9 @@ Intensité globale: ${sessionContext.intensity_level}`;
     try {
       alternatives = JSON.parse(data.choices[0].message.content);
     } catch (error) {
-      console.error("Erreur lors du parsing JSON:", error);
-      console.log("Contenu reçu:", data.choices[0].message.content);
-      throw new Error('La réponse de l\'IA n\'est pas un JSON valide');
+      console.error("Error parsing JSON:", error);
+      console.log("Content received:", data.choices[0].message.content);
+      throw new Error('Invalid JSON response from AI');
     }
 
     return new Response(JSON.stringify(alternatives), {
@@ -86,10 +102,16 @@ Intensité globale: ${sessionContext.intensity_level}`;
     });
 
   } catch (error) {
-    console.error('Erreur dans la fonction generate-exercise-alternatives:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
+    console.error('Error in generate-exercise-alternatives:', error);
+    return new Response(
+      JSON.stringify({ 
+        error: error.message,
+        details: error.stack 
+      }), 
+      {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      }
+    );
   }
 });

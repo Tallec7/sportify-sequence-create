@@ -2,6 +2,7 @@
 import { useMutation } from "@tanstack/react-query"
 import { Exercise } from "@/types/sequence"
 import { useToast } from "@/components/ui/use-toast"
+import { supabase } from "@/integrations/supabase/client"
 
 interface ExerciseAlternativesContext {
   sport: string
@@ -18,22 +19,29 @@ export const useExerciseAlternativesMutation = () => {
       exercise: Exercise, 
       sessionContext: ExerciseAlternativesContext
     }) => {
-      const response = await fetch(
-        'https://ldrowsmnqkiydtxpjhrt.supabase.co/functions/v1/generate-exercise-alternatives',
+      // Validate required fields
+      if (!sessionContext.sport || !sessionContext.level) {
+        throw new Error('Le sport et le niveau sont requis pour générer des alternatives')
+      }
+
+      // Use Supabase client to invoke the function
+      const { data, error } = await supabase.functions.invoke(
+        'generate-exercise-alternatives',
         {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ exercise, sessionContext }),
+          body: { exercise, sessionContext }
         }
       )
 
-      if (!response.ok) {
+      if (error) {
+        console.error('Edge function error:', error)
         throw new Error('Erreur lors de la génération des alternatives')
       }
 
-      return response.json()
+      if (!data?.alternatives) {
+        throw new Error('Aucune alternative n\'a été générée')
+      }
+
+      return data
     },
     onError: (error: Error) => {
       toast({
