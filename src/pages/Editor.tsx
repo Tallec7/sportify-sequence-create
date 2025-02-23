@@ -109,6 +109,7 @@ const Editor = () => {
               sequences={sequences}
               onAddSequence={handleAddSequence}
               onReorderSequences={handleReorderSequences}
+              formData={formData}
             />
           </>
         )}

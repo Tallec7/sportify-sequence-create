@@ -1,128 +1,71 @@
 
 import { useState } from "react"
-import { toast } from "@/components/ui/use-toast"
-import { supabase } from "@/integrations/supabase/client"
-import { SequenceList } from "./SequenceList"
 import { AddSequenceForm } from "./AddSequenceForm"
-import { Sequence } from "@/types/sequence"
-import { useParams } from "react-router-dom"
+import { SequenceList } from "./SequenceList"
+import { Sequence, Exercise } from "@/types/sequence"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { SessionFormData } from "@/types/settings"
 
 interface SequenceFormProps {
   sequences: Sequence[]
   onAddSequence: (sequence: Sequence) => void
   onReorderSequences: (sequences: Sequence[]) => void
+  formData: SessionFormData
 }
 
 export const SequenceForm = ({
   sequences,
   onAddSequence,
-  onReorderSequences
+  onReorderSequences,
+  formData
 }: SequenceFormProps) => {
-  const { id: sessionId } = useParams()
-  const [selectedSequenceId, setSelectedSequenceId] = useState<string | null>(null)
-  const [newSequence, setNewSequence] = useState<Sequence>({
-    title: "",
-    description: "",
-    duration: 15,
-    sequence_type: "main",
-    intensity_level: "medium",
-    sequence_order: sequences.length + 1,
-    objective: "À définir"
-  })
+  const [showAddForm, setShowAddForm] = useState(false)
 
-  const totalDuration = sequences.reduce((sum, sequence) => sum + sequence.duration, 0)
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    const { data: { session } } = await supabase.auth.getSession()
-    
-    if (!session) {
-      toast({
-        variant: "destructive",
-        title: "Non autorisé",
-        description: "Vous devez être connecté pour ajouter une séquence.",
-      })
-      return
+  const handleExerciseAlternatives = (exercise: Exercise) => {
+    return {
+      sport: formData.sport,
+      level: formData.level,
+      age_category: formData.age_category,
+      intensity_level: formData.intensity_level
     }
-
-    if (!["warmup", "main", "cooldown"].includes(newSequence.sequence_type)) {
-      toast({
-        variant: "destructive",
-        title: "Type de séquence invalide",
-        description: "Le type de séquence doit être 'Échauffement', 'Principal' ou 'Retour au calme'.",
-      })
-      return
-    }
-
-    if (!sessionId) {
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Impossible d'ajouter une séquence sans session associée.",
-      })
-      return
-    }
-
-    try {
-      console.log("Tentative d'ajout de séquence avec:", {
-        ...newSequence,
-        session_id: sessionId,
-      })
-
-      onAddSequence(newSequence)
-
-      setNewSequence({
-        title: "",
-        description: "",
-        duration: 15,
-        sequence_type: "main",
-        intensity_level: "medium",
-        sequence_order: sequences.length + 2,
-        objective: "À définir"
-      })
-    } catch (error: any) {
-      console.error("Error in handleSubmit:", error)
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Une erreur est survenue lors de l'ajout de la séquence. Veuillez réessayer.",
-      })
-    }
-  }
-
-  const handleReorderSequences = (reorderedSequences: Sequence[]) => {
-    const updatedSequences = reorderedSequences.map((sequence, index) => ({
-      ...sequence,
-      sequence_order: index + 1,
-    }))
-    onReorderSequences(updatedSequences)
   }
 
   return (
-    <div className="space-y-8">
-      <div className="rounded-xl border bg-card p-8 shadow-sm">
-        <div className="mb-6">
-          <h2 className="text-2xl font-semibold">Séquences</h2>
-          <p className="text-muted-foreground">
-            Ajoutez et organisez les séquences de votre séance
-          </p>
-        </div>
-
+    <Card>
+      <CardHeader>
+        <CardTitle>Séquences</CardTitle>
+        <CardDescription>
+          Ajoutez et organisez les séquences de votre séance
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
         <SequenceList
           sequences={sequences}
-          selectedSequenceId={selectedSequenceId}
-          setSelectedSequenceId={setSelectedSequenceId}
-          onReorder={handleReorderSequences}
-          totalDuration={totalDuration}
+          onReorder={onReorderSequences}
+          sessionContext={handleExerciseAlternatives({})}
         />
-
-        <AddSequenceForm
-          newSequence={newSequence}
-          setNewSequence={setNewSequence}
-          onSubmit={handleSubmit}
-        />
-      </div>
-    </div>
+        {showAddForm ? (
+          <AddSequenceForm
+            onAdd={onAddSequence}
+            onCancel={() => setShowAddForm(false)}
+            sequences={sequences}
+            sessionContext={handleExerciseAlternatives({})}
+          />
+        ) : (
+          <button
+            onClick={() => setShowAddForm(true)}
+            className="w-full p-4 border-2 border-dashed rounded-lg text-muted-foreground hover:text-foreground hover:border-foreground transition-colors"
+          >
+            Ajouter une séquence
+          </button>
+        )}
+      </CardContent>
+    </Card>
   )
 }

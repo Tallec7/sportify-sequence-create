@@ -1,155 +1,94 @@
 
-import { useState } from "react"
-import { Alert } from "@/components/ui/alert"
-import { type SessionFormData } from "@/hooks/mutations/useSessionMutation"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { SessionDetailsForm } from "./forms/SessionDetailsForm"
+import { SessionFormData } from "@/types/settings"
 import { SessionBasicInfoForm } from "./forms/SessionBasicInfoForm"
+import { SessionDetailsForm } from "./forms/SessionDetailsForm"
+import { SessionObjectivesForm } from "./forms/SessionObjectivesForm"
 import { SessionParticipantsForm } from "./forms/SessionParticipantsForm"
-import { SessionModeToggle } from "./forms/SessionModeToggle"
-import { SessionAISelector, type AIMode } from "./forms/SessionAISelector"
-import { SessionExpressForm } from "./forms/SessionExpressForm"
-import { SessionExpertForm } from "./forms/SessionExpertForm"
-import { SessionCreativityForm } from "./forms/SessionCreativityForm"
-import { SessionObjectiveField } from "./forms/fields/SessionObjectiveField"
-import { useSessionGeneration } from "./hooks/useSessionGeneration"
-import { useFormHandlers } from "./hooks/useFormHandlers"
-import { validateFormData } from "./utils/formValidation"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 interface SessionFormProps {
+  onSave: () => void
   formData: SessionFormData
   setFormData: (formData: SessionFormData) => void
-  onSave: () => void
 }
 
-export const SessionForm = ({
-  formData,
-  setFormData,
-  onSave,
-}: SessionFormProps) => {
-  const [isAdvancedMode, setIsAdvancedMode] = useState(false)
-  const [aiMode, setAIMode] = useState<AIMode>("manual")
-  
-  const {
-    isGenerating,
-    generatedSession,
-    handleGenerate,
-    setGeneratedSession
-  } = useSessionGeneration(formData, setFormData)
-
-  const {
-    handleInputChange,
-    handleNumberChange,
-    handleSelectChange,
-  } = useFormHandlers(setFormData)
-
-  const handleModeChange = (advanced: boolean) => {
-    setIsAdvancedMode(advanced)
-    if (!advanced) {
-      setAIMode("manual")
-      setGeneratedSession(null)
-    }
+export const SessionForm = ({ formData, setFormData }: SessionFormProps) => {
+  // Handlers for form changes
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData({
+      ...formData,
+      [name]: value,
+    })
   }
 
-  const handleAIModeSelect = (mode: AIMode) => {
-    setAIMode(mode)
-    setGeneratedSession(null)
-    if (mode !== "manual") {
-      setIsAdvancedMode(true)
-    }
+  const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setFormData({
+      ...formData,
+      [name]: Number(value),
+    })
   }
 
-  const handleSave = () => {
-    if (!validateFormData(formData)) {
-      return
-    }
-    onSave()
+  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData({
+      ...formData,
+      [name]: value,
+    })
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Détails de la séance</CardTitle>
-        <CardDescription>
-          Renseignez les informations générales de la séance.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <SessionModeToggle
-          isAdvancedMode={isAdvancedMode}
-          onModeChange={handleModeChange}
-        />
-
-        {isAdvancedMode && (
-          <SessionAISelector
-            selectedMode={aiMode}
-            onModeSelect={handleAIModeSelect}
-          />
-        )}
-
-        {aiMode === "express" && (
-          <SessionExpressForm
-            onGenerate={handleGenerate}
-            isLoading={isGenerating}
-          />
-        )}
-
-        {aiMode === "expert" && (
-          <SessionExpertForm
-            onGenerate={handleGenerate}
-            isLoading={isGenerating}
-          />
-        )}
-
-        {aiMode === "creativity" && (
-          <SessionCreativityForm
-            onGenerate={handleGenerate}
-            isLoading={isGenerating}
-          />
-        )}
-
-        {generatedSession && (
-          <Alert className="my-4">
-            <h3 className="font-semibold mb-2">Séance générée :</h3>
-            <div className="whitespace-pre-wrap">{generatedSession}</div>
-          </Alert>
-        )}
-
-        <SessionBasicInfoForm
-          formData={formData}
-          handleChange={handleInputChange}
-          handleSelectChange={handleSelectChange}
-          handleNumberChange={handleNumberChange}
-        />
-        
-        <SessionObjectiveField
-          value={formData.objective}
-          onChange={handleInputChange}
-        />
-        
-        {(isAdvancedMode || aiMode === "expert") && (
-          <SessionParticipantsForm
+    <div className="space-y-8">
+      <Card>
+        <CardHeader>
+          <CardTitle>Informations de base</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <SessionBasicInfoForm
             formData={formData}
-            handleNumberChange={handleNumberChange}
+            handleSelectChange={handleSelectChange}
+            handleTextChange={handleTextChange}
           />
-        )}
+        </CardContent>
+      </Card>
 
-        {(isAdvancedMode || aiMode !== "express") && (
+      <Card>
+        <CardHeader>
+          <CardTitle>Détails de la séance</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
           <SessionDetailsForm
             formData={formData}
             handleSelectChange={handleSelectChange}
             handleNumberChange={handleNumberChange}
           />
-        )}
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Participants</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <SessionParticipantsForm
+            formData={formData}
+            handleNumberChange={handleNumberChange}
+          />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Objectifs</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <SessionObjectivesForm
+            formData={formData}
+            handleSelectChange={handleSelectChange}
+            handleTextChange={handleTextChange}
+          />
+        </CardContent>
+      </Card>
+    </div>
   )
 }
-
-export type { SessionFormData } from "@/hooks/mutations/useSessionMutation"
