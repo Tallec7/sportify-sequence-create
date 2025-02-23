@@ -1,4 +1,3 @@
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.1';
@@ -26,17 +25,19 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const { mode, answers } = await req.json();
+    const { mode = 'express', answers } = await req.json();
     const templateType = `session_generation_${mode}`;
+    const sportId = answers.sport || null;
     
-    let systemPrompt = await getPromptFromCache(supabase, templateType);
+    console.log('Paramètres de génération:', { mode, templateType, sportId, answers });
+    
+    let systemPrompt = await getPromptFromCache(supabase, templateType, mode, sportId);
 
     if (!systemPrompt) {
-      console.warn(`Using fallback prompt for mode: ${mode}`);
+      console.warn(`Utilisation du prompt de secours pour le mode: ${mode}`);
       systemPrompt = fallbackPrompts[mode];
       
-      // Log the error
-      const { error: logError } = await supabase
+      await supabase
         .from('prompt_errors')
         .insert({
           training_type: templateType,
@@ -44,13 +45,10 @@ serve(async (req) => {
           error_type: 'template_not_found',
           details: {
             answers: answers,
+            sport: sportId,
             timestamp: new Date().toISOString()
           }
         });
-
-      if (logError) {
-        console.error('Failed to log prompt error:', logError);
-      }
     }
 
     let userPrompt = "";
@@ -84,7 +82,6 @@ serve(async (req) => {
 
     if (!response.ok) {
       const error = await response.text();
-      // Log generation error
       await supabase
         .from('prompt_errors')
         .insert({
@@ -106,7 +103,6 @@ serve(async (req) => {
     try {
       sessionData = JSON.parse(data.choices[0].message.content);
     } catch (error) {
-      // Log parsing error
       await supabase
         .from('prompt_errors')
         .insert({
@@ -125,7 +121,6 @@ serve(async (req) => {
     }
     
     if (!sessionData.title || !sessionData.sport || !sessionData.sequences) {
-      // Log validation error
       await supabase
         .from('prompt_errors')
         .insert({
