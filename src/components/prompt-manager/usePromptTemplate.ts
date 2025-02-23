@@ -4,18 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useToast } from "@/components/ui/use-toast"
 import { supabase } from "@/integrations/supabase/client"
-import { promptTemplateFormSchema, type PromptTemplateFormValues } from "./types"
+import { promptTemplateFormSchema, type PromptTemplateFormValues, type PromptTemplate } from "./types"
 
 interface UsePromptTemplateProps {
-  template: {
-    id: string
-    prompt_text: string
-    training_type: string
-    is_active: boolean
-    is_validated: boolean
-    is_default?: boolean
-    sport_id: string | null
-  } | null
+  template: PromptTemplate | null
   onOpenChange: (open: boolean) => void
 }
 

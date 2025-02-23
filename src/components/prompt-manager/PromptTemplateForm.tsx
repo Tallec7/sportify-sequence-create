@@ -18,7 +18,7 @@ interface PromptTemplateFormProps {
 
 export const PromptTemplateForm = ({ form, sports, onCancel, isEditing }: PromptTemplateFormProps) => {
   return (
-    <form onSubmit={form.handleSubmit((values) => form.handleSubmit(values))} className="space-y-4">
+    <form onSubmit={form.handleSubmit(form.handleSubmit)} className="space-y-4">
       <FormField
         control={form.control}
         name="sport_id"

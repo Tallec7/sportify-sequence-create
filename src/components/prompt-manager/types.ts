@@ -12,6 +12,9 @@ export type PromptTemplate = {
   created_at?: string
   updated_at?: string
   is_default?: boolean
+  sports?: {
+    label: string
+  } | null
 }
 
 export const promptTemplateFormSchema = z.object({
@@ -26,15 +29,7 @@ export const promptTemplateFormSchema = z.object({
 export type PromptTemplateFormValues = z.infer<typeof promptTemplateFormSchema>
 
 export interface PromptTemplateDialogProps {
-  template: {
-    id: string
-    prompt_text: string
-    training_type: string
-    is_active: boolean
-    is_validated: boolean
-    is_default?: boolean
-    sport_id: string | null
-  } | null
+  template: PromptTemplate | null
   sports: Sport[]
   open: boolean
   onOpenChange: (open: boolean) => void
