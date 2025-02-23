@@ -12,9 +12,15 @@ import { LevelsList } from "@/components/dropdown-settings/LevelsList"
 import { SequenceTypesList } from "@/components/dropdown-settings/SequenceTypesList"
 import { ProgressionLevelsList } from "@/components/dropdown-settings/progression-levels/ProgressionLevelsList"
 import { Badge } from "@/components/ui/badge"
+import { useIntensityLevelsQuery } from "@/hooks/queries/useIntensityLevelsQuery"
+import { useLevelsQuery } from "@/hooks/queries/useLevelsQuery"
+import { useSequenceTypesQuery } from "@/hooks/queries/useSequenceTypesQuery"
 
 export const SettingsList = () => {
   const [activeItem, setActiveItem] = useState<string | undefined>()
+  const { data: intensityLevels = [] } = useIntensityLevelsQuery()
+  const { data: levels = [] } = useLevelsQuery()
+  const { data: sequenceTypes = [] } = useSequenceTypesQuery()
 
   const handleItemChange = (value: string) => {
     setActiveItem(value === activeItem ? undefined : value)
@@ -37,7 +43,13 @@ export const SettingsList = () => {
         </AccordionTrigger>
         <AccordionContent>
           <SettingsGroup title="Gestion des niveaux d'intensité">
-            <IntensityLevelsList />
+            <IntensityLevelsList 
+              intensityLevels={intensityLevels} 
+              onIntensityLevelsChange={() => {
+                // This will trigger a refetch of the intensity levels
+                void useIntensityLevelsQuery().refetch()
+              }}
+            />
           </SettingsGroup>
         </AccordionContent>
       </AccordionItem>
@@ -51,7 +63,13 @@ export const SettingsList = () => {
         </AccordionTrigger>
         <AccordionContent>
           <SettingsGroup title="Gestion des niveaux de difficulté">
-            <LevelsList />
+            <LevelsList 
+              levels={levels} 
+              onLevelsChange={() => {
+                // This will trigger a refetch of the levels
+                void useLevelsQuery().refetch()
+              }}
+            />
           </SettingsGroup>
         </AccordionContent>
       </AccordionItem>
@@ -65,7 +83,13 @@ export const SettingsList = () => {
         </AccordionTrigger>
         <AccordionContent>
           <SettingsGroup title="Gestion des types de séquence">
-            <SequenceTypesList />
+            <SequenceTypesList 
+              sequenceTypes={sequenceTypes} 
+              onSequenceTypesChange={() => {
+                // This will trigger a refetch of the sequence types
+                void useSequenceTypesQuery().refetch()
+              }}
+            />
           </SettingsGroup>
         </AccordionContent>
       </AccordionItem>
