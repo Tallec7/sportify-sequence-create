@@ -19,16 +19,16 @@ export const SessionExpertForm = ({ onGenerate, isLoading }: SessionExpertFormPr
   const sports = useSportsQuery()
   const levels = useLevelsQuery()
   const intensityLevels = useIntensityLevelsQuery()
-  const { data: ageCategories = [] } = useAgeCategoriesQuery()
-
+  const ageCategories = useAgeCategoriesQuery()
+  
   const [answers, setAnswers] = useState({
     sport: "",
     level: "",
     participants: "10",
     duration: "60",
     objectives: "",
-    intensity: "",
-    ageCategory: ""
+    intensity: "medium",
+    ageCategory: "U13"
   })
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -103,15 +103,6 @@ export const SessionExpertForm = ({ onGenerate, isLoading }: SessionExpertFormPr
         </div>
       </div>
 
-      <div className="space-y-2">
-        <Label>Objectifs de la séance</Label>
-        <Textarea
-          value={answers.objectives}
-          onChange={(e) => setAnswers({...answers, objectives: e.target.value})}
-          placeholder="Décrivez les objectifs principaux de la séance..."
-        />
-      </div>
-
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label>Intensité</Label>
@@ -123,9 +114,9 @@ export const SessionExpertForm = ({ onGenerate, isLoading }: SessionExpertFormPr
               <SelectValue placeholder="Choisir l'intensité" />
             </SelectTrigger>
             <SelectContent>
-              {intensityLevels.map((level) => (
-                <SelectItem key={level.id} value={level.value}>
-                  {level.label}
+              {intensityLevels.map((intensity) => (
+                <SelectItem key={intensity.id} value={intensity.value}>
+                  {intensity.label}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -150,6 +141,15 @@ export const SessionExpertForm = ({ onGenerate, isLoading }: SessionExpertFormPr
             </SelectContent>
           </Select>
         </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Objectifs spécifiques</Label>
+        <Textarea
+          value={answers.objectives}
+          onChange={(e) => setAnswers({...answers, objectives: e.target.value})}
+          placeholder="Décrivez les objectifs spécifiques de la séance"
+        />
       </div>
 
       <Button type="submit" className="w-full" disabled={isLoading}>
