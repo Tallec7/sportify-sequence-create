@@ -12,9 +12,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { SessionFormData } from "@/hooks/mutations/useSessionMutation"
+import { SessionFormData } from "@/types/settings"
 
-interface ExerciseAlternativesProps {
+export interface ExerciseAlternativesProps {
   exercise: Exercise
   sessionData: SessionFormData
   onSelectAlternative: (alternative: Exercise) => void

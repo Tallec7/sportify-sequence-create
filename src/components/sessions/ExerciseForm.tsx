@@ -1,6 +1,8 @@
+
 import { useState } from "react"
 import { Exercise } from "@/types/sequence"
 import { ExerciseAlternatives } from "@/components/sessions/ExerciseAlternatives"
+import { SessionFormData } from "@/types/settings"
 
 interface ExerciseFormProps {
   onSave: (exercise: Exercise) => void
@@ -67,7 +69,7 @@ export const ExerciseForm = ({
           <select
             id="intensity_level"
             value={currentExercise.intensity_level}
-            onChange={(e) => setCurrentExercise({ ...currentExercise, intensity_level: e.target.value })}
+            onChange={(e) => setCurrentExercise({ ...currentExercise, intensity_level: e.target.value as "low" | "medium" | "high" })}
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-opacity-50"
           >
             <option value="low">Faible</option>

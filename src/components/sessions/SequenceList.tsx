@@ -94,7 +94,24 @@ export const SequenceList = ({
                 )}
               </div>
               {selectedSequenceId === sequence.id && sequence.id && (
-                <ExerciseForm sequenceId={sequence.id} />
+                <ExerciseForm
+                  sequenceId={sequence.id}
+                  onSave={(exercise) => {/* handle save */}}
+                  onCancel={() => {/* handle cancel */}}
+                  sessionData={{
+                    title: "",
+                    description: "",
+                    sport: "",
+                    level: "",
+                    duration: 0,
+                    participants_min: 0,
+                    participants_max: 0,
+                    age_category: "U13",
+                    intensity_level: "medium",
+                    cycle_id: null,
+                    objective: ""
+                  }}
+                />
               )}
             </Reorder.Item>
           ))}
