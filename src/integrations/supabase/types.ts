@@ -219,6 +219,7 @@ export type Database = {
           exercise_order: number
           id: string
           intensity_level: string | null
+          objective: string
           opposition_type: string | null
           performance_metrics: Json | null
           player_instructions: string | null
@@ -245,6 +246,7 @@ export type Database = {
           exercise_order: number
           id?: string
           intensity_level?: string | null
+          objective: string
           opposition_type?: string | null
           performance_metrics?: Json | null
           player_instructions?: string | null
@@ -271,6 +273,7 @@ export type Database = {
           exercise_order?: number
           id?: string
           intensity_level?: string | null
+          objective?: string
           opposition_type?: string | null
           performance_metrics?: Json | null
           player_instructions?: string | null
@@ -576,6 +579,7 @@ export type Database = {
           duration: number
           id: string
           intensity_level: string | null
+          objective: string
           sequence_order: number
           sequence_type: string | null
           session_id: string | null
@@ -588,6 +592,7 @@ export type Database = {
           duration: number
           id?: string
           intensity_level?: string | null
+          objective: string
           sequence_order: number
           sequence_type?: string | null
           session_id?: string | null
@@ -600,6 +605,7 @@ export type Database = {
           duration?: number
           id?: string
           intensity_level?: string | null
+          objective?: string
           sequence_order?: number
           sequence_type?: string | null
           session_id?: string | null

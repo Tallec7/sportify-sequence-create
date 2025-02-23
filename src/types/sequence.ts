@@ -21,6 +21,7 @@ export interface Exercise {
   progression_level?: number
   success_criteria?: ExerciseSuccessCriteria[]
   technical_progressions?: TechnicalProgression[]
+  objective: string  // Added objective field
 }
 
 export type TacticalConcept = "montee_de_balle" | "repli_defensif" | "contre_attaque" | "attaque_placee" | "defense_alignee" | "defense_etagee"
@@ -71,6 +72,7 @@ export interface Sequence {
   intensity_level: string
   sequence_order: number
   session_id?: string
+  objective: string  // Added objective field
   exercises?: Exercise[]
   objectives?: SequenceObjective[]
 }

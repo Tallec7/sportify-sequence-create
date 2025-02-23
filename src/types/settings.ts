@@ -1,43 +1,43 @@
 
 export interface Sport {
-  id: string  // Make id required
+  id: string
   value: string
   label: string
 }
 
 export interface TacticalConceptOption {
-  id: string  // Make id required
+  id: string
   value: string
   label: string
   sport_id?: string
 }
 
 export interface Level {
-  id: string  // Make id required
+  id: string
   value: string
   label: string
 }
 
 export interface IntensityLevel {
-  id: string  // Make id required
+  id: string
   value: string
   label: string
 }
 
 export interface SequenceType {
-  id: string  // Make id required
+  id: string
   value: string
   label: string
 }
 
 export interface AgeCategory {
-  id: string  // Make id required
+  id: string
   value: string
   label: string
 }
 
 export interface ActivityType {
-  id: string  // Make id required
+  id: string
   value: string
   label: string
 }
@@ -64,14 +64,16 @@ export type SequenceFormData = {
   sequence_type: string
   duration: number
   intensity_level: string
-  sequence_order: number  // Add required field
+  sequence_order: number
+  objective: string  // Added objective field
 }
 
 export type ExerciseFormData = {
   title: string
   description: string
-  activity_type: ActivityTypeEnum  // Use proper enum type
+  activity_type: ActivityTypeEnum
   duration: number
   intensity_level?: string
   exercise_order: number
+  objective: string  // Added objective field
 }
