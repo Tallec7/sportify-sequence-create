@@ -10,6 +10,7 @@ import Editor from "@/pages/Editor"
 import Settings from "@/pages/Settings"
 import ViewSession from "@/pages/ViewSession"
 import DropdownSettings from "@/pages/DropdownSettings"
+import PromptManager from "@/pages/PromptManager"
 
 const Layout = () => {
   return (
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
       {
         path: "/dropdown-settings",
         element: <DropdownSettings />,
+      },
+      {
+        path: "/prompt-manager",
+        element: <PromptManager />,
       },
       {
         path: "*",

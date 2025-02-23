@@ -11,7 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Settings, LogOut, List } from "lucide-react"
+import { Settings, LogOut, List, Wand2 } from "lucide-react"
 
 const Navbar = () => {
   const [user, setUser] = useState<User | null>(null)
@@ -100,10 +100,16 @@ const Navbar = () => {
                   Paramètres
                 </DropdownMenuItem>
                 {hasAccess && (
-                  <DropdownMenuItem onClick={() => navigate('/dropdown-settings')}>
-                    <List className="mr-2 h-4 w-4" />
-                    Paramètres des listes
-                  </DropdownMenuItem>
+                  <>
+                    <DropdownMenuItem onClick={() => navigate('/dropdown-settings')}>
+                      <List className="mr-2 h-4 w-4" />
+                      Paramètres des listes
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/prompt-manager')}>
+                      <Wand2 className="mr-2 h-4 w-4" />
+                      Gestion des prompts
+                    </DropdownMenuItem>
+                  </>
                 )}
                 <DropdownMenuItem onClick={handleSignOut}>
                   <LogOut className="mr-2 h-4 w-4" />
@@ -123,4 +129,3 @@ const Navbar = () => {
 }
 
 export default Navbar
-
