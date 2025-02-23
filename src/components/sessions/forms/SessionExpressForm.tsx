@@ -36,11 +36,21 @@ export const SessionExpressForm = ({ onGenerate, isLoading }: SessionExpressForm
 
       if (error) throw error
 
-      if (data.session) {
-        console.log("Session générée:", data.session)
-        setGeneratedSession(data.session)
+      if (data?.session) {
+        console.log("Session generated:", data.session)
+        // Transform the session data to match expected format
+        const transformedSession = {
+          title: data.session.title || "",
+          description: data.session.description || "",
+          sport: data.session.sport || "",
+          level: data.session.level || "",
+          duration: data.session.duration || 60,
+          intensity_level: data.session.intensity_level || "medium",
+          sequences: Array.isArray(data.session.sequences) ? data.session.sequences : []
+        }
+        setGeneratedSession(transformedSession)
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erreur lors de la génération:", error)
       toast({
         variant: "destructive",
@@ -51,13 +61,15 @@ export const SessionExpressForm = ({ onGenerate, isLoading }: SessionExpressForm
   }
 
   const handleEdit = (editedSession: any) => {
+    if (!editedSession) return
     setGeneratedSession(editedSession)
   }
 
   const handleSave = async () => {
     try {
+      if (!generatedSession) return
       onGenerate(generatedSession)
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erreur lors de l'enregistrement:", error)
       toast({
         variant: "destructive",
