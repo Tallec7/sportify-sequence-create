@@ -4,6 +4,7 @@ import { useExerciseMutation } from "@/hooks/mutations/useExerciseMutation"
 import { useExerciseDeleteMutation } from "@/hooks/mutations/useExerciseDeleteMutation"
 import { useExercisesQuery } from "@/hooks/queries/useExercisesQuery"
 import { useSequenceObjectivesQuery } from "@/hooks/queries/useSequenceObjectivesQuery"
+import { useSessionQuery } from "@/hooks/queries/useSessionQuery"
 import { ExerciseListItem } from "./ExerciseListItem"
 import { ExerciseFormCard } from "./ExerciseFormCard"
 import { ExerciseObjectivesList } from "./ExerciseObjectivesList"
@@ -39,6 +40,14 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
     activity_type: "exercise",
     objective: "À définir"
   })
+
+  const { data: session } = useSessionQuery()
+  const sessionContext = session ? {
+    sport: session.sport,
+    level: session.level,
+    age_category: session.age_category,
+    intensity_level: session.intensity_level ?? "medium"
+  } : undefined
 
   React.useEffect(() => {
     setLocalExercises(exercises)
@@ -148,6 +157,7 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
                   exercise={exercise}
                   onEdit={handleEdit}
                   onDelete={handleDelete}
+                  sessionContext={sessionContext}
                 />
               </Reorder.Item>
             ))}
