@@ -11,9 +11,9 @@ describe('ViewSessionSequences Component', () => {
       description: 'Séquence d\'échauffement',
       duration: 15,
       sequence_type: 'warmup' as const,
-      intensity_level: 'low',
+      intensity_level: 'low' as const,
       sequence_order: 1,
-      objective: "Échauffement général"  // Added objective
+      objective: "Échauffement général"
     },
     {
       id: '2',
@@ -21,9 +21,9 @@ describe('ViewSessionSequences Component', () => {
       description: 'Séquence principale',
       duration: 30,
       sequence_type: 'main' as const,
-      intensity_level: 'high',
+      intensity_level: 'high' as const,
       sequence_order: 2,
-      objective: "Développement technique"  // Added objective
+      objective: "Développement technique"
     }
   ]
 

@@ -1,3 +1,4 @@
+
 import { useState } from "react"
 import { toast } from "@/components/ui/use-toast"
 import { supabase } from "@/integrations/supabase/client"
@@ -28,6 +29,8 @@ export const SequenceForm = ({
     sequence_order: sequences.length + 1,
     objective: "À définir"
   })
+
+  const totalDuration = sequences.reduce((sum, sequence) => sum + sequence.duration, 0)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -111,6 +114,7 @@ export const SequenceForm = ({
           selectedSequenceId={selectedSequenceId}
           setSelectedSequenceId={setSelectedSequenceId}
           onReorder={handleReorderSequences}
+          totalDuration={totalDuration}
         />
 
         <AddSequenceForm

@@ -11,6 +11,7 @@ import { ExerciseObjectivesList } from "./ExerciseObjectivesList"
 import { ExerciseFormProps } from "./types/exercise-form"
 import { Reorder, AnimatePresence } from "framer-motion"
 import { useExerciseOrderMutation } from "@/hooks/mutations/useExerciseOrderMutation"
+import { toast } from "@/components/ui/use-toast"
 import { 
   Select,
   SelectContent,
@@ -19,7 +20,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
-import { toast } from "react-toastify"
 
 export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
   const { data: exercises = [] } = useExercisesQuery(sequenceId)

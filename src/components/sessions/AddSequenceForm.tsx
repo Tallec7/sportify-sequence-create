@@ -83,7 +83,7 @@ export const AddSequenceForm = ({
           <Label htmlFor="intensity_level">Niveau d'intensité</Label>
           <Select
             value={newSequence.intensity_level}
-            onValueChange={(value) =>
+            onValueChange={(value: "low" | "medium" | "high") =>
               setNewSequence({ ...newSequence, intensity_level: value })
             }
           >
@@ -92,7 +92,7 @@ export const AddSequenceForm = ({
             </SelectTrigger>
             <SelectContent>
               {intensityLevels.map((level) => (
-                <SelectItem key={level.id} value={level.value}>
+                <SelectItem key={level.id} value={level.value as "low" | "medium" | "high"}>
                   {level.label}
                 </SelectItem>
               ))}
