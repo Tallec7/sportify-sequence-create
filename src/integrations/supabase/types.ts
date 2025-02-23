@@ -581,40 +581,55 @@ export type Database = {
       session_sequences: {
         Row: {
           created_at: string | null
+          decision_making_focus: string[] | null
           description: string | null
           duration: number
           id: string
           intensity_level: string | null
           objective: string
+          performance_metrics: Json | null
           sequence_order: number
           sequence_type: string | null
           session_id: string | null
+          tactical_concepts:
+            | Database["public"]["Enums"]["tactical_concept_enum"][]
+            | null
           title: string
           updated_at: string | null
         }
         Insert: {
           created_at?: string | null
+          decision_making_focus?: string[] | null
           description?: string | null
           duration: number
           id?: string
           intensity_level?: string | null
           objective: string
+          performance_metrics?: Json | null
           sequence_order: number
           sequence_type?: string | null
           session_id?: string | null
+          tactical_concepts?:
+            | Database["public"]["Enums"]["tactical_concept_enum"][]
+            | null
           title: string
           updated_at?: string | null
         }
         Update: {
           created_at?: string | null
+          decision_making_focus?: string[] | null
           description?: string | null
           duration?: number
           id?: string
           intensity_level?: string | null
           objective?: string
+          performance_metrics?: Json | null
           sequence_order?: number
           sequence_type?: string | null
           session_id?: string | null
+          tactical_concepts?:
+            | Database["public"]["Enums"]["tactical_concept_enum"][]
+            | null
           title?: string
           updated_at?: string | null
         }
@@ -682,6 +697,7 @@ export type Database = {
           age_category: Database["public"]["Enums"]["age_category_enum"]
           created_at: string | null
           cycle_id: string | null
+          decision_making_focus: string[] | null
           description: string | null
           duration: number
           expert_validated: boolean | null
@@ -690,7 +706,11 @@ export type Database = {
           level: string
           participants_max: number
           participants_min: number
+          performance_metrics: Json | null
           sport: string
+          tactical_concepts:
+            | Database["public"]["Enums"]["tactical_concept_enum"][]
+            | null
           title: string
           user_id: string | null
         }
@@ -698,6 +718,7 @@ export type Database = {
           age_category: Database["public"]["Enums"]["age_category_enum"]
           created_at?: string | null
           cycle_id?: string | null
+          decision_making_focus?: string[] | null
           description?: string | null
           duration: number
           expert_validated?: boolean | null
@@ -706,7 +727,11 @@ export type Database = {
           level: string
           participants_max: number
           participants_min: number
+          performance_metrics?: Json | null
           sport: string
+          tactical_concepts?:
+            | Database["public"]["Enums"]["tactical_concept_enum"][]
+            | null
           title: string
           user_id?: string | null
         }
@@ -714,6 +739,7 @@ export type Database = {
           age_category?: Database["public"]["Enums"]["age_category_enum"]
           created_at?: string | null
           cycle_id?: string | null
+          decision_making_focus?: string[] | null
           description?: string | null
           duration?: number
           expert_validated?: boolean | null
@@ -722,7 +748,11 @@ export type Database = {
           level?: string
           participants_max?: number
           participants_min?: number
+          performance_metrics?: Json | null
           sport?: string
+          tactical_concepts?:
+            | Database["public"]["Enums"]["tactical_concept_enum"][]
+            | null
           title?: string
           user_id?: string | null
         }
