@@ -2,17 +2,20 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { ViewSessionSequences } from '../ViewSessionSequences'
+import type { Sequence } from '@/types/sequence'
 
 describe('ViewSessionSequences Component', () => {
-  const mockSequences = [
+  const mockSequences: Sequence[] = [
     {
       id: '1',
       title: 'Échauffement',
       description: 'Séquence d\'échauffement',
       duration: 15,
-      sequence_type: 'warmup' as const,
-      intensity_level: 'low' as const,
+      sequence_type: 'warmup',
+      intensity_level: 'low',
       sequence_order: 1,
+      session_id: 'session1',
+      exercises: [],
       objective: "Échauffement général"
     },
     {
@@ -20,9 +23,11 @@ describe('ViewSessionSequences Component', () => {
       title: 'Exercice principal',
       description: 'Séquence principale',
       duration: 30,
-      sequence_type: 'main' as const,
-      intensity_level: 'high' as const,
+      sequence_type: 'main',
+      intensity_level: 'high',
       sequence_order: 2,
+      session_id: 'session1',
+      exercises: [],
       objective: "Développement technique"
     }
   ]

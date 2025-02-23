@@ -1,5 +1,4 @@
-
-import { SessionFormData } from "../SessionForm"
+import { SessionFormData } from '@/types/settings'
 import { SessionTitleField } from "./fields/SessionTitleField"
 import { SportSelect } from "./fields/SportSelect"
 import { SessionDescriptionField } from "./fields/SessionDescriptionField"

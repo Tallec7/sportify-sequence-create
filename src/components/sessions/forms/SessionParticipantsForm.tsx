@@ -1,7 +1,6 @@
-
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import { SessionFormData } from "../SessionForm"
+import { SessionFormData } from '@/types/settings'
 
 interface SessionParticipantsFormProps {
   formData: SessionFormData

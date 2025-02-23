@@ -1,10 +1,9 @@
-
 import { useNavigate } from "react-router-dom"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/components/ui/use-toast"
 import { useErrorToast } from "@/hooks/use-error-toast"
 import { Sequence } from "@/types/sequence"
-import { SessionFormData } from "@/components/sessions/SessionForm"
+import { SessionFormData } from '@/types/settings'
 import { Database } from "@/integrations/supabase/types"
 
 type AgeCategory = Database["public"]["Enums"]["age_category_enum"]
