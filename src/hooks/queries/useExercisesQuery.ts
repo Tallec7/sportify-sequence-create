@@ -5,7 +5,7 @@ import { Exercise } from "@/types/sequence"
 
 export const useExercisesQuery = (sequenceId: string | undefined) => {
   return useQuery({
-    queryKey: ["exercises", sequenceId],
+    queryKey: ["phases", sequenceId],
     queryFn: async () => {
       if (!sequenceId) throw new Error("Sequence ID is required")
 

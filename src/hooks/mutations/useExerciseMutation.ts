@@ -40,7 +40,7 @@ export const useExerciseMutation = (sequenceId: string | undefined) => {
         tactical_concepts: validTacticalConcepts,
         performance_metrics: exercise.performance_metrics || {},
         progression_level: exercise.progression_level || 1,
-        objective: exercise.objective || "À définir"  // Added objective field
+        objective: exercise.objective || "À définir"
       }
 
       if (id) {
@@ -67,19 +67,19 @@ export const useExerciseMutation = (sequenceId: string | undefined) => {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["exercises", sequenceId] })
+      queryClient.invalidateQueries({ queryKey: ["phases", sequenceId] })
       toast({
         title: "Succès",
-        description: "L'exercice a été sauvegardé avec succès.",
+        description: "La phase a été sauvegardée avec succès.",
       })
     },
     onError: (error: Error) => {
       toast({
         variant: "destructive",
         title: "Erreur",
-        description: "Une erreur est survenue lors de la sauvegarde de l'exercice.",
+        description: "Une erreur est survenue lors de la sauvegarde de la phase.",
       })
-      console.error("Exercise mutation error:", error)
+      console.error("Phase mutation error:", error)
     }
   })
 }

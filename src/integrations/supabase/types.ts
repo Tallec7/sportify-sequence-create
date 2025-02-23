@@ -199,7 +199,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "exercise_success_criteria_exercise_id_fkey"
+            foreignKeyName: "phase_success_criteria_phase_id_fkey"
             columns: ["phase_id"]
             isOneToOne: false
             referencedRelation: "phases"
@@ -880,7 +880,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "technical_progressions_exercise_id_fkey"
+            foreignKeyName: "technical_progressions_phase_id_fkey"
             columns: ["phase_id"]
             isOneToOne: false
             referencedRelation: "phases"
