@@ -20,9 +20,11 @@ export type PromptTemplate = {
 
 export const promptTemplateFormSchema = z.object({
   sport_id: z.string().nullable(),
-  training_type: z.string().min(1, "Training type is required"),
-  mode: z.enum(['express', 'expert', 'creativity']),
-  prompt_text: z.string().min(1, "Prompt text is required"),
+  training_type: z.string().min(1, "Le type d'entraînement est requis"),
+  mode: z.enum(['express', 'expert', 'creativity'], {
+    errorMap: () => ({ message: "Le mode de génération est requis" })
+  }),
+  prompt_text: z.string().min(1, "Le texte du prompt est requis"),
   is_active: z.boolean(),
   is_validated: z.boolean(),
   is_default: z.boolean().optional()

@@ -29,9 +29,64 @@ export const usePromptTemplate = ({ template, onOpenChange }: UsePromptTemplateP
     }
   })
 
+  const validatePromptStructure = (promptText: string) => {
+    try {
+      // Vérifie si le prompt contient les sections requises
+      const requiredSections = [
+        "objectif",
+        "description",
+        "instructions",
+        "durée"
+      ]
+
+      const missingFields: string[] = []
+      
+      requiredSections.forEach(section => {
+        if (!promptText.toLowerCase().includes(section)) {
+          missingFields.push(section)
+        }
+      })
+
+      if (missingFields.length > 0) {
+        return {
+          isValid: false,
+          error: `Structure incorrecte : les sections suivantes sont manquantes : ${missingFields.join(", ")}`
+        }
+      }
+
+      return { isValid: true }
+    } catch (error) {
+      return {
+        isValid: false,
+        error: "Erreur lors de la validation de la structure du prompt"
+      }
+    }
+  }
+
   const mutation = useMutation({
     mutationFn: async (values: PromptTemplateFormValues) => {
+      // Valider la structure du prompt
+      const structureValidation = validatePromptStructure(values.prompt_text)
+      if (!structureValidation.isValid) {
+        throw new Error(structureValidation.error)
+      }
+
       const timestamp = new Date().toISOString()
+      
+      // Vérifier les champs requis
+      const requiredFields = {
+        training_type: "Type d'entraînement",
+        prompt_text: "Texte du prompt",
+        mode: "Mode"
+      }
+
+      const missingFields = Object.entries(requiredFields)
+        .filter(([key]) => !values[key as keyof PromptTemplateFormValues])
+        .map(([_, label]) => label)
+
+      if (missingFields.length > 0) {
+        throw new Error(`⚠️ Champs requis manquants : ${missingFields.join(", ")}`)
+      }
       
       // Purger le cache via un edge function dédié
       try {
@@ -78,8 +133,8 @@ export const usePromptTemplate = ({ template, onOpenChange }: UsePromptTemplateP
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["prompt-templates"] })
       toast({
-        title: "Success",
-        description: `Template ${template ? "updated" : "created"} successfully`
+        title: "Succès",
+        description: `Template ${template ? "mis à jour" : "créé"} avec succès`
       })
       onOpenChange(false)
     },
@@ -95,8 +150,8 @@ export const usePromptTemplate = ({ template, onOpenChange }: UsePromptTemplateP
       
       toast({
         variant: "destructive",
-        title: "Error",
-        description: `Failed to ${template ? "update" : "create"} template: ${error.message}`
+        title: "Erreur",
+        description: error.message
       })
     }
   })
