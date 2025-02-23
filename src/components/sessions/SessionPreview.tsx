@@ -9,10 +9,18 @@ import { ViewSessionSequences } from "./ViewSessionSequences"
 import { Sequence } from "@/types/sequence"
 
 interface SessionPreviewProps {
-  generatedSession: any
-  onEdit: (editedSession: any) => void
-  onSave: () => void
-  onCancel: () => void
+  generatedSession: {
+    title: string;
+    description: string;
+    sport: string;
+    level: string;
+    duration: number;
+    intensity_level: string;
+    sequences: Sequence[];
+  };
+  onEdit: (editedSession: any) => void;
+  onSave: () => void;
+  onCancel: () => void;
 }
 
 export const SessionPreview = ({ 
@@ -25,13 +33,14 @@ export const SessionPreview = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
+    const newValue = e.target.type === 'number' ? Number(value) : value
     setSession(prev => ({
       ...prev,
-      [name]: value
+      [name]: newValue
     }))
     onEdit({
       ...session,
-      [name]: value
+      [name]: newValue
     })
   }
 
@@ -110,7 +119,9 @@ export const SessionPreview = ({
             </div>
           </div>
 
-          <ViewSessionSequences sequences={session.sequences as Sequence[]} />
+          {session.sequences && (
+            <ViewSessionSequences sequences={session.sequences} />
+          )}
 
           <div className="flex justify-end gap-4">
             <Button variant="outline" onClick={onCancel}>
