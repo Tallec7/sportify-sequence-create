@@ -1,4 +1,3 @@
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -6,8 +5,9 @@ import { Edit, Trash2, Activity, List, ChevronRight, Trophy, ChartBar, Sparkles 
 import { ExerciseListItemProps } from "./types/exercise-form"
 import { Exercise, TacticalConcept } from "@/types/sequence"
 import { ExerciseAlternatives } from "./ExerciseAlternatives"
+import { SessionFormData } from "@/types/settings"
 
-export const ExerciseListItem = ({ exercise, onEdit, onDelete, sessionContext }: ExerciseListItemProps & { sessionContext?: { sport: string; level: string; age_category: string; intensity_level: string } }) => {
+export const ExerciseListItem = ({ exercise, onEdit, onDelete, sessionData }: ExerciseListItemProps) => {
   const [showAlternatives, setShowAlternatives] = useState(false)
 
   const handleSelectAlternative = (alternative: Exercise) => {
@@ -149,7 +149,7 @@ export const ExerciseListItem = ({ exercise, onEdit, onDelete, sessionContext }:
             </div>
           )}
         </div>
-        {sessionContext && (
+        {sessionData && (
           <div className="flex gap-2">
             <Button 
               variant="outline" 
@@ -178,11 +178,11 @@ export const ExerciseListItem = ({ exercise, onEdit, onDelete, sessionContext }:
         </div>
       </div>
 
-      {showAlternatives && sessionContext && (
+      {showAlternatives && sessionData && (
         <div className="pl-4">
           <ExerciseAlternatives
             exercise={exercise}
-            sessionContext={sessionContext}
+            sessionData={sessionData}
             onSelectAlternative={handleSelectAlternative}
           />
         </div>
@@ -190,4 +190,3 @@ export const ExerciseListItem = ({ exercise, onEdit, onDelete, sessionContext }:
     </div>
   )
 }
-

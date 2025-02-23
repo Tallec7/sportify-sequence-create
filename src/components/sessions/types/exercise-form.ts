@@ -7,6 +7,7 @@ export interface ExerciseFormProps {
   sessionData: SessionFormData
   onCancel: () => void
   initialData?: Exercise
+  sequenceId?: string
 }
 
 export interface ExerciseListItemProps {
