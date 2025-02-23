@@ -16,7 +16,8 @@ serve(async (req) => {
     const { mode, answers } = await req.json();
     
     // Construction du prompt système selon le mode
-    let systemPrompt = `Tu es un expert en création de séances d'entraînement. Tu dois générer une séance complète en JSON suivant strictement cette structure:
+    let systemPrompt = `Tu es un expert en création de séances d'entraînement. Tu dois générer une séance complète en JSON en respectant strictement le format suivant. IMPORTANT : Ta réponse ne doit contenir QUE du JSON valide, sans aucun texte avant ou après.
+
 {
   "title": "string",
   "description": "string",
@@ -97,7 +98,7 @@ serve(async (req) => {
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        response_format: { type: "json_object" }
+        temperature: 0.7
       }),
     });
 
@@ -107,7 +108,16 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    const sessionData = JSON.parse(data.choices[0].message.content);
+    let sessionData;
+    
+    try {
+      // On s'assure que le contenu est bien du JSON valide
+      sessionData = JSON.parse(data.choices[0].message.content);
+    } catch (error) {
+      console.error("Erreur lors du parsing JSON:", error);
+      console.log("Contenu reçu:", data.choices[0].message.content);
+      throw new Error('La réponse de l\'IA n\'est pas un JSON valide');
+    }
     
     // Validation de base de la structure JSON
     if (!sessionData.title || !sessionData.sport || !sessionData.sequences) {
