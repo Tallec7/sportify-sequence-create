@@ -18,6 +18,7 @@ export type SessionFormData = {
   age_category: AgeCategory
   intensity_level: string
   cycle_id: string | null
+  objective: string
 }
 
 type ValidationError = { field: string; message: string }
@@ -39,6 +40,10 @@ const validateSessionData = (formData: SessionFormData): ValidationError[] => {
 
   if (!formData.level?.trim()) {
     errors.push({ field: 'level', message: 'Le niveau est requis' })
+  }
+
+  if (!formData.objective?.trim()) {
+    errors.push({ field: 'objective', message: 'L\'objectif est requis' })
   }
 
   if (!formData.age_category || !isValidAgeCategory(formData.age_category)) {

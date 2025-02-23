@@ -19,6 +19,8 @@ import { SessionExpertForm } from "./forms/SessionExpertForm"
 import { SessionCreativityForm } from "./forms/SessionCreativityForm"
 import { useToast } from "@/components/ui/use-toast"
 import { supabase } from "@/integrations/supabase/client"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 
 interface SessionFormProps {
   formData: SessionFormData
@@ -100,6 +102,15 @@ export const SessionForm = ({
         variant: "destructive",
         title: "Erreur de validation",
         description: "Le niveau est requis",
+      })
+      return false
+    }
+
+    if (!formData.objective?.trim()) {
+      toast({
+        variant: "destructive",
+        title: "Erreur de validation",
+        description: "L'objectif de la séance est requis",
       })
       return false
     }
@@ -203,6 +214,19 @@ export const SessionForm = ({
           handleSelectChange={handleSelectChange}
           handleNumberChange={handleNumberChange}
         />
+        
+        <div className="space-y-2">
+          <Label htmlFor="objective">Objectif de la séance</Label>
+          <Textarea
+            id="objective"
+            name="objective"
+            value={formData.objective}
+            onChange={handleInputChange}
+            className="min-h-[100px] resize-y"
+            placeholder="Définissez l'objectif principal de cette séance..."
+            required
+          />
+        </div>
         
         {(isAdvancedMode || aiMode === "expert") && (
           <SessionParticipantsForm
