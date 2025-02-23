@@ -15,7 +15,7 @@ interface SportSelectProps {
 }
 
 export const SportSelect = ({ value, onValueChange }: SportSelectProps) => {
-  const sports = useSportsQuery()
+  const { data: sports = [] } = useSportsQuery()
 
   return (
     <div className="space-y-2">

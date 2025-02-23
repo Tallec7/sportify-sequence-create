@@ -23,8 +23,8 @@ export const SessionDetailsForm = ({
   handleSelectChange,
   handleNumberChange,
 }: SessionDetailsFormProps) => {
-  const levels = useLevelsQuery()
-  const intensityLevels = useIntensityLevelsQuery()
+  const { data: levels = [] } = useLevelsQuery()
+  const { data: intensityLevels = [] } = useIntensityLevelsQuery()
 
   return (
     <div className="grid gap-6 md:grid-cols-2">
@@ -103,4 +103,3 @@ export const SessionDetailsForm = ({
     </div>
   )
 }
-
