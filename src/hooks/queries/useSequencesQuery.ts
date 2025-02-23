@@ -9,12 +9,12 @@ export const useSequencesQuery = (sessionId: string | undefined) => {
     queryFn: async () => {
       if (!sessionId) throw new Error("Session ID is required")
 
-      // Fetch sequences with exercises
+      // Fetch sequences with phases
       const { data: sequencesData, error: sequencesError } = await supabase
         .from("session_sequences")
         .select(`
           *,
-          exercises (
+          phases (
             id,
             title,
             description,
@@ -45,7 +45,7 @@ export const useSequencesQuery = (sessionId: string | undefined) => {
         intensity_level: sequence.intensity_level || "medium",
         sequence_order: sequence.sequence_order,
         session_id: sequence.session_id,
-        exercises: sequence.exercises || []
+        exercises: sequence.phases || []
       }))
 
       return validatedSequences as Sequence[]

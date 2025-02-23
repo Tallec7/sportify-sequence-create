@@ -92,12 +92,89 @@ export type Database = {
           },
         ]
       }
-      exercise_success_criteria: {
+      favorites: {
+        Row: {
+          created_at: string | null
+          id: string
+          session_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          session_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favorites_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      intensity_levels: {
+        Row: {
+          created_at: string
+          id: string
+          label: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
+      levels: {
+        Row: {
+          created_at: string
+          id: string
+          label: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
+      phase_success_criteria: {
         Row: {
           created_at: string | null
           description: string
-          exercise_id: string | null
           id: string
+          phase_id: string | null
           target_value: number | null
           unit: string | null
           updated_at: string | null
@@ -105,8 +182,8 @@ export type Database = {
         Insert: {
           created_at?: string | null
           description: string
-          exercise_id?: string | null
           id?: string
+          phase_id?: string | null
           target_value?: number | null
           unit?: string | null
           updated_at?: string | null
@@ -114,8 +191,8 @@ export type Database = {
         Update: {
           created_at?: string | null
           description?: string
-          exercise_id?: string | null
           id?: string
+          phase_id?: string | null
           target_value?: number | null
           unit?: string | null
           updated_at?: string | null
@@ -123,14 +200,14 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "exercise_success_criteria_exercise_id_fkey"
-            columns: ["exercise_id"]
+            columns: ["phase_id"]
             isOneToOne: false
-            referencedRelation: "exercises"
+            referencedRelation: "phases"
             referencedColumns: ["id"]
           },
         ]
       }
-      exercises: {
+      phases: {
         Row: {
           activity_type: Database["public"]["Enums"]["activity_type_enum"]
           coach_instructions: string | null
@@ -225,83 +302,6 @@ export type Database = {
             referencedColumns: ["value"]
           },
         ]
-      }
-      favorites: {
-        Row: {
-          created_at: string | null
-          id: string
-          session_id: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string | null
-          id?: string
-          session_id?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string | null
-          id?: string
-          session_id?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "favorites_session_id_fkey"
-            columns: ["session_id"]
-            isOneToOne: false
-            referencedRelation: "sessions"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      intensity_levels: {
-        Row: {
-          created_at: string
-          id: string
-          label: string
-          updated_at: string
-          value: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          label: string
-          updated_at?: string
-          value: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          label?: string
-          updated_at?: string
-          value?: string
-        }
-        Relationships: []
-      }
-      levels: {
-        Row: {
-          created_at: string
-          id: string
-          label: string
-          updated_at: string
-          value: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          label: string
-          updated_at?: string
-          value: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          label?: string
-          updated_at?: string
-          value?: string
-        }
-        Relationships: []
       }
       profiles: {
         Row: {
@@ -724,8 +724,8 @@ export type Database = {
         Row: {
           created_at: string | null
           current_level: number | null
-          exercise_id: string | null
           id: string
+          phase_id: string | null
           progression_notes: string | null
           skill_name: string
           target_level: number | null
@@ -734,8 +734,8 @@ export type Database = {
         Insert: {
           created_at?: string | null
           current_level?: number | null
-          exercise_id?: string | null
           id?: string
+          phase_id?: string | null
           progression_notes?: string | null
           skill_name: string
           target_level?: number | null
@@ -744,8 +744,8 @@ export type Database = {
         Update: {
           created_at?: string | null
           current_level?: number | null
-          exercise_id?: string | null
           id?: string
+          phase_id?: string | null
           progression_notes?: string | null
           skill_name?: string
           target_level?: number | null
@@ -754,9 +754,9 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "technical_progressions_exercise_id_fkey"
-            columns: ["exercise_id"]
+            columns: ["phase_id"]
             isOneToOne: false
-            referencedRelation: "exercises"
+            referencedRelation: "phases"
             referencedColumns: ["id"]
           },
         ]

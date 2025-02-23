@@ -10,7 +10,7 @@ export const useExercisesQuery = (sequenceId: string | undefined) => {
       if (!sequenceId) throw new Error("Sequence ID is required")
 
       const { data, error } = await supabase
-        .from("exercises")
+        .from("phases")
         .select("*")
         .eq("sequence_id", sequenceId)
         .order("exercise_order", { ascending: true })

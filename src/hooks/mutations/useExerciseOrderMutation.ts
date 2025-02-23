@@ -14,7 +14,7 @@ export const useExerciseOrderMutation = (sequenceId: string) => {
 
       const updatePromises = exercises.map((exercise, index) =>
         supabase
-          .from("exercises")
+          .from("phases")
           .update({ exercise_order: index + 1 })
           .eq("id", exercise.id)
       )
@@ -34,4 +34,3 @@ export const useExerciseOrderMutation = (sequenceId: string) => {
     }
   })
 }
-

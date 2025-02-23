@@ -12,7 +12,7 @@ export const useExerciseDeleteMutation = (sequenceId: string | undefined) => {
       if (!sequenceId) throw new Error("Sequence ID is required")
 
       const { error } = await supabase
-        .from("exercises")
+        .from("phases")
         .delete()
         .eq("id", exerciseId)
 

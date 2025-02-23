@@ -45,7 +45,7 @@ export const useExerciseMutation = (sequenceId: string | undefined) => {
       if (id) {
         // Update existing exercise
         const { data, error } = await supabase
-          .from("exercises")
+          .from("phases")
           .update(exerciseData)
           .eq("id", id)
           .select()
@@ -56,7 +56,7 @@ export const useExerciseMutation = (sequenceId: string | undefined) => {
       } else {
         // Create new exercise
         const { data, error } = await supabase
-          .from("exercises")
+          .from("phases")
           .insert([exerciseData])
           .select()
           .single()
