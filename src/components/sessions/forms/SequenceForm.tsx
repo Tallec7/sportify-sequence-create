@@ -1,3 +1,4 @@
+
 import { FormEvent, useState } from "react"
 import {
   Select,
@@ -14,7 +15,7 @@ import type { Sequence } from "@/types/sequence"
 
 interface SequenceFormProps {
   sequence?: Partial<Sequence>
-  onSubmit: (sequence: Sequence) => void
+  onSubmit: (formData: FormData) => Promise<void>
 }
 
 export const SequenceForm = ({ sequence, onSubmit }: SequenceFormProps) => {
@@ -30,9 +31,11 @@ export const SequenceForm = ({ sequence, onSubmit }: SequenceFormProps) => {
   const { data: sequenceTypes = [] } = useSequenceTypesQuery()
   const { data: intensityLevels = [] } = useIntensityLevelsQuery()
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    onSubmit(formData as Sequence)
+    const form = e.currentTarget
+    const formData = new FormData(form)
+    await onSubmit(formData)
   }
 
   return (
@@ -41,6 +44,7 @@ export const SequenceForm = ({ sequence, onSubmit }: SequenceFormProps) => {
         <Label htmlFor="title">Titre</Label>
         <Input
           id="title"
+          name="title"
           value={formData.title}
           onChange={(e) => setFormData({ ...formData, title: e.target.value })}
           required
@@ -51,6 +55,7 @@ export const SequenceForm = ({ sequence, onSubmit }: SequenceFormProps) => {
         <Label htmlFor="description">Description</Label>
         <textarea
           id="description"
+          name="description"
           value={formData.description}
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-y"
@@ -61,6 +66,7 @@ export const SequenceForm = ({ sequence, onSubmit }: SequenceFormProps) => {
         <Label htmlFor="objective">Objectif</Label>
         <textarea
           id="objective"
+          name="objective"
           value={formData.objective}
           onChange={(e) => setFormData({ ...formData, objective: e.target.value })}
           className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-y"
@@ -73,6 +79,7 @@ export const SequenceForm = ({ sequence, onSubmit }: SequenceFormProps) => {
         <div className="space-y-2">
           <Label htmlFor="sequence_type">Type de séquence</Label>
           <Select
+            name="sequence_type"
             value={formData.sequence_type}
             onValueChange={(value) =>
               setFormData({ ...formData, sequence_type: value })
@@ -94,6 +101,7 @@ export const SequenceForm = ({ sequence, onSubmit }: SequenceFormProps) => {
         <div className="space-y-2">
           <Label htmlFor="intensity_level">Niveau d'intensité</Label>
           <Select
+            name="intensity_level"
             value={formData.intensity_level}
             onValueChange={(value) =>
               setFormData({ ...formData, intensity_level: value })
@@ -116,6 +124,7 @@ export const SequenceForm = ({ sequence, onSubmit }: SequenceFormProps) => {
           <Label htmlFor="duration">Durée (minutes)</Label>
           <Input
             id="duration"
+            name="duration"
             type="number"
             min="1"
             value={formData.duration}
@@ -135,3 +144,4 @@ export const SequenceForm = ({ sequence, onSubmit }: SequenceFormProps) => {
     </form>
   )
 }
+

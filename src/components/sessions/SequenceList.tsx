@@ -1,18 +1,24 @@
-
 import { Button } from "@/components/ui/button"
 import { Sequence } from "@/types/sequence"
 import { ExerciseForm } from "./ExerciseForm"
 import { Reorder, AnimatePresence } from "framer-motion"
 import { Timeline } from "./Timeline"
 import { Copy } from "lucide-react"
+import { AgeCategoryType } from "@/types/settings"
 
-interface SequenceListProps {
+export interface SequenceListProps {
   sequences: Sequence[]
   selectedSequenceId: string | null
   setSelectedSequenceId: (id: string | null) => void
   onReorder: (sequences: Sequence[]) => void
   onDuplicate?: (sequenceId: string) => void
   totalDuration: number
+  sessionContext?: {
+    sport: string
+    level: string
+    age_category: AgeCategoryType
+    intensity_level: string
+  }
 }
 
 export const SequenceList = ({
@@ -22,6 +28,7 @@ export const SequenceList = ({
   onReorder,
   onDuplicate,
   totalDuration,
+  sessionContext,
 }: SequenceListProps) => {
   return (
     <div className="space-y-6 dark:bg-gray-900">

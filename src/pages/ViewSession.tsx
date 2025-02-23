@@ -8,6 +8,7 @@ import { ViewSessionSkeleton } from "@/components/sessions/ViewSessionSkeleton"
 import { ViewSessionDetails } from "@/components/sessions/ViewSessionDetails"
 import { ViewSessionSequences } from "@/components/sessions/ViewSessionSequences"
 import { toast } from "@/components/ui/use-toast"
+import { type SessionFormData } from "@/types/settings"
 
 const ViewSession = () => {
   const { id } = useParams()
@@ -45,9 +46,9 @@ const ViewSession = () => {
   const formattedSessionData: SessionFormData = {
     ...sessionData,
     objective: sessionData.objective || "",
-    tactical_concepts: sessionData.tactical_concepts || [],
-    decision_making_focus: sessionData.decision_making_focus || [],
-    performance_metrics: sessionData.performance_metrics || [],
+    tactical_concepts: Array.isArray(sessionData.tactical_concepts) ? sessionData.tactical_concepts : [],
+    decision_making_focus: Array.isArray(sessionData.decision_making_focus) ? sessionData.decision_making_focus : [],
+    performance_metrics: Array.isArray(sessionData.performance_metrics) ? sessionData.performance_metrics : [],
     validation_feedback: sessionData.validation_feedback || "",
     expert_validated: sessionData.expert_validated || false,
     objectives: sessionData.objectives || []
@@ -73,3 +74,4 @@ const ViewSession = () => {
 }
 
 export default ViewSession
+

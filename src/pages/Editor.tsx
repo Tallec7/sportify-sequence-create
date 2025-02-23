@@ -1,3 +1,4 @@
+
 import { useParams } from "react-router-dom"
 import { SessionForm } from "@/components/sessions/SessionForm"
 import { SequenceForm } from "@/components/sessions/SequenceForm"
@@ -48,9 +49,9 @@ const Editor = () => {
     if (sessionData) {
       setFormData({
         ...sessionData,
-        tactical_concepts: sessionData.tactical_concepts || [],
-        decision_making_focus: sessionData.decision_making_focus || [],
-        performance_metrics: sessionData.performance_metrics || [],
+        tactical_concepts: Array.isArray(sessionData.tactical_concepts) ? sessionData.tactical_concepts : [],
+        decision_making_focus: Array.isArray(sessionData.decision_making_focus) ? sessionData.decision_making_focus : [],
+        performance_metrics: Array.isArray(sessionData.performance_metrics) ? sessionData.performance_metrics : [],
         objective: sessionData.objective || "",
         validation_feedback: sessionData.validation_feedback || "",
         expert_validated: sessionData.expert_validated || false,
@@ -120,3 +121,4 @@ const Editor = () => {
 }
 
 export default Editor
+
