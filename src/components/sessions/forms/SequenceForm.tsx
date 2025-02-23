@@ -1,5 +1,4 @@
-
-import { useState } from "react"
+import { FormEvent, useState } from "react"
 import {
   Select,
   SelectContent,
@@ -11,17 +10,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useSequenceTypesQuery } from "@/hooks/queries/useSequenceTypesQuery"
 import { useIntensityLevelsQuery } from "@/hooks/queries/useIntensityLevelsQuery"
+import type { Sequence } from "@/types/sequence"
 
 interface SequenceFormProps {
-  sequence?: {
-    title: string
-    description?: string
-    sequence_type: string
-    duration: number
-    intensity_level?: string
-    objective: string
-  }
-  onSubmit: (sequence: any) => void
+  sequence?: Partial<Sequence>
+  onSubmit: (sequence: Sequence) => void
 }
 
 export const SequenceForm = ({ sequence, onSubmit }: SequenceFormProps) => {
@@ -37,9 +30,9 @@ export const SequenceForm = ({ sequence, onSubmit }: SequenceFormProps) => {
   const { data: sequenceTypes = [] } = useSequenceTypesQuery()
   const { data: intensityLevels = [] } = useIntensityLevelsQuery()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
-    onSubmit(formData)
+    onSubmit(formData as Sequence)
   }
 
   return (

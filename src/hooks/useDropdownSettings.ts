@@ -1,6 +1,9 @@
+
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import { supabase } from "@/integrations/supabase/client"
-import type { TacticalConceptOption, TacticalConcept } from "@/types/settings"
+import { useToast } from "@/components/ui/use-toast"
+import type { Sport, Level, IntensityLevel, SequenceType, TacticalConceptOption } from "@/types/settings"
 
 export const useDropdownSettings = () => {
   const [selectedSport, setSelectedSport] = useState<string>("handball")
@@ -79,7 +82,10 @@ export const useDropdownSettings = () => {
           .order('label')
 
         if (error) throw error
-        setTacticalConcepts(data || [])
+        setTacticalConcepts(data?.map(concept => ({
+          ...concept,
+          value: concept.value as TacticalConceptOption['value']
+        })) || [])
       }
     } catch (error) {
       console.error('Error fetching tactical concepts:', error)

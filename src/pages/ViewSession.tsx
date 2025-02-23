@@ -42,20 +42,31 @@ const ViewSession = () => {
     return <ViewSessionSkeleton />
   }
 
+  const formattedSessionData: SessionFormData = {
+    ...sessionData,
+    objective: sessionData.objective || "",
+    tactical_concepts: sessionData.tactical_concepts || [],
+    decision_making_focus: sessionData.decision_making_focus || [],
+    performance_metrics: sessionData.performance_metrics || [],
+    validation_feedback: sessionData.validation_feedback || "",
+    expert_validated: sessionData.expert_validated || false,
+    objectives: sessionData.objectives || []
+  }
+
   return (
     <div className="container py-8 space-y-8">
       <ViewSessionHeader
-        formData={sessionData}
+        formData={formattedSessionData}
         onDelete={() => id && handleDelete(id)}
         onEdit={() => navigate(`/editor/${id}`)}
       />
 
       <div className="space-y-4">
         <h2 className="text-2xl font-semibold">Description</h2>
-        <p className="text-muted-foreground">{sessionData.description || "Aucune description"}</p>
+        <p className="text-muted-foreground">{formattedSessionData.description || "Aucune description"}</p>
       </div>
 
-      <ViewSessionDetails formData={sessionData} />
+      <ViewSessionDetails formData={formattedSessionData} />
       <ViewSessionSequences sequences={sequences} />
     </div>
   )

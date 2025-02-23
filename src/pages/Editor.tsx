@@ -1,4 +1,3 @@
-
 import { useParams } from "react-router-dom"
 import { SessionForm } from "@/components/sessions/SessionForm"
 import { SequenceForm } from "@/components/sessions/SequenceForm"
@@ -121,4 +120,3 @@ const Editor = () => {
 }
 
 export default Editor
-
