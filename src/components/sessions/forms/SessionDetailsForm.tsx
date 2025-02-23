@@ -11,6 +11,7 @@ import {
 import { type SessionFormData } from "@/hooks/mutations/useSessionMutation"
 import { useLevelsQuery } from "@/hooks/queries/useLevelsQuery"
 import { useIntensityLevelsQuery } from "@/hooks/queries/useIntensityLevelsQuery"
+import { useAgeCategoriesQuery } from "@/hooks/queries/useAgeCategoriesQuery"
 
 interface SessionDetailsFormProps {
   formData: SessionFormData
@@ -25,6 +26,7 @@ export const SessionDetailsForm = ({
 }: SessionDetailsFormProps) => {
   const { data: levels = [] } = useLevelsQuery()
   const { data: intensityLevels = [] } = useIntensityLevelsQuery()
+  const { data: ageCategories = [] } = useAgeCategoriesQuery()
 
   return (
     <div className="grid gap-6 md:grid-cols-2">
@@ -47,6 +49,7 @@ export const SessionDetailsForm = ({
           </SelectContent>
         </Select>
       </div>
+      
       <div className="space-y-2">
         <Label htmlFor="age_category" className="text-base">Catégorie d'âge</Label>
         <Select 
@@ -58,16 +61,15 @@ export const SessionDetailsForm = ({
             <SelectValue placeholder="Sélectionnez une catégorie" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="U9">U9</SelectItem>
-            <SelectItem value="U11">U11</SelectItem>
-            <SelectItem value="U13">U13</SelectItem>
-            <SelectItem value="U15">U15</SelectItem>
-            <SelectItem value="U17">U17</SelectItem>
-            <SelectItem value="U19">U19</SelectItem>
-            <SelectItem value="Senior">Senior</SelectItem>
+            {ageCategories.map((category) => (
+              <SelectItem key={category.id} value={category.value}>
+                {category.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
+      
       <div className="space-y-2">
         <Label htmlFor="intensity_level" className="text-base">Intensité</Label>
         <Select 
@@ -87,6 +89,7 @@ export const SessionDetailsForm = ({
           </SelectContent>
         </Select>
       </div>
+      
       <div className="space-y-2">
         <Label htmlFor="duration" className="text-base">Durée (minutes)</Label>
         <Input

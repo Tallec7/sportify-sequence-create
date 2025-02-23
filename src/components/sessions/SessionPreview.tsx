@@ -6,7 +6,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { ViewSessionSequences } from "./ViewSessionSequences"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Sequence } from "@/types/sequence"
+import { useIntensityLevelsQuery } from "@/hooks/queries/useIntensityLevelsQuery"
 
 interface SessionPreviewProps {
   generatedSession: {
@@ -30,6 +32,7 @@ export const SessionPreview = ({
   onCancel 
 }: SessionPreviewProps) => {
   const [session, setSession] = useState(generatedSession)
+  const { data: intensityLevels = [] } = useIntensityLevelsQuery()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -37,6 +40,15 @@ export const SessionPreview = ({
     const updatedSession = {
       ...session,
       [name]: newValue
+    }
+    setSession(updatedSession)
+    onEdit(updatedSession)
+  }
+
+  const handleIntensityChange = (value: string) => {
+    const updatedSession = {
+      ...session,
+      intensity_level: value
     }
     setSession(updatedSession)
     onEdit(updatedSession)
@@ -114,11 +126,21 @@ export const SessionPreview = ({
               
               <div className="space-y-2">
                 <Label>Intensité</Label>
-                <Input
-                  name="intensity_level"
+                <Select
                   value={displayValue(session.intensity_level)}
-                  onChange={handleChange}
-                />
+                  onValueChange={handleIntensityChange}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choisir l'intensité" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {intensityLevels.map((level) => (
+                      <SelectItem key={level.id} value={level.value}>
+                        {level.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
           </div>
