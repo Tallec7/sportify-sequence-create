@@ -10,16 +10,18 @@ type Json = Database["public"]["Tables"]["sessions"]["Row"]["tactical_concepts"]
 // Helper function to safely convert Json array to tactical concepts enum array
 const convertJsonToTacticalConcepts = (arr: Json[] | null): TacticalConceptEnum[] => {
   if (!Array.isArray(arr)) return []
+  
+  const validConcepts = [
+    "montee_de_balle",
+    "repli_defensif",
+    "contre_attaque",
+    "attaque_placee",
+    "defense_alignee",
+    "defense_etagee"
+  ] as const
+  
   return arr.filter((item): item is TacticalConceptEnum => {
-    const validConcepts: TacticalConceptEnum[] = [
-      "montee_de_balle",
-      "repli_defensif",
-      "contre_attaque",
-      "attaque_placee",
-      "defense_alignee",
-      "defense_etagee"
-    ]
-    return validConcepts.includes(item as TacticalConceptEnum)
+    return typeof item === 'string' && validConcepts.includes(item as TacticalConceptEnum)
   })
 }
 
