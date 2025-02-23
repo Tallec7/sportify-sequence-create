@@ -107,12 +107,13 @@ const Editor = () => {
               formData={formData}
               setFormData={setFormData}
             />
-            <SequenceForm
-              sequences={sequences}
-              onAddSequence={handleAddSequence}
-              onReorderSequences={handleReorderSequences}
-              formData={formData}
-            />
+            {id && (
+              <SequenceForm
+                onSubmit={handleAddSequence}
+                onReorderSequences={handleReorderSequences}
+                sequences={sequences}
+              />
+            )}
           </>
         )}
       </motion.div>
@@ -121,4 +122,3 @@ const Editor = () => {
 }
 
 export default Editor
-

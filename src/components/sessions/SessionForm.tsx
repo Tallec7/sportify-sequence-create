@@ -37,6 +37,13 @@ export const SessionForm = ({ formData, setFormData }: SessionFormProps) => {
     })
   }
 
+  const handleObjectivesChange = (objectives: SessionFormData['objectives']) => {
+    setFormData({
+      ...formData,
+      objectives
+    })
+  }
+
   return (
     <div className="space-y-8">
       <Card>
