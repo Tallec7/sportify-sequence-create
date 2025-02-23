@@ -1,4 +1,3 @@
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -10,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input"
 import { toast } from "@/components/ui/use-toast"
 import { PromptTemplateDialog } from "./PromptTemplateDialog"
+import { supabase } from "@/integrations/supabase/client"
 import type { Sport } from "@/types/settings"
 import type { PromptTemplate } from "./types"
 
