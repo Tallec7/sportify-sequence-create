@@ -3,6 +3,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Badge } from "@/components/ui/badge"
 import { PromptTemplateDialog } from "./PromptTemplateDialog"
 import type { Sport } from "@/hooks/queries/useSportsQuery"
 
@@ -11,6 +12,7 @@ interface Template {
   prompt_text: string
   training_type: string
   is_active: boolean
+  is_validated: boolean
   sport_id: string | null
   sports: { label: string } | null
 }
@@ -53,6 +55,7 @@ export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemp
             <TableHead>Sport</TableHead>
             <TableHead>Training Type</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Validation</TableHead>
             <TableHead className="w-24">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -61,7 +64,16 @@ export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemp
             <TableRow key={template.id}>
               <TableCell>{template.sports?.label || "All Sports"}</TableCell>
               <TableCell>{template.training_type}</TableCell>
-              <TableCell>{template.is_active ? "Active" : "Inactive"}</TableCell>
+              <TableCell>
+                <Badge variant={template.is_active ? "default" : "secondary"}>
+                  {template.is_active ? "Active" : "Inactive"}
+                </Badge>
+              </TableCell>
+              <TableCell>
+                <Badge variant={template.is_validated ? "default" : "destructive"}>
+                  {template.is_validated ? "Validated" : "Not Validated"}
+                </Badge>
+              </TableCell>
               <TableCell>
                 <Button
                   variant="outline"
@@ -85,4 +97,3 @@ export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemp
     </div>
   )
 }
-

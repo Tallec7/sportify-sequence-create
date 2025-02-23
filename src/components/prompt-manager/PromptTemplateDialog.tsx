@@ -9,6 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { Switch } from "@/components/ui/switch"
 import { useToast } from "@/components/ui/use-toast"
 import { supabase } from "@/integrations/supabase/client"
 import type { Sport } from "@/hooks/queries/useSportsQuery"
@@ -20,6 +21,7 @@ type PromptTemplate = {
   training_type: string
   prompt_text: string
   is_active: boolean
+  is_validated: boolean
   created_at?: string
   updated_at?: string
 }
@@ -28,7 +30,8 @@ const formSchema = z.object({
   sport_id: z.string().nullable(),
   training_type: z.string().min(1, "Training type is required"),
   prompt_text: z.string().min(1, "Prompt text is required"),
-  is_active: z.boolean()
+  is_active: z.boolean(),
+  is_validated: z.boolean()
 })
 
 type FormValues = z.infer<typeof formSchema>
@@ -39,6 +42,7 @@ interface PromptTemplateDialogProps {
     prompt_text: string
     training_type: string
     is_active: boolean
+    is_validated: boolean
     sport_id: string | null
   } | null
   sports: Sport[]
@@ -61,7 +65,8 @@ export const PromptTemplateDialog = ({
       sport_id: null,
       training_type: "",
       prompt_text: "",
-      is_active: true
+      is_active: true,
+      is_validated: false
     }
   })
 
@@ -174,6 +179,45 @@ export const PromptTemplateDialog = ({
                 </FormItem>
               )}
             />
+
+            <div className="flex items-center gap-8">
+              <FormField
+                control={form.control}
+                name="is_active"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                    <div className="space-y-0.5">
+                      <FormLabel>Active</FormLabel>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="is_validated"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3">
+                    <div className="space-y-0.5">
+                      <FormLabel>Validated</FormLabel>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        disabled={!form.getValues("is_active")}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
 
             <div className="flex justify-end gap-4">
               <Button

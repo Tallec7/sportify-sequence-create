@@ -364,6 +364,7 @@ export type Database = {
           id: string
           prompt_text: string
           template_id: string | null
+          test_results: Json | null
         }
         Insert: {
           created_at?: string | null
@@ -371,6 +372,7 @@ export type Database = {
           id?: string
           prompt_text: string
           template_id?: string | null
+          test_results?: Json | null
         }
         Update: {
           created_at?: string | null
@@ -378,6 +380,7 @@ export type Database = {
           id?: string
           prompt_text?: string
           template_id?: string | null
+          test_results?: Json | null
         }
         Relationships: [
           {
@@ -394,6 +397,7 @@ export type Database = {
           created_at: string | null
           id: string
           is_active: boolean | null
+          is_validated: boolean | null
           prompt_text: string
           sport_id: string | null
           training_type: string
@@ -403,6 +407,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           is_active?: boolean | null
+          is_validated?: boolean | null
           prompt_text: string
           sport_id?: string | null
           training_type: string
@@ -412,6 +417,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           is_active?: boolean | null
+          is_validated?: boolean | null
           prompt_text?: string
           sport_id?: string | null
           training_type?: string
