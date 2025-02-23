@@ -1,29 +1,25 @@
-
 export type ActivityTypeEnum = "exercise" | "situation"
 
-export interface Sport {
+export interface BaseSettingType {
   id: string
   value: string
   label: string
+  label_fr?: string
+  label_en?: string
+  is_default?: boolean
+  last_modified_by?: string
+  last_modified_at?: string
 }
 
-export interface Level {
-  id: string
-  value: string
-  label: string
-}
+export interface Sport extends BaseSettingType {}
 
-export interface IntensityLevel {
-  id: string
-  value: string
-  label: string
-}
+export interface Level extends BaseSettingType {}
 
-export interface SequenceType {
-  id: string
-  value: string
-  label: string
-}
+export interface IntensityLevel extends BaseSettingType {}
+
+export interface SequenceType extends BaseSettingType {}
+
+export interface AgeCategory extends BaseSettingType {}
 
 export interface TacticalConceptOption {
   id?: string
@@ -32,11 +28,7 @@ export interface TacticalConceptOption {
   sport_id?: string
 }
 
-export interface AgeCategory {
-  id: string
-  value: string
-  label: string
-}
+export interface AgeCategory extends BaseSettingType {}
 
 export type AgeCategoryType = "U9" | "U11" | "U13" | "U15" | "U17" | "U19" | "Senior"
 
@@ -77,4 +69,3 @@ export type PromptTemplate = {
   created_at?: string
   updated_at?: string
 }
-

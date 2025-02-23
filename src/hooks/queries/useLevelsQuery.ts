@@ -2,22 +2,26 @@
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { useToast } from "@/components/ui/use-toast"
-
-export interface Level {
-  id: string
-  value: string
-  label: string
-}
+import { Level } from "@/types/settings"
 
 export const useLevelsQuery = () => {
   const { toast } = useToast()
 
-  return useQuery({
+  return useQuery<Level[]>({
     queryKey: ['levels'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('levels')
-        .select('id, value, label')
+        .select(`
+          id,
+          value,
+          label,
+          label_fr,
+          label_en,
+          is_default,
+          last_modified_by,
+          last_modified_at
+        `)
         .order('label')
 
       if (error) {

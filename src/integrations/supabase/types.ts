@@ -37,21 +37,36 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          is_default: boolean | null
           label: string
+          label_en: string | null
+          label_fr: string | null
+          last_modified_at: string | null
+          last_modified_by: string | null
           updated_at: string
           value: string
         }
         Insert: {
           created_at?: string
           id?: string
+          is_default?: boolean | null
           label: string
+          label_en?: string | null
+          label_fr?: string | null
+          last_modified_at?: string | null
+          last_modified_by?: string | null
           updated_at?: string
           value: string
         }
         Update: {
           created_at?: string
           id?: string
+          is_default?: boolean | null
           label?: string
+          label_en?: string | null
+          label_fr?: string | null
+          last_modified_at?: string | null
+          last_modified_by?: string | null
           updated_at?: string
           value?: string
         }
@@ -125,21 +140,36 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          is_default: boolean | null
           label: string
+          label_en: string | null
+          label_fr: string | null
+          last_modified_at: string | null
+          last_modified_by: string | null
           updated_at: string
           value: string
         }
         Insert: {
           created_at?: string
           id?: string
+          is_default?: boolean | null
           label: string
+          label_en?: string | null
+          label_fr?: string | null
+          last_modified_at?: string | null
+          last_modified_by?: string | null
           updated_at?: string
           value: string
         }
         Update: {
           created_at?: string
           id?: string
+          is_default?: boolean | null
           label?: string
+          label_en?: string | null
+          label_fr?: string | null
+          last_modified_at?: string | null
+          last_modified_by?: string | null
           updated_at?: string
           value?: string
         }
@@ -149,21 +179,36 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          is_default: boolean | null
           label: string
+          label_en: string | null
+          label_fr: string | null
+          last_modified_at: string | null
+          last_modified_by: string | null
           updated_at: string
           value: string
         }
         Insert: {
           created_at?: string
           id?: string
+          is_default?: boolean | null
           label: string
+          label_en?: string | null
+          label_fr?: string | null
+          last_modified_at?: string | null
+          last_modified_by?: string | null
           updated_at?: string
           value: string
         }
         Update: {
           created_at?: string
           id?: string
+          is_default?: boolean | null
           label?: string
+          label_en?: string | null
+          label_fr?: string | null
+          last_modified_at?: string | null
+          last_modified_by?: string | null
           updated_at?: string
           value?: string
         }
@@ -549,21 +594,36 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          is_default: boolean | null
           label: string
+          label_en: string | null
+          label_fr: string | null
+          last_modified_at: string | null
+          last_modified_by: string | null
           updated_at: string
           value: string
         }
         Insert: {
           created_at?: string
           id?: string
+          is_default?: boolean | null
           label: string
+          label_en?: string | null
+          label_fr?: string | null
+          last_modified_at?: string | null
+          last_modified_by?: string | null
           updated_at?: string
           value: string
         }
         Update: {
           created_at?: string
           id?: string
+          is_default?: boolean | null
           label?: string
+          label_en?: string | null
+          label_fr?: string | null
+          last_modified_at?: string | null
+          last_modified_by?: string | null
           updated_at?: string
           value?: string
         }
@@ -861,6 +921,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      settings_history: {
+        Row: {
+          id: string
+          modified_at: string | null
+          modified_by: string | null
+          new_values: Json | null
+          old_values: Json | null
+          record_id: string
+          table_name: string
+        }
+        Insert: {
+          id?: string
+          modified_at?: string | null
+          modified_by?: string | null
+          new_values?: Json | null
+          old_values?: Json | null
+          record_id: string
+          table_name: string
+        }
+        Update: {
+          id?: string
+          modified_at?: string | null
+          modified_by?: string | null
+          new_values?: Json | null
+          old_values?: Json | null
+          record_id?: string
+          table_name?: string
+        }
+        Relationships: []
       }
       sports: {
         Row: {

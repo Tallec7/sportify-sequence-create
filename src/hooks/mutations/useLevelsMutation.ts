@@ -8,37 +8,33 @@ export const useLevelsMutation = (onSuccess: () => void) => {
   const [isEditingLevel, setIsEditingLevel] = useState<string | null>(null)
   const [editedLevelValue, setEditedLevelValue] = useState("")
   const [editedLevelLabel, setEditedLevelLabel] = useState("")
-  const [newLevelValue, setNewLevelValue] = useState("")
-  const [newLevelLabel, setNewLevelLabel] = useState("")
+  const [editedLevelLabelFr, setEditedLevelLabelFr] = useState("")
+  const [editedLevelLabelEn, setEditedLevelLabelEn] = useState("")
   const { toast } = useToast()
 
-  const handleAddLevel = async () => {
-    if (!newLevelValue || !newLevelLabel) {
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Veuillez remplir tous les champs"
-      })
-      return
-    }
-
+  const handleAddLevel = async (values: {
+    value: string
+    label: string
+    label_fr: string
+    label_en: string
+  }) => {
     try {
       const { error } = await supabase
         .from('levels')
         .insert([{
-          value: newLevelValue,
-          label: newLevelLabel
+          value: values.value,
+          label: values.label,
+          label_fr: values.label_fr,
+          label_en: values.label_en,
         }])
 
       if (error) throw error
 
       toast({
         title: "Niveau ajouté",
-        description: `Le niveau ${newLevelLabel} a été ajouté avec succès`
+        description: "Le niveau a été ajouté avec succès"
       })
 
-      setNewLevelValue("")
-      setNewLevelLabel("")
       onSuccess()
     } catch (error) {
       console.error('Error adding level:', error)
@@ -50,27 +46,29 @@ export const useLevelsMutation = (onSuccess: () => void) => {
     }
   }
 
-  const handleEditLevel = async (id: string) => {
-    if (!editedLevelValue || !editedLevelLabel) {
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: "Veuillez remplir tous les champs"
-      })
-      return
-    }
-
+  const handleUpdateLevel = async (id: string, values: {
+    value: string
+    label: string
+    label_fr: string
+    label_en: string
+  }) => {
     try {
       const { error } = await supabase
         .from('levels')
-        .update({ value: editedLevelValue, label: editedLevelLabel })
+        .update({
+          value: values.value,
+          label: values.label,
+          label_fr: values.label_fr,
+          label_en: values.label_en,
+          last_modified_at: new Date().toISOString()
+        })
         .eq('id', id)
 
       if (error) throw error
 
       toast({
         title: "Niveau modifié",
-        description: `Le niveau a été modifié avec succès`
+        description: "Le niveau a été modifié avec succès"
       })
 
       setIsEditingLevel(null)
@@ -114,15 +112,15 @@ export const useLevelsMutation = (onSuccess: () => void) => {
     isEditingLevel,
     editedLevelValue,
     editedLevelLabel,
-    newLevelValue,
-    newLevelLabel,
+    editedLevelLabelFr,
+    editedLevelLabelEn,
     setIsEditingLevel,
     setEditedLevelValue,
     setEditedLevelLabel,
-    setNewLevelValue,
-    setNewLevelLabel,
+    setEditedLevelLabelFr,
+    setEditedLevelLabelEn,
     handleAddLevel,
-    handleEditLevel,
+    handleUpdateLevel,
     handleDeleteLevel,
   }
 }
