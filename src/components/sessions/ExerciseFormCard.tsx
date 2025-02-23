@@ -41,7 +41,7 @@ export const ExerciseFormCard = ({
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg">
-            {editingExercise ? "Modifier l'exercice" : "Nouvel exercice"}
+            {editingExercise ? "Modifier la phase" : "Nouvelle phase"}
           </CardTitle>
           {editingExercise && (
             <Button
@@ -77,12 +77,12 @@ export const ExerciseFormCard = ({
               {editingExercise ? (
                 <>
                   <Edit className="h-4 w-4" />
-                  Modifier l'exercice
+                  Modifier la phase
                 </>
               ) : (
                 <>
                   <Plus className="h-4 w-4" />
-                  Ajouter l'exercice
+                  Ajouter la phase
                 </>
               )}
             </Button>

@@ -1,3 +1,4 @@
+
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -50,7 +51,7 @@ export const ExerciseListItem = ({ exercise, onEdit, onDelete, sessionContext }:
             >
               {getActivityIcon()}
               <span className="capitalize">
-                {exercise.activity_type === 'exercise' ? 'Exercice' : 'Situation'}
+                {exercise.activity_type === 'exercise' ? 'Phase' : 'Situation'}
               </span>
             </Badge>
           </div>
@@ -120,7 +121,7 @@ export const ExerciseListItem = ({ exercise, onEdit, onDelete, sessionContext }:
                 <p className="text-sm font-medium">Diagramme :</p>
                 <img 
                   src={exercise.diagram_url} 
-                  alt="Diagramme de l'exercice" 
+                  alt="Diagramme de la phase" 
                   className="rounded-md max-h-40 object-cover"
                 />
               </div>
@@ -189,3 +190,4 @@ export const ExerciseListItem = ({ exercise, onEdit, onDelete, sessionContext }:
     </div>
   )
 }
+

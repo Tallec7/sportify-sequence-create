@@ -56,7 +56,7 @@ export const ViewSessionSequences = ({ sequences }: ViewSessionSequencesProps) =
 
             {sequence.exercises && sequence.exercises.length > 0 && (
               <div className="space-y-3 pt-3">
-                <h4 className="font-medium text-sm">Exercices</h4>
+                <h4 className="font-medium text-sm">Phases</h4>
                 <ScrollArea className="h-[250px] rounded-md border p-4">
                   <div className="space-y-4">
                     {sequence.exercises
@@ -141,3 +141,4 @@ export const ViewSessionSequences = ({ sequences }: ViewSessionSequencesProps) =
     </div>
   )
 }
+
