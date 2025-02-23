@@ -1,4 +1,3 @@
-
 import { z } from "zod"
 import type { Sport } from "@/types/settings"
 
@@ -38,3 +37,6 @@ export interface PromptTemplateDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
+
+export type SortField = 'mode' | 'updated_at' | 'sport'
+export type SortOrder = 'asc' | 'desc'
