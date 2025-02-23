@@ -1,34 +1,24 @@
+
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
 import { PromptTemplateDialog } from "./PromptTemplateDialog"
-import type { Sport } from "@/hooks/queries/useSportsQuery"
-
-interface PromptTemplate {
-  id: string
-  prompt_text: string
-  training_type: string
-  is_active: boolean
-  is_validated: boolean
-  sport_id: string | null
-  sports: { label: string } | null
-}
-
-interface Template extends PromptTemplate {}
+import type { Sport } from "@/types/settings"
+import type { PromptTemplate } from "./types"
 
 interface PromptTemplatesListProps {
-  templates: Template[]
+  templates: PromptTemplate[]
   sports: Sport[]
   isLoading: boolean
 }
 
 export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemplatesListProps) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null)
+  const [selectedTemplate, setSelectedTemplate] = useState<PromptTemplate | null>(null)
 
-  const handleEdit = (template: Template) => {
+  const handleEdit = (template: PromptTemplate) => {
     setSelectedTemplate(template)
     setIsDialogOpen(true)
   }
@@ -45,9 +35,7 @@ export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemp
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <Button onClick={handleCreate}>
-          Create Template
-        </Button>
+        <Button onClick={handleCreate}>Create Template</Button>
       </div>
 
       <Table>
@@ -76,11 +64,7 @@ export const PromptTemplatesList = ({ templates, sports, isLoading }: PromptTemp
                 </Badge>
               </TableCell>
               <TableCell>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleEdit(template)}
-                >
+                <Button variant="outline" size="sm" onClick={() => handleEdit(template)}>
                   Edit
                 </Button>
               </TableCell>

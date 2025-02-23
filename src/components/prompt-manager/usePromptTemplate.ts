@@ -32,14 +32,20 @@ export const usePromptTemplate = ({ template, onOpenChange }: UsePromptTemplateP
       if (template?.id) {
         const { error } = await supabase
           .from("prompt_templates")
-          .update({ ...values, updated_at: new Date().toISOString() })
+          .update({
+            ...values,
+            updated_at: new Date().toISOString()
+          })
           .eq("id", template.id)
 
         if (error) throw error
       } else {
         const { error } = await supabase
           .from("prompt_templates")
-          .insert([{ ...values, created_at: new Date().toISOString() }])
+          .insert([{
+            ...values,
+            created_at: new Date().toISOString()
+          }])
 
         if (error) throw error
       }
@@ -64,6 +70,8 @@ export const usePromptTemplate = ({ template, onOpenChange }: UsePromptTemplateP
   const onSubmit = (values: PromptTemplateFormValues) => {
     mutation.mutate(values)
   }
+
+  form.onSubmit = onSubmit
 
   return {
     form,

@@ -1,106 +1,60 @@
+
 import { useQuery } from "@tanstack/react-query"
+import { useToast } from "@/components/ui/use-toast"
 import { supabase } from "@/integrations/supabase/client"
-import { SessionFormData, TacticalConceptEnum } from "@/types/settings"
-import { Database } from "@/integrations/supabase/types"
-import { useTacticalConceptsQuery } from "./useTacticalConceptsQuery"
+import type { TacticalConceptEnum } from "@/types/settings"
 
-type SessionResponse = Database["public"]["Tables"]["sessions"]["Row"]
-type Json = Database["public"]["Tables"]["sessions"]["Row"]["tactical_concepts"][number]
-
-// ✅ Fonction pour convertir un tableau JSON en TacticalConceptEnum[]
-const convertJsonToTacticalConcepts = (
-  arr: Json[] | null, 
-  validConcepts: TacticalConceptEnum[]
-): TacticalConceptEnum[] => {
-  if (!Array.isArray(arr)) return []
-  
-  return arr.filter((item): item is TacticalConceptEnum => 
-    typeof item === 'string' && validConcepts.includes(item as TacticalConceptEnum)
-  )
-}
-
-// ✅ Vérification si une valeur appartient à `TacticalConceptEnum`
-const isTacticalConceptEnum = (value: string): value is TacticalConceptEnum => {
-  return [
-    'montee_de_balle',
-    'repli_defensif',
-    'contre_attaque',
-    'attaque_placee',
-    'defense_alignee',
-    'defense_etagee'
-  ].includes(value)
-}
-
-// ✅ Convertit un tableau de chaînes en `TacticalConceptEnum[]`
-const convertStringArrayToEnum = (arr: string[]): TacticalConceptEnum[] => {
-  const validConcepts: TacticalConceptEnum[] = [
-    "montee_de_balle",
-    "repli_defensif",
-    "contre_attaque",
-    "attaque_placee",
-    "defense_alignee",
-    "defense_etagee"
-  ]
-  return arr
-    .map(item => item as TacticalConceptEnum)
-    .filter(item => validConcepts.includes(item))
-}
-
-// ✅ Convertit un tableau JSON en `string[]`
-const convertJsonArrayToStringArray = (arr: Json[] | null): string[] => {
-  if (!Array.isArray(arr)) return []
-  return arr.filter((item): item is string => typeof item === 'string')
-}
-
-export const useSessionQuery = (id: string | undefined) => {
-  // ✅ Récupération dynamique des concepts tactiques
-  const { data: tacticalConceptsData } = useTacticalConceptsQuery("handball") // ⚠️ Devrait être dynamique
+export const useSessionQuery = (sessionId: string) => {
+  const { toast } = useToast()
 
   return useQuery({
-    queryKey: ["session", id],
+    queryKey: ["session", sessionId],
     queryFn: async () => {
-      if (!id) throw new Error("Session ID is required")
-      
-      const { data: sessionData, error: sessionError } = await supabase
-        .from("sessions")
-        .select("*, objective")  // ✅ Ajout du champ `objective`
-        .eq("id", id)
-        .maybeSingle()
-
-      if (sessionError) throw sessionError
-      if (!sessionData) throw new Error("Session not found")
-
-      // ✅ Récupération des valeurs dynamiques de `dropdown-settings`
-      const validConcepts = tacticalConceptsData?.map(concept => concept.value as TacticalConceptEnum) || []
-
-      // ✅ Vérification et conversion des concepts tactiques
-      const tacticalConcepts = convertJsonToTacticalConcepts(
-        sessionData.tactical_concepts,
-        validConcepts
-      )
-
-      // ✅ Création de l'objet final `SessionFormData`
-      const processedData: SessionFormData = {
-        title: sessionData.title,
-        description: sessionData.description || "",
-        sport: sessionData.sport,
-        level: sessionData.level,
-        duration: sessionData.duration,
-        participants_min: sessionData.participants_min,
-        participants_max: sessionData.participants_max,
-        age_category: sessionData.age_category,
-        intensity_level: sessionData.intensity_level || "medium",
-        cycle_id: sessionData.cycle_id,
-        objective: sessionData.objective ?? "",  // ✅ Évite les erreurs TypeScript
-        tactical_concepts: tacticalConcepts,  // ✅ Correction ici
-        decision_making_focus: convertJsonArrayToStringArray(sessionData.decision_making_focus),
-        performance_metrics: convertJsonArrayToStringArray(sessionData.performance_metrics),
-        expert_validated: sessionData.expert_validated || false,
-        validation_feedback: sessionData.validation_feedback || ""
+      // Check if tactical concept is valid
+      const isValidTacticalConcept = (value: string): value is TacticalConceptEnum => {
+        return ["montee_de_balle", "repli_defensif", "contre_attaque", "attaque_placee", "defense_alignee", "defense_etagee"].includes(value as TacticalConceptEnum)
       }
 
-      return processedData
-    },
-    enabled: !!id,
+      const { data, error } = await supabase
+        .from("sessions")
+        .select(`
+          *,
+          session_sequences (
+            id,
+            title,
+            objective,
+            description,
+            duration,
+            sequence_order,
+            intensity_level,
+            sequence_type,
+            tactical_concepts,
+            decision_making_focus,
+            performance_metrics
+          )
+        `)
+        .eq("id", sessionId)
+        .single()
+
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to load session"
+        })
+        throw error
+      }
+
+      // Ensure tactical_concepts array only contains valid values
+      const validTacticalConcepts = (data.tactical_concepts || []).filter(isValidTacticalConcept)
+
+      return {
+        ...data,
+        tactical_concepts: validTacticalConcepts,
+        decision_making_focus: data.decision_making_focus || [],
+        performance_metrics: data.performance_metrics || {},
+        sequences: data.session_sequences || []
+      }
+    }
   })
 }
