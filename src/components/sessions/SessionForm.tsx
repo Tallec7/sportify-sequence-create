@@ -1,4 +1,3 @@
-
 import { SessionFormData } from "@/types/settings"
 import { SessionBasicInfoForm } from "./forms/SessionBasicInfoForm"
 import { SessionDetailsForm } from "./forms/SessionDetailsForm"
@@ -29,7 +28,7 @@ export const SessionForm = ({ formData, setFormData }: SessionFormProps) => {
     })
   }
 
-  const handleTextChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData({
       ...formData,
@@ -46,8 +45,9 @@ export const SessionForm = ({ formData, setFormData }: SessionFormProps) => {
         <CardContent className="space-y-6">
           <SessionBasicInfoForm
             formData={formData}
+            handleChange={handleChange}
             handleSelectChange={handleSelectChange}
-            handleTextChange={handleTextChange}
+            handleNumberChange={handleNumberChange}
           />
         </CardContent>
       </Card>
@@ -85,7 +85,7 @@ export const SessionForm = ({ formData, setFormData }: SessionFormProps) => {
           <SessionObjectivesForm
             formData={formData}
             handleSelectChange={handleSelectChange}
-            handleTextChange={handleTextChange}
+            handleTextChange={handleChange}
           />
         </CardContent>
       </Card>

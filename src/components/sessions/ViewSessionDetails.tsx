@@ -1,5 +1,5 @@
 
-import { SessionFormData } from "./SessionForm"
+import { SessionFormData } from "@/types/settings"
 
 interface ViewSessionDetailsProps {
   formData: SessionFormData
@@ -37,3 +37,4 @@ export const ViewSessionDetails = ({ formData }: ViewSessionDetailsProps) => {
     </div>
   )
 }
+

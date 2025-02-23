@@ -1,9 +1,8 @@
-
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Pencil, Trash2 } from "lucide-react"
 import { formatDuration } from "@/utils/formatters"
-import { SessionFormData } from "../sessions/SessionForm"
+import { SessionFormData } from "@/types/settings"
 import {
   AlertDialog,
   AlertDialogAction,
