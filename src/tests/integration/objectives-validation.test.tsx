@@ -6,6 +6,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { SessionObjectivesForm } from "@/components/sessions/forms/SessionObjectivesForm"
 import { ExerciseObjectivesList } from "@/components/sessions/ExerciseObjectivesList"
 import { supabase } from "@/integrations/supabase/client"
+import { Database } from "@/integrations/supabase/types"
+
+type ObjectiveType = Database["public"]["Enums"]["objective_type_enum"]
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,7 +38,8 @@ describe("Objectives Management", () => {
           type: "technique",
           is_priority: true,
           order_index: 0,
-          objective_type: "apprentissage"
+          objective_type: "apprentissage" as ObjectiveType,
+          session_id: "test-session"
         }], 
         error: null 
       }),
@@ -53,7 +57,7 @@ describe("Objectives Management", () => {
       type: "technique",
       is_priority: true,
       order_index: 0,
-      objective_type: "apprentissage",
+      objective_type: "apprentissage" as ObjectiveType,
       session_id: "test-session"
     }]
 
@@ -77,7 +81,7 @@ describe("Objectives Management", () => {
     const mockObjectives = [{
       id: "1",
       description: "Test sequence objective",
-      objective_type: "apprentissage",
+      objective_type: "apprentissage" as ObjectiveType,
       is_priority: true,
       order_index: 0,
       sequence_id: "test-sequence"
