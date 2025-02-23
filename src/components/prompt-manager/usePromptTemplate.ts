@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useToast } from "@/components/ui/use-toast"
 import { supabase } from "@/integrations/supabase/client"
 import { promptTemplateFormSchema, type PromptTemplateFormValues, type PromptTemplate } from "./types"
+import { logPromptError } from "@/utils/promptErrorHandler"
 
 interface UsePromptTemplateProps {
   template: PromptTemplate | null
@@ -39,7 +40,12 @@ export const usePromptTemplate = ({ template, onOpenChange }: UsePromptTemplateP
         })
       } catch (error) {
         console.error('Failed to clear prompt cache:', error)
-        // On continue même si la purge du cache échoue
+        await logPromptError({
+          training_type: values.training_type,
+          mode: values.mode,
+          error_type: "template_not_found",
+          details: { error: error.message }
+        })
       }
       
       if (template?.id) {
@@ -77,7 +83,16 @@ export const usePromptTemplate = ({ template, onOpenChange }: UsePromptTemplateP
       })
       onOpenChange(false)
     },
-    onError: (error) => {
+    onError: async (error) => {
+      if (form.getValues().training_type) {
+        await logPromptError({
+          training_type: form.getValues().training_type,
+          mode: form.getValues().mode || "express",
+          error_type: "validation_error",
+          details: { error: error.message }
+        })
+      }
+      
       toast({
         variant: "destructive",
         title: "Error",
@@ -95,4 +110,3 @@ export const usePromptTemplate = ({ template, onOpenChange }: UsePromptTemplateP
     onSubmit: handleSubmit
   }
 }
-

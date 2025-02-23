@@ -27,25 +27,30 @@ serve(async (req) => {
     );
 
     const { mode, answers } = await req.json();
-    
     const templateType = `session_generation_${mode}`;
     
-    // Tentative de récupération du prompt depuis le cache
     let systemPrompt = await getPromptFromCache(supabase, templateType);
 
-    // Si pas en cache ou erreur, utiliser le fallback
     if (!systemPrompt) {
       console.warn(`Using fallback prompt for mode: ${mode}`);
       systemPrompt = fallbackPrompts[mode];
       
-      // Notifier l'admin via une insertion dans prompt_history
-      await supabase
-        .from('prompt_history')
+      // Log the error
+      const { error: logError } = await supabase
+        .from('prompt_errors')
         .insert({
-          template_id: null,
-          prompt_text: `Failed to fetch template for ${templateType}. Using fallback.`,
-          test_results: { error: 'Cache miss and database fetch failed' }
+          training_type: templateType,
+          mode: mode,
+          error_type: 'template_not_found',
+          details: {
+            answers: answers,
+            timestamp: new Date().toISOString()
+          }
         });
+
+      if (logError) {
+        console.error('Failed to log prompt error:', logError);
+      }
     }
 
     let userPrompt = "";
@@ -60,8 +65,6 @@ serve(async (req) => {
         userPrompt = `Crée une séance innovante pour ${answers.sport}, niveau ${answers.level}. Cherche des exercices créatifs et originaux en gardant l'aspect pédagogique. Durée: ${answers.duration} minutes. Style recherché: ${answers.style}`;
         break;
     }
-
-    console.log("Envoi de la requête à OpenAI avec:", { systemPrompt, userPrompt });
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -81,6 +84,19 @@ serve(async (req) => {
 
     if (!response.ok) {
       const error = await response.text();
+      // Log generation error
+      await supabase
+        .from('prompt_errors')
+        .insert({
+          training_type: templateType,
+          mode: mode,
+          error_type: 'generation_error',
+          details: {
+            error: error,
+            status: response.status,
+            answers: answers
+          }
+        });
       throw new Error(`OpenAI API a répondu avec le statut : ${response.status}. Erreur: ${error}`);
     }
 
@@ -90,12 +106,37 @@ serve(async (req) => {
     try {
       sessionData = JSON.parse(data.choices[0].message.content);
     } catch (error) {
+      // Log parsing error
+      await supabase
+        .from('prompt_errors')
+        .insert({
+          training_type: templateType,
+          mode: mode,
+          error_type: 'parsing_error',
+          details: {
+            raw_content: data.choices[0].message.content,
+            error: error.message,
+            answers: answers
+          }
+        });
       console.error("Erreur lors du parsing JSON:", error);
       console.log("Contenu reçu:", data.choices[0].message.content);
       throw new Error('La réponse de l\'IA n\'est pas un JSON valide');
     }
     
     if (!sessionData.title || !sessionData.sport || !sessionData.sequences) {
+      // Log validation error
+      await supabase
+        .from('prompt_errors')
+        .insert({
+          training_type: templateType,
+          mode: mode,
+          error_type: 'validation_error',
+          details: {
+            session_data: sessionData,
+            answers: answers
+          }
+        });
       throw new Error('La structure JSON générée est invalide ou incomplète');
     }
 
@@ -113,4 +154,3 @@ serve(async (req) => {
     });
   }
 });
-

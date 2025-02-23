@@ -357,6 +357,39 @@ export type Database = {
         }
         Relationships: []
       }
+      prompt_errors: {
+        Row: {
+          created_at: string | null
+          details: Json | null
+          error_type: string
+          id: string
+          mode: string
+          resolved_at: string | null
+          timestamp: string
+          training_type: string
+        }
+        Insert: {
+          created_at?: string | null
+          details?: Json | null
+          error_type: string
+          id?: string
+          mode: string
+          resolved_at?: string | null
+          timestamp?: string
+          training_type: string
+        }
+        Update: {
+          created_at?: string | null
+          details?: Json | null
+          error_type?: string
+          id?: string
+          mode?: string
+          resolved_at?: string | null
+          timestamp?: string
+          training_type?: string
+        }
+        Relationships: []
+      }
       prompt_history: {
         Row: {
           created_at: string | null
