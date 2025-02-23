@@ -34,3 +34,4 @@ export interface PromptTemplateDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
+

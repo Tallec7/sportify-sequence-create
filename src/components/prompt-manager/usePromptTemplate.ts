@@ -23,23 +23,28 @@ export const usePromptTemplate = ({ template, onOpenChange }: UsePromptTemplateP
       prompt_text: template?.prompt_text || "",
       is_active: template?.is_active ?? true,
       is_validated: template?.is_validated ?? false,
-      is_default: template?.is_default ?? !template
+      is_default: template?.is_default ?? false
     }
   })
 
   const mutation = useMutation({
     mutationFn: async (values: PromptTemplateFormValues) => {
+      const timestamp = new Date().toISOString()
+      const data = template?.id
+        ? { ...values, updated_at: timestamp }
+        : { ...values, created_at: timestamp }
+
       if (template?.id) {
         const { error } = await supabase
           .from("prompt_templates")
-          .update(values)
+          .update(data)
           .eq("id", template.id)
 
         if (error) throw error
       } else {
         const { error } = await supabase
           .from("prompt_templates")
-          .insert([{ ...values }])
+          .insert(data)
 
         if (error) throw error
       }
@@ -61,8 +66,13 @@ export const usePromptTemplate = ({ template, onOpenChange }: UsePromptTemplateP
     }
   })
 
+  const handleSubmit = (values: PromptTemplateFormValues) => {
+    mutation.mutate(values)
+  }
+
   return {
     form,
-    onSubmit: form.handleSubmit((values) => mutation.mutate(values))
+    onSubmit: handleSubmit
   }
 }
+

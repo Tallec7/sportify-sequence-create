@@ -48,12 +48,20 @@ export const useSessionQuery = (sessionId: string) => {
         ? data.tactical_concepts.filter(isValidTacticalConcept)
         : []
 
+      // Ensure performance_metrics is always a string array
+      const performance_metrics = Array.isArray(data.performance_metrics) 
+        ? data.performance_metrics.map(item => String(item))
+        : []
+
       return {
         ...data,
         tactical_concepts: validTacticalConcepts,
         decision_making_focus: Array.isArray(data.decision_making_focus) ? data.decision_making_focus : [],
-        performance_metrics: data.performance_metrics || {}
+        performance_metrics,
+        objective: data.objective || "",
+        session_sequences: data.session_sequences || []
       }
     }
   })
 }
+
