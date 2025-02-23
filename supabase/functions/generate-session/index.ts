@@ -8,6 +8,12 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const fallbackPrompts = {
+  express: 'Tu es un assistant spécialisé dans la création de séances d\'entraînement express...',
+  expert: 'Tu es un assistant spécialisé dans la création de séances d\'entraînement détaillées...',
+  creativity: 'Tu es un assistant spécialisé dans la création de séances d\'entraînement innovantes...'
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -21,11 +27,14 @@ serve(async (req) => {
 
     const { mode, answers } = await req.json();
     
-    // Fetch the appropriate prompt template
+    // Détermine le type de template en fonction du mode
+    const templateType = `session_generation_${mode}`;
+
+    // Récupère le template approprié
     const { data: templateData, error: templateError } = await supabase
       .from('prompt_templates')
       .select('prompt_text')
-      .eq('training_type', 'session_generation')
+      .eq('training_type', templateType)
       .eq('is_active', true)
       .order('is_default', { ascending: false })
       .limit(1)
@@ -33,13 +42,27 @@ serve(async (req) => {
 
     if (templateError) {
       console.error('Error fetching prompt template:', templateError);
-      throw new Error('Failed to fetch prompt template');
+      
+      // Notifier l'admin du problème via une insertion dans une table de logs
+      await supabase
+        .from('prompt_history')
+        .insert({
+          template_id: null,
+          prompt_text: `Failed to fetch template for ${templateType}. Using fallback.`,
+          test_results: { error: templateError.message }
+        });
+      
+      // Utiliser le fallback approprié
+      const systemPrompt = fallbackPrompts[mode];
+      if (!systemPrompt) {
+        throw new Error('No fallback prompt available for this mode');
+      }
+      console.log("Using fallback prompt for mode:", mode);
     }
 
-    const systemPrompt = templateData.prompt_text;
+    const systemPrompt = templateData ? templateData.prompt_text : fallbackPrompts[mode];
 
     let userPrompt = "";
-
     switch (mode) {
       case "express":
         userPrompt = `Crée une séance d'entraînement pour ${answers.sport}, niveau ${answers.level}, avec ${answers.participants} participants, durée ${answers.duration} minutes.`;
@@ -61,7 +84,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4',
+        model: 'gpt-4o',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
