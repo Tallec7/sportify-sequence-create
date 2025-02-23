@@ -10,7 +10,6 @@ export const useSessionQuery = (sessionId: string) => {
   return useQuery({
     queryKey: ["session", sessionId],
     queryFn: async () => {
-      // Check if tactical concept is valid
       const isValidTacticalConcept = (value: string): value is TacticalConceptEnum => {
         return ["montee_de_balle", "repli_defensif", "contre_attaque", "attaque_placee", "defense_alignee", "defense_etagee"].includes(value as TacticalConceptEnum)
       }
@@ -45,16 +44,19 @@ export const useSessionQuery = (sessionId: string) => {
         throw error
       }
 
-      // Ensure tactical_concepts array only contains valid values
-      const validTacticalConcepts = (data.tactical_concepts || []).filter(isValidTacticalConcept)
+      const validTacticalConcepts = Array.isArray(data.tactical_concepts) 
+        ? data.tactical_concepts.filter(isValidTacticalConcept)
+        : []
 
       return {
         ...data,
         tactical_concepts: validTacticalConcepts,
-        decision_making_focus: data.decision_making_focus || [],
+        decision_making_focus: Array.isArray(data.decision_making_focus) ? data.decision_making_focus : [],
         performance_metrics: data.performance_metrics || {},
+        objective: data.objective || "",
         sequences: data.session_sequences || []
       }
     }
   })
 }
+
