@@ -40,7 +40,8 @@ const Editor = () => {
     decision_making_focus: [],
     performance_metrics: [],
     expert_validated: false,
-    validation_feedback: ""
+    validation_feedback: "",
+    objectives: []
   })
 
   // Update form data when session data is loaded
@@ -53,7 +54,8 @@ const Editor = () => {
         performance_metrics: sessionData.performance_metrics || [],
         objective: sessionData.objective || "",
         validation_feedback: sessionData.validation_feedback || "",
-        expert_validated: sessionData.expert_validated || false
+        expert_validated: sessionData.expert_validated || false,
+        objectives: sessionData.objectives || []
       })
     }
   }, [sessionData])
@@ -119,3 +121,4 @@ const Editor = () => {
 }
 
 export default Editor
+

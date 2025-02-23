@@ -12,48 +12,44 @@ import {
 } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useState } from "react"
-import { SessionObjective } from "@/hooks/queries/useObjectivesQuery"
-import { useObjectiveMutation } from "@/hooks/mutations/useObjectiveMutation"
-import { useObjectiveOrderMutation } from "@/hooks/mutations/useObjectiveOrderMutation"
 import { Badge } from "@/components/ui/badge"
-import { Database } from "@/integrations/supabase/types"
-
-type ObjectiveType = Database["public"]["Enums"]["objective_type_enum"]
+import { SessionFormData } from "@/types/settings"
 
 interface SessionObjectivesFormProps {
-  objectives: SessionObjective[]
-  sessionId: string | undefined
+  formData: SessionFormData
+  handleSelectChange: (name: string, value: string) => void
+  handleTextChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
 }
 
 export const SessionObjectivesForm = ({
-  objectives,
-  sessionId,
+  formData,
+  handleSelectChange,
+  handleTextChange,
 }: SessionObjectivesFormProps) => {
-  const objectiveMutation = useObjectiveMutation(sessionId)
-  const objectiveOrderMutation = useObjectiveOrderMutation(sessionId)
+  // Initialize with empty array if objectives is undefined
+  const objectives = formData.objectives || []
 
-  const [newObjective, setNewObjective] = useState<Omit<SessionObjective, "id">>({
+  const [newObjective, setNewObjective] = useState<Omit<(typeof objectives)[number], "id">>({
     description: "",
     type: "technique",
     is_priority: false,
     order_index: objectives.length,
     objective_type: "apprentissage",
-    session_id: sessionId || ""
+    session_id: ""
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (sessionId) {
-      objectiveMutation.mutate(newObjective)
-      setNewObjective({
-        description: "",
-        type: "technique",
-        is_priority: false,
-        order_index: objectives.length + 1,
-        objective_type: "apprentissage",
-        session_id: sessionId
-      })
-    }
+    const updatedObjectives = [...objectives, newObjective]
+    handleSelectChange("objectives", JSON.stringify(updatedObjectives))
+    setNewObjective({
+      description: "",
+      type: "technique",
+      is_priority: false,
+      order_index: updatedObjectives.length,
+      objective_type: "apprentissage",
+      session_id: ""
+    })
   }
 
   return (
@@ -61,7 +57,7 @@ export const SessionObjectivesForm = ({
       <div className="space-y-4">
         {objectives.map((objective, index) => (
           <div
-            key={objective.id}
+            key={objective.id || index}
             className="flex items-center gap-4 rounded-lg border p-4"
           >
             <div className="flex-1 space-y-1">
@@ -119,7 +115,7 @@ export const SessionObjectivesForm = ({
               <Label htmlFor="objective_type">Catégorie</Label>
               <Select
                 value={newObjective.objective_type}
-                onValueChange={(value: ObjectiveType) =>
+                onValueChange={(value) =>
                   setNewObjective({ ...newObjective, objective_type: value })
                 }
               >
@@ -158,3 +154,4 @@ export const SessionObjectivesForm = ({
     </div>
   )
 }
+
