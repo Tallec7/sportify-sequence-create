@@ -9,9 +9,9 @@ describe("AddSequenceForm", () => {
     description: "",
     duration: 0,
     sequence_type: "main" as const,
-    intensity_level: "medium",
+    intensity_level: "medium" as const,
     sequence_order: 1,
-    objective: "À définir"  // Added default objective
+    objective: "À définir"
   }
 
   const mockSetNewSequence = vi.fn()
@@ -85,3 +85,4 @@ describe("AddSequenceForm", () => {
     expect(sequenceTypeInput).toBeRequired()
   })
 })
+
