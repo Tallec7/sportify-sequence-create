@@ -13,6 +13,17 @@ import { useToast } from "@/components/ui/use-toast"
 import { supabase } from "@/integrations/supabase/client"
 import type { Sport } from "@/hooks/queries/useSportsQuery"
 
+// Define the shape of the data required by Supabase
+type PromptTemplate = {
+  id?: string
+  sport_id: string | null
+  training_type: string
+  prompt_text: string
+  is_active: boolean
+  created_at?: string
+  updated_at?: string
+}
+
 const formSchema = z.object({
   sport_id: z.string().nullable(),
   training_type: z.string().min(1, "Training type is required"),
@@ -68,7 +79,7 @@ export const PromptTemplateDialog = ({
         // Create new template
         const { error } = await supabase
           .from("prompt_templates")
-          .insert([values])
+          .insert([values as PromptTemplate]) // Cast to ensure type alignment
 
         if (error) throw error
       }
@@ -182,4 +193,3 @@ export const PromptTemplateDialog = ({
     </Dialog>
   )
 }
-
