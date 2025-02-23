@@ -7,7 +7,7 @@ export interface Exercise {
   player_instructions?: string
   setup_instructions?: string
   coach_instructions?: string
-  intensity_level?: string
+  intensity_level?: 'low' | 'medium' | 'high'  // Add specific intensity levels
   variations?: string[]
   exercise_order: number
   activity_type: 'exercise' | 'situation'
@@ -21,7 +21,7 @@ export interface Exercise {
   progression_level?: number
   success_criteria?: ExerciseSuccessCriteria[]
   technical_progressions?: TechnicalProgression[]
-  objective: string  // Added objective field
+  objective: string
 }
 
 export type TacticalConcept = "montee_de_balle" | "repli_defensif" | "contre_attaque" | "attaque_placee" | "defense_alignee" | "defense_etagee"
@@ -69,10 +69,10 @@ export interface Sequence {
   description: string
   duration: number
   sequence_type: SequenceType
-  intensity_level: string
+  intensity_level: 'low' | 'medium' | 'high'  // Add specific intensity levels
   sequence_order: number
   session_id?: string
-  objective: string  // Added objective field
+  objective: string
   exercises?: Exercise[]
   objectives?: SequenceObjective[]
 }

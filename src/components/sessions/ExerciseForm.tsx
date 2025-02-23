@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from "react"
 import { Exercise } from "@/types/sequence"
 import { useExerciseMutation } from "@/hooks/mutations/useExerciseMutation"
@@ -20,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
+import { toast } from "react-toastify"
 
 export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
   const { data: exercises = [] } = useExercisesQuery(sequenceId)
@@ -39,10 +39,10 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
     intensity_level: "medium",
     exercise_order: exercises.length + 1,
     activity_type: "exercise",
-    objective: "À définir"
+    objective: ""
   })
 
-  const { data: session } = useSessionQuery(undefined)  // Pass undefined since we don't have a session ID yet
+  const { data: session } = useSessionQuery(undefined)
   const sessionContext = session ? {
     sport: session.sport,
     level: session.level,
@@ -61,6 +61,16 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    if (!editingExercise?.objective && !newExercise.objective) {
+      toast({
+        title: "Erreur",
+        description: "L'objectif est requis pour chaque phase",
+        variant: "destructive"
+      })
+      return
+    }
+
     if (editingExercise) {
       await exerciseMutation.mutateAsync({
         ...editingExercise,
@@ -77,7 +87,7 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
         intensity_level: "medium",
         exercise_order: exercises.length + 2,
         activity_type: "exercise",
-        objective: "À définir"
+        objective: ""
       })
     }
   }
@@ -98,7 +108,7 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
       intensity_level: "medium",
       exercise_order: exercises.length + 1,
       activity_type: "exercise",
-      objective: "À définir"
+      objective: ""
     })
   }
 
@@ -115,7 +125,7 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
   )
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 dark:bg-gray-900">
       <ExerciseObjectivesList objectives={objectives} />
 
       <div className="space-y-4">
@@ -126,13 +136,13 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
               value={activityFilter}
               onValueChange={setActivityFilter}
             >
-              <SelectTrigger className="w-[200px]">
+              <SelectTrigger className="w-[200px] dark:border-gray-600">
                 <SelectValue placeholder="Tous les types" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Tous les types</SelectItem>
-                <SelectItem value="exercise">Exercices</SelectItem>
-                <SelectItem value="situation">Situations</SelectItem>
+                <SelectItem value="exercise">Phases d'exercice</SelectItem>
+                <SelectItem value="situation">Situations de jeu</SelectItem>
               </SelectContent>
             </Select>
           </div>
