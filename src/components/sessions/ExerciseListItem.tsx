@@ -1,8 +1,10 @@
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Edit, Trash2, Activity, List, ChevronRight, Trophy, ChartBar, Sparkles } from "lucide-react"
 import { ExerciseListItemProps } from "./types/exercise-form"
-import { TacticalConcept } from "@/types/sequence"
+import { Exercise, TacticalConcept } from "@/types/sequence"
+import { ExerciseAlternatives } from "./ExerciseAlternatives"
 
 export const ExerciseListItem = ({ exercise, onEdit, onDelete, sessionContext }: ExerciseListItemProps & { sessionContext?: { sport: string; level: string; age_category: string; intensity_level: string } }) => {
   const [showAlternatives, setShowAlternatives] = useState(false)

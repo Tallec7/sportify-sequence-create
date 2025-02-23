@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from "react"
 import { Exercise } from "@/types/sequence"
 import { useExerciseMutation } from "@/hooks/mutations/useExerciseMutation"
@@ -41,7 +42,7 @@ export const ExerciseForm = ({ sequenceId }: ExerciseFormProps) => {
     objective: "À définir"
   })
 
-  const { data: session } = useSessionQuery()
+  const { data: session } = useSessionQuery({})  // Pass empty object as argument
   const sessionContext = session ? {
     sport: session.sport,
     level: session.level,
