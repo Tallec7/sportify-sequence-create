@@ -33,15 +33,18 @@ export const usePromptTemplatesQuery = () => {
 
       // Check if there's a default template
       if (!templates.find(template => template.is_default)) {
-        // Create default template
-        const defaultTemplate = {
-          id: "default", // Add required id
+        // Create default template with required mode property
+        const defaultTemplate: PromptTemplate = {
+          id: "default",
           training_type: "session_generation",
           prompt_text: "Créer une séance d'entraînement complète avec...",
           is_active: true,
           is_validated: true,
           is_default: true,
-          sport_id: null
+          sport_id: null,
+          mode: "express", // Add the required mode property
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
         }
 
         const { error: insertError } = await supabase
@@ -64,3 +67,4 @@ export const usePromptTemplatesQuery = () => {
     }
   })
 }
+
