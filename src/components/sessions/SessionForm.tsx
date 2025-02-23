@@ -1,4 +1,5 @@
 
+import { useState } from "react"
 import { type SessionFormData } from "@/hooks/mutations/useSessionMutation"
 import {
   Card,
@@ -10,6 +11,8 @@ import {
 import { SessionDetailsForm } from "./forms/SessionDetailsForm"
 import { SessionBasicInfoForm } from "./forms/SessionBasicInfoForm"
 import { SessionParticipantsForm } from "./forms/SessionParticipantsForm"
+import { SessionModeToggle } from "./forms/SessionModeToggle"
+import { SessionAISelector, type AIMode } from "./forms/SessionAISelector"
 
 interface SessionFormProps {
   formData: SessionFormData
@@ -22,6 +25,9 @@ export const SessionForm = ({
   setFormData,
   onSave,
 }: SessionFormProps) => {
+  const [isAdvancedMode, setIsAdvancedMode] = useState(false)
+  const [aiMode, setAIMode] = useState<AIMode>("manual")
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData({
@@ -45,6 +51,21 @@ export const SessionForm = ({
     })
   }
 
+  const handleModeChange = (advanced: boolean) => {
+    setIsAdvancedMode(advanced)
+    if (!advanced) {
+      setAIMode("manual")
+    }
+  }
+
+  const handleAIModeSelect = (mode: AIMode) => {
+    setAIMode(mode)
+    // Si on sélectionne un mode IA, on passe en mode avancé
+    if (mode !== "manual") {
+      setIsAdvancedMode(true)
+    }
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -54,25 +75,42 @@ export const SessionForm = ({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        <SessionModeToggle
+          isAdvancedMode={isAdvancedMode}
+          onModeChange={handleModeChange}
+        />
+
+        {isAdvancedMode && (
+          <SessionAISelector
+            selectedMode={aiMode}
+            onModeSelect={handleAIModeSelect}
+          />
+        )}
+
         <SessionBasicInfoForm
           formData={formData}
           handleChange={handleInputChange}
           handleSelectChange={handleSelectChange}
           handleNumberChange={handleNumberChange}
         />
-        <SessionParticipantsForm
-          formData={formData}
-          handleNumberChange={handleNumberChange}
-        />
-        <SessionDetailsForm
-          formData={formData}
-          handleSelectChange={handleSelectChange}
-          handleNumberChange={handleNumberChange}
-        />
+        
+        {(isAdvancedMode || aiMode === "expert") && (
+          <SessionParticipantsForm
+            formData={formData}
+            handleNumberChange={handleNumberChange}
+          />
+        )}
+
+        {(isAdvancedMode || aiMode !== "express") && (
+          <SessionDetailsForm
+            formData={formData}
+            handleSelectChange={handleSelectChange}
+            handleNumberChange={handleNumberChange}
+          />
+        )}
       </CardContent>
     </Card>
   )
 }
 
-// Re-export the SessionFormData type from useSessionMutation
 export type { SessionFormData } from "@/hooks/mutations/useSessionMutation"
