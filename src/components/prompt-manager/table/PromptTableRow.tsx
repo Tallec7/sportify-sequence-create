@@ -3,8 +3,9 @@ import { TableCell, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Shield, TestTube, Zap, CloudCog, Sparkles } from "lucide-react"
+import { Shield, TestTube } from "lucide-react"
 import type { PromptTemplate } from "../types"
+import { PromptMode } from "./PromptMode"
 
 interface PromptTableRowProps {
   template: PromptTemplate
@@ -12,50 +13,12 @@ interface PromptTableRowProps {
   onTest: (template: PromptTemplate) => void
 }
 
-const getModeIcon = (mode: string) => {
-  switch (mode) {
-    case 'express':
-      return <Zap className="h-4 w-4" />
-    case 'expert':
-      return <CloudCog className="h-4 w-4" />
-    case 'creativity':
-      return <Sparkles className="h-4 w-4" />
-    default:
-      return null
-  }
-}
-
-const getModeDescription = (mode: string) => {
-  switch (mode) {
-    case 'express':
-      return "Mode rapide - Génération de séance simplifiée"
-    case 'expert':
-      return "Mode expert - Génération détaillée et optimisée"
-    case 'creativity':
-      return "Mode créatif - Génération innovante"
-    default:
-      return ""
-  }
-}
-
 export const PromptTableRow = ({ template, onEdit, onTest }: PromptTableRowProps) => {
   return (
     <TableRow className={template.is_default ? "bg-red-50" : undefined}>
       <TableCell>{template.sports?.label || "Tous les sports"}</TableCell>
       <TableCell>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <Badge variant="secondary" className="gap-2 capitalize">
-                {getModeIcon(template.mode)}
-                {template.mode}
-              </Badge>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{getModeDescription(template.mode)}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <PromptMode mode={template.mode} />
       </TableCell>
       <TableCell>{template.training_type}</TableCell>
       <TableCell>
