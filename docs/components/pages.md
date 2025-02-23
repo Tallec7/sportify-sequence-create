@@ -19,6 +19,7 @@ Ce document décrit l'architecture et l'utilisation des composants de pages dans
 3. **Éditeur (Editor)**
    - Interface de création/modification de séances
    - Gestion des séquences et exercices
+   - Configuration des objectifs
    - Prévisualisation en temps réel
 
 4. **Paramètres (Settings)**

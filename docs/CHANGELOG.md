@@ -3,6 +3,7 @@
 
 ## [En cours de développement]
 ### Ajouts
+- Ajout du champ objectif dans les sessions
 - Système de documentation amélioré
 - Index central de documentation
 - Glossaire technique
@@ -26,3 +27,4 @@
 - Configuration des exercices
 - Système d'authentification
 - Paramètres de base
+

@@ -11,6 +11,7 @@ import { useSessionMutation } from "@/hooks/mutations/useSessionMutation";
 // 2. Configuration de base
 const session = {
   title: "Entraînement Technique",
+  objective: "Améliorer la technique individuelle",
   sport: "football",
   level: "debutant",
   duration: 60,
@@ -40,3 +41,4 @@ graph TD
 2. Gestion des erreurs
 3. Sauvegarde automatique
 4. Performance avec données volumineuses
+
