@@ -2,7 +2,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { useToast } from "@/components/ui/use-toast"
 import { supabase } from "@/integrations/supabase/client"
-import type { TacticalConceptEnum } from "@/types/settings"
+import type { TacticalConceptEnum, AgeCategoryType } from "@/types/settings"
 
 export const useSessionQuery = (sessionId: string | undefined) => {
   const { toast } = useToast()
@@ -20,7 +20,7 @@ export const useSessionQuery = (sessionId: string | undefined) => {
           duration: 60,
           participants_min: 1,
           participants_max: 10,
-          age_category: "U13",
+          age_category: "U13" as AgeCategoryType,
           intensity_level: "medium",
           objective: "",
           tactical_concepts: [],
@@ -73,7 +73,7 @@ export const useSessionQuery = (sessionId: string | undefined) => {
           duration: 60,
           participants_min: 1,
           participants_max: 10,
-          age_category: "U13",
+          age_category: "U13" as AgeCategoryType,
           intensity_level: "medium",
           objective: "",
           tactical_concepts: [],
@@ -90,6 +90,10 @@ export const useSessionQuery = (sessionId: string | undefined) => {
         return ["montee_de_balle", "repli_defensif", "contre_attaque", "attaque_placee", "defense_alignee", "defense_etagee"].includes(value as TacticalConceptEnum)
       }
 
+      const isValidAgeCategory = (value: string): value is AgeCategoryType => {
+        return ["U9", "U11", "U13", "U15", "U17", "U19", "Senior"].includes(value as AgeCategoryType)
+      }
+
       const validTacticalConcepts = Array.isArray(data.tactical_concepts) 
         ? data.tactical_concepts.filter(isValidTacticalConcept)
         : []
@@ -101,6 +105,9 @@ export const useSessionQuery = (sessionId: string | undefined) => {
       // Get the objective from the first sequence or default to empty string
       const objective = data.session_sequences?.[0]?.objective || ""
 
+      // Validate age_category or default to "U13"
+      const age_category = isValidAgeCategory(data.age_category) ? data.age_category : "U13" as AgeCategoryType
+
       return {
         ...data,
         objective,
@@ -110,6 +117,7 @@ export const useSessionQuery = (sessionId: string | undefined) => {
         tactical_concepts: validTacticalConcepts,
         decision_making_focus: Array.isArray(data.decision_making_focus) ? data.decision_making_focus : [],
         performance_metrics,
+        age_category,
         session_sequences: data.session_sequences?.map(sequence => ({
           ...sequence,
           objective: sequence.objective || ""
