@@ -19,6 +19,7 @@ interface SequenceFormProps {
     sequence_type: string
     duration: number
     intensity_level?: string
+    objective: string
   }
   onSubmit: (sequence: any) => void
 }
@@ -29,7 +30,8 @@ export const SequenceForm = ({ sequence, onSubmit }: SequenceFormProps) => {
     description: sequence?.description || "",
     sequence_type: sequence?.sequence_type || "",
     duration: sequence?.duration || 30,
-    intensity_level: sequence?.intensity_level || ""
+    intensity_level: sequence?.intensity_level || "",
+    objective: sequence?.objective || ""
   })
 
   const { data: sequenceTypes = [] } = useSequenceTypesQuery()
@@ -59,6 +61,18 @@ export const SequenceForm = ({ sequence, onSubmit }: SequenceFormProps) => {
           value={formData.description}
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-y"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="objective">Objectif</Label>
+        <textarea
+          id="objective"
+          value={formData.objective}
+          onChange={(e) => setFormData({ ...formData, objective: e.target.value })}
+          className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-y"
+          required
+          placeholder="Définissez l'objectif principal de cette séquence..."
         />
       </div>
 

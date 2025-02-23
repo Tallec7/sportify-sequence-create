@@ -53,6 +53,20 @@ export const BasicExerciseFields = ({ exercise, onChange }: BasicExerciseFieldsP
       </div>
 
       <div className="space-y-2">
+        <Label htmlFor="objective">Objectif</Label>
+        <textarea
+          id="objective"
+          value={exercise.objective}
+          onChange={(e) =>
+            onChange({ ...exercise, objective: e.target.value })
+          }
+          className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-y"
+          required
+          placeholder="Définissez l'objectif principal de cette phase..."
+        />
+      </div>
+
+      <div className="space-y-2">
         <Label htmlFor="description">Description</Label>
         <textarea
           id="description"
