@@ -10,6 +10,8 @@ export const useLevelsMutation = (onSuccess: () => void) => {
   const [editedLevelLabel, setEditedLevelLabel] = useState("")
   const [editedLevelLabelFr, setEditedLevelLabelFr] = useState("")
   const [editedLevelLabelEn, setEditedLevelLabelEn] = useState("")
+  const [newLevelValue, setNewLevelValue] = useState("")
+  const [newLevelLabel, setNewLevelLabel] = useState("")
   const { toast } = useToast()
 
   const handleAddLevel = async (values: {
@@ -46,20 +48,15 @@ export const useLevelsMutation = (onSuccess: () => void) => {
     }
   }
 
-  const handleUpdateLevel = async (id: string, values: {
-    value: string
-    label: string
-    label_fr: string
-    label_en: string
-  }) => {
+  const handleEditLevel = async (id: string) => {
     try {
       const { error } = await supabase
         .from('levels')
         .update({
-          value: values.value,
-          label: values.label,
-          label_fr: values.label_fr,
-          label_en: values.label_en,
+          value: editedLevelValue,
+          label: editedLevelLabel,
+          label_fr: editedLevelLabelFr,
+          label_en: editedLevelLabelEn,
           last_modified_at: new Date().toISOString()
         })
         .eq('id', id)
@@ -114,13 +111,18 @@ export const useLevelsMutation = (onSuccess: () => void) => {
     editedLevelLabel,
     editedLevelLabelFr,
     editedLevelLabelEn,
+    newLevelValue,
+    newLevelLabel,
     setIsEditingLevel,
     setEditedLevelValue,
     setEditedLevelLabel,
     setEditedLevelLabelFr,
     setEditedLevelLabelEn,
+    setNewLevelValue,
+    setNewLevelLabel,
     handleAddLevel,
-    handleUpdateLevel,
+    handleEditLevel,
     handleDeleteLevel,
   }
 }
+

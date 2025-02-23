@@ -15,11 +15,15 @@ export const LevelsList = ({ levels, onLevelsChange }: LevelsListProps) => {
     isEditingLevel,
     editedLevelValue,
     editedLevelLabel,
+    editedLevelLabelFr,
+    editedLevelLabelEn,
     newLevelValue,
     newLevelLabel,
     setIsEditingLevel,
     setEditedLevelValue,
     setEditedLevelLabel,
+    setEditedLevelLabelFr,
+    setEditedLevelLabelEn,
     setNewLevelValue,
     setNewLevelLabel,
     handleAddLevel,
@@ -40,7 +44,12 @@ export const LevelsList = ({ levels, onLevelsChange }: LevelsListProps) => {
             setNewLevelValue("")
             setNewLevelLabel("")
           }}
-          onAdd={handleAddLevel}
+          onAdd={() => handleAddLevel({
+            value: newLevelValue,
+            label: newLevelLabel,
+            label_fr: newLevelLabel, // Using same value as label for now
+            label_en: newLevelLabel, // Using same value as label for now
+          })}
         />
       </div>
 
@@ -58,6 +67,8 @@ export const LevelsList = ({ levels, onLevelsChange }: LevelsListProps) => {
               setIsEditingLevel(level.id!)
               setEditedLevelValue(level.value)
               setEditedLevelLabel(level.label)
+              setEditedLevelLabelFr(level.label_fr || level.label)
+              setEditedLevelLabelEn(level.label_en || level.label)
             }}
             onCancelEdit={() => setIsEditingLevel(null)}
             onSaveEdit={() => handleEditLevel(level.id!)}
@@ -68,3 +79,4 @@ export const LevelsList = ({ levels, onLevelsChange }: LevelsListProps) => {
     </div>
   )
 }
+
