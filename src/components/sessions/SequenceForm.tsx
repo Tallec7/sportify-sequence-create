@@ -36,10 +36,7 @@ export const SequenceForm = ({
   }
 
   const handleAddSequence = async (sequence: Sequence) => {
-    await onAddSequence({
-      ...sequence,
-      session_id: sequence.id,
-    })
+    await onAddSequence(sequence)
     setShowAddForm(false)
   }
 
@@ -75,7 +72,23 @@ export const SequenceForm = ({
               session_id: ""
             }}
             setNewSequence={() => {}}
-            onSubmit={handleAddSequence}
+            onSubmit={(e) => {
+              e.preventDefault()
+              const formData = new FormData(e.currentTarget)
+              const sequence: Sequence = {
+                id: '',
+                title: formData.get('title') as string,
+                description: formData.get('description') as string,
+                duration: parseInt(formData.get('duration') as string) || 30,
+                sequence_type: (formData.get('sequence_type') as "warmup" | "main" | "cooldown") || "main",
+                intensity_level: formData.get('intensity_level') as string || "medium",
+                sequence_order: sequences.length + 1,
+                exercises: [],
+                objective: formData.get('objective') as string || "",
+                session_id: ""
+              }
+              handleAddSequence(sequence)
+            }}
             onCancel={() => setShowAddForm(false)}
             sequences={sequences}
             sessionContext={sessionContext}
