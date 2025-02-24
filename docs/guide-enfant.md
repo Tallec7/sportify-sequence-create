@@ -1,126 +1,145 @@
 
-# Guide du Développement KAP 🚀
+# Guide du Développement KAP
 
-Ce guide détaille l'architecture et le développement du projet KAP, facilitant la prise en main par de nouveaux développeurs.
+## 1. Configuration du Projet
 
-## 🏗️ Architecture du Projet
+### 1.1 Prérequis
+```bash
+node >= 16.0.0
+npm >= 7.0.0
+git
+```
 
-### Structure des Dossiers
+### 1.2 Installation
+```bash
+# Cloner le repo
+git clone https://github.com/votre-org/kap.git
+
+# Installer les dépendances
+cd kap
+npm install
+
+# Variables d'environnement
+cp .env.example .env.local
+```
+
+## 2. Architecture
+
+### 2.1 Structure des Dossiers
 ```
 src/
-├── components/    # Composants réutilisables
-├── pages/        # Pages de l'application
-├── hooks/        # Hooks personnalisés
-├── utils/        # Fonctions utilitaires
-├── types/        # Types TypeScript
-└── integrations/ # Intégrations externes (Supabase)
+├── components/       # Composants React
+├── hooks/           # Hooks personnalisés
+├── pages/           # Pages de l'application
+├── utils/           # Utilitaires
+├── types/           # Types TypeScript
+├── api/             # Intégration API
+└── styles/          # Styles Tailwind
 ```
 
-### Composants Principaux
+### 2.2 Composants Principaux
+```mermaid
+graph TD
+    A[App] --> B[Pages]
+    B --> C[Components]
+    C --> D[UI Elements]
+    C --> E[Forms]
+    C --> F[Layout]
+```
 
-#### 1. Structure des Pages
-- `Index.tsx` : Page d'accueil
-- `Dashboard.tsx` : Tableau de bord utilisateur
-- `Editor.tsx` : Éditeur de séances
-- `Auth.tsx` : Authentification
-- `Settings.tsx` : Paramètres
+## 3. Développement
 
-#### 2. Composants Clés
-- `SessionForm` : Création/édition de séances
-- `SequenceForm` : Gestion des séquences
-- `ExerciseForm` : Configuration des exercices
-
-## 🔧 Développement
-
-### Configuration de l'Environnement
-1. Installation des dépendances :
+### 3.1 Commandes Principales
 ```bash
-npm install
+# Développement
+npm run dev
+
+# Tests
+npm run test
+
+# Build
+npm run build
+
+# Lint
+npm run lint
 ```
 
-2. Configuration de Supabase :
-- Créer un fichier `.env` à la racine
-- Ajouter les variables Supabase :
+### 3.2 Standards de Code
+```typescript
+// Exemple de composant
+interface Props {
+  title: string;
+  onAction: () => void;
+}
+
+export const Component = ({ title, onAction }: Props) => {
+  return (
+    <div className="p-4">
+      <h1>{title}</h1>
+      <button onClick={onAction}>
+        Action
+      </button>
+    </div>
+  );
+};
 ```
-VITE_SUPABASE_URL=your_url
-VITE_SUPABASE_ANON_KEY=your_key
+
+## 4. Intégration Supabase
+
+### 4.1 Configuration
+```typescript
+import { createClient } from '@supabase/supabase-js'
+
+export const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 ```
 
-### Gestion des Données
+### 4.2 Exemple d'Utilisation
+```typescript
+// Récupération de données
+const { data, error } = await supabase
+  .from('sessions')
+  .select('*')
+  .eq('user_id', userId)
+```
 
-#### Base de Données (Supabase)
-- Tables principales : sessions, sequences, exercises
-- Relations : One-to-Many entre sessions et sequences
-- Politiques RLS pour la sécurité des données
+## 5. Tests
 
-#### État de l'Application
-- TanStack Query pour la gestion d'état
-- Hooks personnalisés pour la logique métier
-- Context React pour l'état global
+### 5.1 Tests Unitaires
+```typescript
+import { render, screen } from '@testing-library/react'
+import { Component } from './Component'
 
-### Extension du Projet
+describe('Component', () => {
+  it('renders correctly', () => {
+    render(<Component title="Test" onAction={() => {}} />)
+    expect(screen.getByText('Test')).toBeInTheDocument()
+  })
+})
+```
 
-#### 1. Ajout de Nouvelles Fonctionnalités
-1. Créer les composants nécessaires dans `src/components/`
-2. Ajouter les types dans `src/types/`
-3. Implémenter la logique dans les hooks
-4. Mettre à jour les routes si nécessaire
+### 5.2 Tests d'Intégration
+```typescript
+describe('API Integration', () => {
+  it('fetches data correctly', async () => {
+    const data = await fetchData()
+    expect(data).toBeDefined()
+  })
+})
+```
 
-#### 2. Modification des Types d'Activités
-1. Éditer `src/types/sequence.ts`
-2. Mettre à jour les formulaires correspondants
-3. Adapter la validation des données
+## 6. State Management
 
-#### 3. Ajout de Nouveaux Paramètres
-1. Créer/modifier les tables Supabase
-2. Ajouter les types TypeScript
-3. Implémenter les composants d'interface
-4. Mettre à jour la logique métier
+### 6.1 React Query
+```typescript
+import { useQuery, useMutation } from '@tanstack/react-query'
 
-## 🧪 Tests
+// Query
+const { data } = useQuery({
+  queryKey: ['sessions'],
+  queryFn: fetchSessions
+})
 
-### Tests Unitaires
-- Utilisation de Vitest
-- Tests des composants avec @testing-library/react
-- Coverage minimal recommandé : 80%
-
-### Tests d'Intégration
-- Tests de flux utilisateur complets
-- Vérification des intégrations Supabase
-- Tests des formulaires principaux
-
-## 📚 Ressources
-
-### Documentation Technique
-- [Technical Specifications](./technical-specifications.md)
-- [Architecture Overview](./architecture/overview.md)
-- [API Design](./architecture/api-design.md)
-
-### Standards
-- TypeScript strict
-- ESLint pour le style de code
-- Prettier pour le formatage
-- Commits conventionnels
-
-## 🚀 Déploiement
-
-### Process de Build
-1. Vérification des types : `npm run type-check`
-2. Tests : `npm run test`
-3. Build : `npm run build`
-4. Preview : `npm run preview`
-
-### Variables d'Environnement
-- Configurer les variables Supabase
-- Vérifier les politiques RLS
-- Mettre à jour les tokens si nécessaire
-
-## 🤝 Contribution
-
-### Process de Développement
-1. Créer une branche feature
-2. Développer et tester localement
-3. Soumettre une PR
-4. Code review
-5. Merge après approbation
-
+//

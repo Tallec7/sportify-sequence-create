@@ -1,74 +1,278 @@
 
 # Exigences Fonctionnelles - KAP
 
-## 1. Authentification et Gestion des Utilisateurs
+## 1. Gestion des Utilisateurs
 
 ### 1.1 Authentification
-- Inscription et connexion utilisateur
-- Intégration OAuth
-- Gestion des sessions
-- Récupération de mot de passe
+```typescript
+interface AuthFeatures {
+  login: boolean;              // Email/Password
+  socialAuth: string[];        // ['Google', 'GitHub']
+  mfa: boolean;               // Support 2FA
+  passwordReset: boolean;      // Reset flow
+}
+```
 
-### 1.2 Profils Utilisateurs
-- Création et édition de profil
-- Contrôle d'accès basé sur les rôles
-- Suivi du niveau d'expertise
+#### Flux d'Authentification
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant F as Frontend
+    participant A as Auth Service
+    participant D as Database
+    
+    U->>F: Login Request
+    F->>A: Authenticate
+    A->>D: Verify Credentials
+    D-->>A: User Data
+    A-->>F: JWT Token
+    F-->>U: Redirect to Dashboard
+```
+
+### 1.2 Gestion de Profil
+- Modification informations personnelles
+- Préférences utilisateur
 - Historique d'activité
+- Statistiques d'utilisation
 
-## 2. Gestion des Séances d'Entraînement
+## 2. Gestion des Séances
 
 ### 2.1 Création de Séance
-- Création basée sur template
-- Constructeur de séance personnalisé
-- Paramètres de durée et d'intensité
-- Gestion des participants
+```typescript
+interface SessionCreation {
+  title: string;
+  description: string;
+  sport: string;
+  level: string;
+  duration: number;
+  objectives: string[];
+}
+```
 
-### 2.2 Structure de Séance
-- Blocs d'entraînement modulaires
-- Séquençage d'exercices
-- Configuration des périodes de repos
-- Exigences en équipement
+#### Workflow de Création
+```mermaid
+graph TD
+    A[Initialisation] --> B[Info Base]
+    B --> C[Objectifs]
+    C --> D[Séquences]
+    D --> E[Validation]
+    E --> F[Publication]
+```
 
-### 2.3 Composants de Séance
-- Routines d'échauffement
-- Activités d'entraînement principales
-- Exercices de récupération
-- Protocoles de récupération
+### 2.2 Gestion des Séquences
+```typescript
+interface Sequence {
+  title: string;
+  type: 'warmup' | 'main' | 'cooldown';
+  duration: number;
+  exercises: Exercise[];
+  intensity: string;
+}
+```
 
-## 3. Fonctionnalités de Collaboration
+#### Types de Séquences
+1. **Échauffement**
+   - Durée: 10-15 minutes
+   - Intensité progressive
+   - Exercices préparatoires
 
-### 3.1 Partage
-- Partage de séance
-- Distribution de template
-- Collecte de retours
-- Gestion des permissions
+2. **Corps de Séance**
+   - Exercices principaux
+   - Situations tactiques
+   - Progression technique
 
-### 3.2 Validation Expert
-- Flux de revue
-- Critères de validation
-- Mécanismes de feedback
-- Contrôle de version
+3. **Retour au calme**
+   - Étirements
+   - Récupération
+   - Débriefing
 
-### 3.3 Fonctionnalités d'Équipe
-- Gestion de groupe
-- Suivi de progression d'équipe
-- Planification collaborative
-- Partage de ressources
+## 3. Système de Templates
 
-## 4. Analytique et Reporting
+### 3.1 Gestion des Templates
+```typescript
+interface Template {
+  id: string;
+  name: string;
+  sport: string;
+  level: string;
+  structure: TemplateStructure;
+}
+```
 
-### 4.1 Suivi de Performance
-- Monitoring de progression
-- Métriques de réussite
-- Outils de comparaison
-- Analyse de données historiques
+### 3.2 Personnalisation
+- Adaptation au niveau
+- Modification des exercices
+- Ajustement des durées
+- Configuration des objectifs
 
-### 4.2 Reporting
-- Génération de rapports personnalisés
-- Capacités d'export
-- Visualisation de données
-- Analyse de tendances
+## 4. Collaboration et Partage
 
-Voir aussi :
-- [Exigences Non-Fonctionnelles](./non-functional-requirements.md)
-- [Spécifications Techniques](./technical-specifications.md)
+### 4.1 Fonctionnalités Sociales
+```typescript
+interface SocialFeatures {
+  sharing: boolean;
+  comments: boolean;
+  likes: boolean;
+  favorites: boolean;
+}
+```
+
+### 4.2 Gestion des Droits
+```mermaid
+graph TD
+    A[Admin] --> B[Gestion Totale]
+    C[Coach] --> D[Création/Édition]
+    E[User] --> F[Lecture/Utilisation]
+```
+
+## 5. Gestion des Exercices
+
+### 5.1 Bibliothèque d'Exercices
+```typescript
+interface Exercise {
+  name: string;
+  description: string;
+  type: string;
+  difficulty: number;
+  equipment: string[];
+  variations: string[];
+}
+```
+
+### 5.2 Catégorisation
+- Par sport
+- Par niveau
+- Par objectif
+- Par équipement
+
+## 6. Système d'Évaluation
+
+### 6.1 Métriques de Performance
+```typescript
+interface Performance {
+  completion: number;
+  intensity: number;
+  feedback: string;
+  improvements: string[];
+}
+```
+
+### 6.2 Suivi de Progression
+```mermaid
+graph LR
+    A[Objectifs] --> B[Séances]
+    B --> C[Évaluation]
+    C --> D[Ajustements]
+    D --> A
+```
+
+## 7. Planification
+
+### 7.1 Calendrier
+- Vue hebdomadaire
+- Vue mensuelle
+- Récurrence
+- Conflits
+
+### 7.2 Cycles d'Entraînement
+```typescript
+interface TrainingCycle {
+  startDate: Date;
+  endDate: Date;
+  objectives: string[];
+  sessions: Session[];
+}
+```
+
+## 8. Analytics et Reporting
+
+### 8.1 Tableaux de Bord
+```typescript
+interface Dashboard {
+  metrics: Metric[];
+  charts: Chart[];
+  kpis: KPI[];
+  filters: Filter[];
+}
+```
+
+### 8.2 Rapports
+- Performance individuelle
+- Statistiques de groupe
+- Tendances
+- Recommandations
+
+## 9. Configuration Système
+
+### 9.1 Paramètres Globaux
+```typescript
+interface SystemConfig {
+  languages: string[];
+  timeZones: string[];
+  units: string[];
+  features: Feature[];
+}
+```
+
+### 9.2 Personnalisation
+- Thèmes
+- Notifications
+- Préférences d'affichage
+- Raccourcis
+
+## 10. Validation Expert
+
+### 10.1 Processus de Validation
+```mermaid
+sequenceDiagram
+    participant C as Coach
+    participant E as Expert
+    participant S as System
+    
+    C->>S: Soumet Séance
+    S->>E: Notification
+    E->>S: Review
+    S-->>C: Feedback
+```
+
+### 10.2 Critères
+```typescript
+interface ValidationCriteria {
+  safety: boolean;
+  effectiveness: boolean;
+  progression: boolean;
+  methodology: boolean;
+}
+```
+
+## 11. Système de Notifications
+
+### 11.1 Types de Notifications
+```typescript
+interface Notification {
+  type: 'info' | 'warning' | 'success' | 'error';
+  message: string;
+  action?: () => void;
+  duration?: number;
+}
+```
+
+### 11.2 Canaux
+- In-app
+- Email
+- Push mobile
+- SMS
+
+## 12. Import/Export
+
+### 12.1 Formats Supportés
+- PDF
+- Excel
+- JSON
+- Video
+
+### 12.2 Intégrations
+- Calendriers externes
+- Plateformes fitness
+- Réseaux sociaux
+- Apps sportives
