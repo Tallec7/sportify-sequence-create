@@ -72,9 +72,10 @@ export const SequenceForm = ({
               session_id: ""
             }}
             setNewSequence={() => {}}
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault()
-              const formData = new FormData(e.currentTarget)
+              const form = e.currentTarget as HTMLFormElement
+              const formData = new FormData(form)
               const sequence: Sequence = {
                 id: '',
                 title: formData.get('title') as string,
@@ -87,7 +88,7 @@ export const SequenceForm = ({
                 objective: formData.get('objective') as string || "",
                 session_id: ""
               }
-              handleAddSequence(sequence)
+              await handleAddSequence(sequence)
             }}
             onCancel={() => setShowAddForm(false)}
             sequences={sequences}
