@@ -1,5 +1,6 @@
 
-import { render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
+import { screen } from '@testing-library/dom'
 import { describe, it, expect, vi } from 'vitest'
 import { AddSequenceForm } from '../AddSequenceForm'
 
@@ -27,7 +28,7 @@ describe('AddSequenceForm', () => {
 
   it('renders correctly', () => {
     render(<AddSequenceForm {...defaultProps} />)
-    expect(screen.getByText('Ajouter')).toBeInTheDocument()
+    expect(screen.getByText('Ajouter la séquence')).toBeInTheDocument()
   })
 
   it('displays the form', () => {

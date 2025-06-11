@@ -1,5 +1,6 @@
 
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render } from '@testing-library/react'
+import { screen, fireEvent } from '@testing-library/dom'
 import { describe, it, expect, vi } from 'vitest'
 import { SequenceForm } from '../SequenceForm'
 import { Sequence } from '@/types/sequence'
@@ -43,7 +44,7 @@ describe('SequenceForm', () => {
     render(<SequenceForm {...defaultProps} onAddSequence={onAddSequence} />)
     
     fireEvent.click(screen.getByText('Ajouter une séquence'))
-    expect(screen.getByText('Ajouter')).toBeInTheDocument()
+    expect(screen.getByText('Ajouter la séquence')).toBeInTheDocument()
   })
 
   it('displays existing sequences', () => {
