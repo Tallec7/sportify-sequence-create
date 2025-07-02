@@ -11,7 +11,10 @@ export const useAuthCheck = () => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) {
-        navigate("/auth")
+        // Bypass auth for development - uncomment next line to skip auth
+        // navigate("/auth")
+        // For development, set a fake user ID
+        setUserId("dev-user-id")
       } else {
         setUserId(session.user.id)
       }
