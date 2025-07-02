@@ -19,12 +19,14 @@ interface SessionObjectivesFormProps {
   formData: SessionFormData
   handleSelectChange: (name: string, value: string) => void
   handleTextChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+  handleObjectivesChange: (objectives: SessionFormData['objectives']) => void
 }
 
 export const SessionObjectivesForm = ({
   formData,
   handleSelectChange,
   handleTextChange,
+  handleObjectivesChange,
 }: SessionObjectivesFormProps) => {
   const objectives = formData.objectives || []
 
@@ -40,7 +42,8 @@ export const SessionObjectivesForm = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const updatedObjectives = [...objectives, newObjective]
-    handleSelectChange("objectives", JSON.stringify(updatedObjectives))
+    // Pass objectives array directly instead of stringifying
+    handleObjectivesChange(updatedObjectives)
     setNewObjective({
       description: "",
       type: "technique",

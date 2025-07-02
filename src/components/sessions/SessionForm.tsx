@@ -93,6 +93,7 @@ export const SessionForm = ({ formData, setFormData }: SessionFormProps) => {
             formData={formData}
             handleSelectChange={handleSelectChange}
             handleTextChange={handleChange}
+            handleObjectivesChange={handleObjectivesChange}
           />
         </CardContent>
       </Card>
